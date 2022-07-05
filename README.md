@@ -16,7 +16,7 @@ The application can be used for anything from a club meet using a single laptop 
 <u>See the stable application [Web Site](https://owlcms.github.io/owlcms4/#) for a full overview</u>.  
 
 ### Installation Options
-<u>See the stable application [Web Site](https://owlcms.github.io/owlcms4/#) for a full overview.</u>  
+<u>See the stable application [Installation Overview](https://owlcms.github.io/owlcms4/#/InstallationOverview)</u>  
 
 Refer to the following [page](Releases.md) for the various setups and releases, including preliminary releases for early adopters.
 
