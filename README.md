@@ -1,4 +1,12 @@
 # OWLCMS - Olympic Weightlifting Competition Management System 
+
+
+> **NOTE: This repository contains [stable binary distributions](https://github.com/owlcms/owlcms4-prerelease/releases) of owlcms. <br>
+> The source repository is located at [https://github.com/jflamy/owlcms4](https://github.com/jflamy/owlcms4)** <br>
+> See below for documentation and support.
+<br />
+
+
 This software is a complete rewrite of `owlcms` which has been used to manage Olympic Weightlifting competitions since 2009. This 4<sup>th</sup> generation of the software uses up-to-date technologies to run both on local machines (Windows, Linux, Mac) or in the cloud (Heroku, Kubernetes)
 
 The application can be used for anything from a club meet using a single laptop all the way up to a national championship with several platform, full jury, integration with streaming, and public internet scoreboards.
