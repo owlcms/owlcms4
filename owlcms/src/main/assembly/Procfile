@@ -1,1 +1,0 @@
-web: java -Dport=$PORT -Dlogback.configurationFile=logback-console.xml -cp owlcms.jar app.owlcms.Main
