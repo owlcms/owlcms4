@@ -1,10 +1,11 @@
 # OWLCMS - Olympic Weightlifting Competition Management System 
 
+> **NOTES:**
+>   - This repository contains **[stable binary distributions](https://github.com/owlcms/owlcms4/releases)** of owlcms.
+>     - Preliminary releases are available for testing [here](https://github.com/owlcms/owlcms4-prerelease).<br>
+>   - The source repository is located at [https://github.com/jflamy/owlcms4](https://github.com/jflamy/owlcms4) (report issues at this location).
+>   - See below for documentation and support.<br>
 
-> **NOTE: This repository contains [stable binary distributions](https://github.com/owlcms/owlcms4-prerelease/releases) of owlcms. <br>
-> The source repository is located at [https://github.com/jflamy/owlcms4](https://github.com/jflamy/owlcms4)** <br>
-> See below for documentation and support.<br>
-> Preliminary releases are available for testing [here](https://github.com/owlcms/owlcms4-prerelease).
 <br />
 
 
