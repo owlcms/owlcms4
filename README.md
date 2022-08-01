@@ -5,8 +5,6 @@
 >     - Preliminary releases are available for testing [here](https://github.com/owlcms/owlcms4-prerelease).<br>
 >   - [Extensive Documentation](https://owlcms.github.io/owlcms4/#) is available.
 >   - The source repository is located at [https://github.com/jflamy/owlcms4](https://github.com/jflamy/owlcms4) (report issues there).
->   - See below for documentation and support.<br>
-
 <br />
 
 This free application is a fully-compliant weightlifting competition management system. 
