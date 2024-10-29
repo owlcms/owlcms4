@@ -438,6 +438,10 @@ public class Athlete {
 	private Integer teamTotalRank;
 	@Transient
 	@JsonIgnore
+	private Participation mainRankings = null;
+	
+	@Transient
+	@JsonIgnore
 	private boolean validation = true;
 	/**
 	 * Instantiates a new athlete.
@@ -459,7 +463,8 @@ public class Athlete {
 		participation.setTeamMember(teamMember);
 
 		if (this.participations == null) {
-			this.participations = new ArrayList<>();
+			setParticipations(new ArrayList<>());
+			setMainRankings(null);
 		}
 		removeCurrentAthleteCategoryParticipation(category, this.participations);
 		this.participations.add(participation);
@@ -1139,13 +1144,16 @@ public class Athlete {
 	 */
 	@JsonIdentityReference(alwaysAsId = true)
 	public Category getCategory() {
+		if (this.category != null && this.mainRankings == null) {
+			computeMainRankings();
+		}
 		return this.category;
 	}
 
 	@Transient
 	@JsonIgnore
 	public String getCategoryCode() {
-		return this.category != null ? this.category.getCode() : "-";
+		return this.category != null ? this.getCategory().getCode() : "-";
 	}
 
 	@Transient
@@ -1771,6 +1779,8 @@ public class Athlete {
 		return this.firstName;
 	}
 
+	@Transient
+	@JsonIgnore
 	public FieldOfPlay getFop() {
 		if (this.fop == null) {
 			return OwlcmsSession.getFop();
@@ -2000,6 +2010,11 @@ public class Athlete {
 	@Transient
 	@JsonIgnore
 	public Participation getMainRankings() {
+		return this.mainRankings;
+	}
+	
+	public void computeMainRankings() {
+		//needs to be called in setParticipations and setCategory.
 		Participation curRankings = null;
 		List<Participation> participations2 = getParticipations();
 		// logger.trace("athlete {} category {} participations {}", this, category,
@@ -2018,7 +2033,7 @@ public class Athlete {
 				}
 			}
 		}
-		return curRankings;
+		setMainRankings(curRankings);
 	}
 
 	/**
@@ -3306,6 +3321,7 @@ public class Athlete {
 			setPresumedBodyWeight(category.getMaximumWeight());
 		}
 		this.category = category;
+		computeMainRankings();
 	}
 
 	@Transient
@@ -3840,6 +3856,7 @@ public class Athlete {
 
 	public void setParticipations(List<Participation> participations) {
 		this.participations = participations;
+		computeMainRankings();
 	}
 
 	public void setPersonalBestCleanJerk(Integer personalBestCleanJerk) {
@@ -5638,5 +5655,9 @@ public class Athlete {
 		}
 		this.timingLogger.info("validateDeclaration {}ms {} {}", System.currentTimeMillis() - start, curLift,
 		        LoggerUtils.whereFrom());
+	}
+
+	public void setMainRankings(Participation mainRankings) {
+		this.mainRankings = mainRankings;
 	}
 }
