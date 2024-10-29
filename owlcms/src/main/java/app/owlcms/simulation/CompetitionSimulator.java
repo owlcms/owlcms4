@@ -68,9 +68,9 @@ public class CompetitionSimulator {
 
 			List<Athlete> as = AthleteRepository.findAllByGroupAndWeighIn(g, true);
 
-			if (as.size() == 0) {
+			//if (as.size() == 0) {
 				as = weighIn(g);
-			}
+			//}
 			as = AthleteRepository.findAllByGroupAndWeighIn(g, true);
 			if (as.size() == 0) {
 				logger.info("skipping group {} size {}", g.getName(), as.size());
@@ -139,12 +139,14 @@ public class CompetitionSimulator {
 			}
 			Double catUpper = c.getMaximumWeight();
 			Double catLower = c.getMinimumWeight();
-			if (catUpper > 998 && catLower < 0.1) {
+			if (catUpper > 998 && catLower <= 1.01) {
+				//logger.trace("open {} {} {} {}", a.getLastName(), a.getCategoryCode(), catLower, catUpper);
 				// open category
 				double nextGaussian = r.nextGaussian(85, 15);
 				a.setBodyWeight(nextGaussian);
 				catUpper = (double) Math.round(2.0+nextGaussian+2.0);
 			} else {
+				//logger.trace("!!! not open {} {} {} {}", a.getLastName(), a.getCategoryCode(), catLower, catUpper);
 				if (catUpper > 998) {
 					catUpper = catLower * 1.1;
 				}
