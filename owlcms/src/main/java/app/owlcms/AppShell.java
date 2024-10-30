@@ -83,7 +83,8 @@ public class AppShell implements AppShellConfigurator, VaadinServiceInitListener
 				public void error(ErrorEvent errorEvent) {
 					Throwable t = errorEvent.getThrowable();
 					if (!(t instanceof StopProcessingException)) {
-						LoggerFactory.getLogger("app.owlcms.errorHandler").warn("{} {}", t.toString(), t instanceof NullPointerException ? LoggerUtils.stackTrace() : "");
+						LoggerFactory.getLogger("app.owlcms.errorHandler").warn("{} {}", t.toString(),
+						        LoggerUtils.shortStackTrace(t));
 					}
 				}
 			};
