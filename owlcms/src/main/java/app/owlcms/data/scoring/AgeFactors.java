@@ -56,7 +56,7 @@ public class AgeFactors {
 	}
 
 	public static float getAgeAdjustedTotal(Athlete a, Integer liftedWeight) {
-		if (liftedWeight == null || a == null || a.getAge() == null) {
+		if (liftedWeight == null || a == null || a.getAge() == null || a.getBodyWeight() == null) {
 			return 0.0F;
 		}
 		

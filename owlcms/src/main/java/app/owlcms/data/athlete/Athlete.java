@@ -136,6 +136,7 @@ public class Athlete {
 			dest.setLastName(src.getLastName());
 			dest.setFirstName(src.getFirstName());
 			dest.setFullBirthDate(src.getFullBirthDate());
+			dest.setBodyWeight(src.getBodyWeight());
 			dest.setGroup(src.getGroup());
 			dest.setStartNumber(src.getStartNumber());
 			dest.setLotNumber(src.getLotNumber());
