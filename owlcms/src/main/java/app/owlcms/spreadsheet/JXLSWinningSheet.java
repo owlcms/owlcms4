@@ -65,9 +65,9 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 
 				// if there are age group-specific scoring systems, this can be different than the total
 				// usual ordering.
-				// logger.debug("YYYYYYYYYYYY ranking order {}", rankingOrder());
+				logger.warn("YYYYYYYYYYYY ranking order {}", rankingOrder());
 				logger.debug("eligible getSortedAthletes {}", this.sortedAthletes.size());
-				AthleteSorter.resultsOrder(this.sortedAthletes, rankingOrder(), false);
+				AthleteSorter.resultsOrder(this.sortedAthletes, Ranking.TOTAL, false);
 				// logger.debug("YYYYYYYYYYYY eligible getSortedAthletes {}", this.sortedAthletes.size());
 				return this.sortedAthletes;
 			} else {

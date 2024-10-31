@@ -2879,7 +2879,7 @@ public class FieldOfPlay implements IUnregister {
 		recomputeLeadersAndRecords(this.displayOrder);
 
 		changePlatformEquipment(curAthlete2, this.curWeight);
-
+		
 		logger.debug("&&&& {} {} {} previous {} current {} change {} from[{}]", curAthlete2, nextAthlete, newWeight,
 		        getPrevWeight(), curWeight, newWeight,
 		        LoggerUtils.whereFrom());
@@ -2926,7 +2926,7 @@ public class FieldOfPlay implements IUnregister {
 			getPlatform().setNbL_5(1);
 		}
 		boolean federationRule = Config.getCurrent().featureSwitch("lightBarU13") && (a.getAgeGroup().getMinAge() <= 12 && a.getAgeGroup().getMaxAge() <= 20);
-		use15Bar = getCurAthlete().getGender() != Gender.M || federationRule;
+		use15Bar = (a != null && a.getGender() != Gender.M) || federationRule;
 
 		if (getPlatform().isUseNonStandardBar()) {
 			// logger.debug("non standard bar: {}", getPlatform().getNonStandardBarWeight());
