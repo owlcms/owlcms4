@@ -55,14 +55,13 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 
 	@Override
 	public List<Athlete> getSortedAthletes() {
-		boolean expandedParticipations = false;
 		if (this.sortedAthletes != null) {
 			// logger.debug("YYYYYYYYYYYY sorted athletes {}",LoggerUtils.whereFrom());
 			// we are provided with an externally computed list.
 			if (this.resultsByCategory) {
 				// we need to complete all the athletes with their participations, before filtering.
-				this.sortedAthletes = mapToParticipations(this.sortedAthletes);
-				expandedParticipations = true;
+				// don't do this here, will be done later
+				//this.sortedAthletes = mapToParticipations(this.sortedAthletes);
 
 				// if there are age group-specific scoring systems, this can be different than the total
 				// usual ordering.
@@ -75,7 +74,6 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 				// logger.debug("YYYYYYYYYYYY unique athletes");
 				// we need to expand all the participations before we filter down.
 				List<Athlete> allParticipations = mapToParticipations(this.sortedAthletes);
-				expandedParticipations = true;
 
 				// keep the the most specific category from the championship
 				List<Athlete> uniqueAthletes = allParticipations.stream()
@@ -117,10 +115,7 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 
 		// get all the PAthletes for the current group - athletes show as many times as
 		// they have participations.
-		List<Athlete> pAthletes = rankedAthletes;
-		if (!expandedParticipations) {
-			pAthletes = mapToParticipations(rankedAthletes);
-		}
+		List<Athlete> pAthletes = mapToParticipations(rankedAthletes);
 
 		// unfinished categories need to be computed using all relevant athletes, including not weighed-in yet
 		@SuppressWarnings("unchecked")
