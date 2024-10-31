@@ -55,6 +55,7 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 
 	@Override
 	public List<Athlete> getSortedAthletes() {
+		Championship championship = getChampionship();
 		if (this.sortedAthletes != null) {
 			// logger.debug("YYYYYYYYYYYY sorted athletes {}",LoggerUtils.whereFrom());
 			// we are provided with an externally computed list.
@@ -67,7 +68,17 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 				// usual ordering.
 				logger.warn("YYYYYYYYYYYY ranking order {}", rankingOrder());
 				logger.debug("eligible getSortedAthletes {}", this.sortedAthletes.size());
-				AthleteSorter.resultsOrder(this.sortedAthletes, Ranking.TOTAL, false);
+				Ranking rankingOrder = Ranking.TOTAL;
+				if (championship != null && sortedAthletes.size() > 0) {
+					Athlete athlete = sortedAthletes.get(1);
+					athlete.getCustomScoreComputed();
+					rankingOrder = athlete.getAgeGroup().getComputedScoringSystem();
+					logger.warn("athlete {} scoring {}", athlete, rankingOrder);
+					if (rankingOrder == null) {
+						rankingOrder = Ranking.TOTAL;
+					}
+				}
+				AthleteSorter.resultsOrder(this.sortedAthletes, rankingOrder, false);
 				// logger.debug("YYYYYYYYYYYY eligible getSortedAthletes {}", this.sortedAthletes.size());
 				return this.sortedAthletes;
 			} else {
