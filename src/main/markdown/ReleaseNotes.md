@@ -4,8 +4,9 @@
 > - It is always wise to export your current database before updating.
 
 - Maintenance log:
-  - 53.1.0-beta02: When producing the competition results by eligibility category, if the championship is selected, then each category will be ordered according to the scoring system of the championship. This is useful when there are Sinclair/QYouth categories for example. 
-  - 53.1.0: Drastically reduced database loading of ranking information for eligibility categories that could cause database access problems.
+  - 53.1.0-beta02: When producing the competition results by eligibility category, if the championship is selected, then each category will be ordered according to the scoring system of the championship. This is useful when there are Sinclair/QYouth categories for example.
+  - 53.1.0-beta02: When producing the competition results by eligibility category and without a championship filter, the athletes would appear as many times as they had eligible categories instead of once.
+  - 53.1.0-beta01: Drastically reduced database loading of ranking information for eligibility categories that could cause database access problems.
   - 53.0.2: When producing the final package/competition book, if no championship was selected the results were not produced by eligibility categories as they should have.
   - 53.0.2: Final package templates fixed to use the translated code for extra/out-of-competition/invited athletes
   - 53.0.1: Technical change to the build process. Software is identical to 53.0.0
