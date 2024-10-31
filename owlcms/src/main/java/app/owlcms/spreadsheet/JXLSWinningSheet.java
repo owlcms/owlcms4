@@ -59,9 +59,9 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 			// logger.debug("YYYYYYYYYYYY sorted athletes {}",LoggerUtils.whereFrom());
 			// we are provided with an externally computed list.
 			if (this.resultsByCategory) {
-				// we to complete all the athletes with their participations, before filtering.
-				// logger.debug("YYYYYYYYYYYY category athletes");
-				this.sortedAthletes = mapToParticipations(this.sortedAthletes);
+				// we need to complete all the athletes with their participations, before filtering.
+				// don't do this here, will be done later
+				//this.sortedAthletes = mapToParticipations(this.sortedAthletes);
 
 				// if there are age group-specific scoring systems, this can be different than the total
 				// usual ordering.
