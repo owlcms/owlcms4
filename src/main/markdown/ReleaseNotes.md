@@ -1,16 +1,14 @@
 > [!IMPORTANT]
 >
+> This is an IMPORTANT BUG FIX RELEASE.  It should be installed by anyone running any of the release numbers starting with 53.0
+>
 > - You should test all releases, with actual data, *several days* before a competition.
 > - It is always wise to export your current database before updating.
 
 - Maintenance log:
-  - 53.1.0-rc01: no changes from beta02, mandatory release process step before stable release (beta02 was used as a release candidates and used in live competitions)
-  - 53.1.0-beta02: When producing the competition results by eligibility category, if the championship is selected, then each category will be ordered according to the scoring system of the championship. This is useful when there are Sinclair/QYouth categories for example.
-  - 53.1.0-beta02: When producing the competition results by eligibility category and without a championship filter, the athletes would appear as many times as they had eligible categories instead of once.
-  - 53.1.0-beta01: Drastically reduced database loading of ranking information for eligibility categories that could cause database access problems.
-  - 53.0.2: When producing the final package/competition book, if no championship was selected the results were not produced by eligibility categories as they should have.
-  - 53.0.2: Final package templates fixed to use the translated code for extra/out-of-competition/invited athletes
-  - 53.0.1: Technical change to the build process. Software is identical to 53.0.0
+  - 53.1.0: Database failures could occur when switching from Snatch to CJ or when switching sessions.  This was more likely to happen when athletes were in multiple categories.
+  - 53.1.0: When producing the competition results by eligibility category, if the championship is selected, then each category will be ordered according to the scoring system of the championship. This is useful when there are Sinclair/QYouth categories for example.
+  - 53.1.0: When producing the competition results by eligibility category and without a championship filter, the athletes would appear as many times as they had eligible categories instead of once.
 - Selectable scoring systems for [Best Lifter](https://jflamy.github.io/owlcms4/#/ResultDocuments?id=competition-results) in a championship and [Score-based Medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions) (see the links for documentation),
   - On the competition results page, it is possible to select a scoring system that will be shown in the grid.  This allows computing the best athlete for a championship using a different scoring system (for example, using Q-youth age-adjusted totals for a Youth Championship)
   - The standard templates have been updated to use the Best Athlete scoring system selected if one is picked (the default is the competition global best athlete scoring system)
