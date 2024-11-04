@@ -196,7 +196,7 @@ public class Athlete {
 			}
 
 			if (copyResults) {
-				dest.setCustomScore(src.getCustomScoreComputed());
+				dest.setCustomScore(src.getCustomScore());
 			}
 
 			dest.setForcedAsCurrent(src.isForcedAsCurrent());
@@ -1644,11 +1644,19 @@ public class Athlete {
 	@Transient
 	@JsonIgnore
 	public int getCustomRank() {
-		return (getMainRankings() != null ? getMainRankings().getCustomRank() : -1);
+		return (getMainRankings() != null ? getMainRankings().getScoreRank() : -1);
 	}
 
 	public Double getCustomScore() {
 		return this.customScore;
+	}
+	
+	@Transient
+	@JsonIgnore
+	public Double getScore() {
+		Double computedScore = computedScore();
+		logger.warn("{} getScore {}", this.getClass().getSimpleName(), this.getCategoryCode(), computedScore);
+		return computedScore;
 	}
 
 	/**
@@ -1658,19 +1666,17 @@ public class Athlete {
 	 */
 	@Transient
 	@JsonIgnore
-	public Double getCustomScoreComputed() {
+	public Double computedScore() {
 		AgeGroup ageGroup = getAgeGroup();
 		if (ageGroup == null) {
 			return 0.0;
 		}
 		Ranking scoringSystem = ageGroup.getComputedScoringSystem();
 		// avoid infinite recursion
-		if (scoringSystem != null && scoringSystem != Ranking.CUSTOM) {
+		if (scoringSystem != null) {
 			return Ranking.getRankingValue(this, scoringSystem);
-		} else if (this.customScore == null || this.customScore < 0.01) {
-			return Ranking.getRankingValue(this, Ranking.TOTAL);
 		} else {
-			return this.customScore;
+			return 0.0;
 		}
 	}
 
@@ -2995,6 +3001,11 @@ public class Athlete {
 		return (getMainRankings() != null ? getMainRankings().getTotalRank() : -1);
 	}
 
+	public int getScoreRank() {
+		return (getMainRankings() != null ? getMainRankings().getScoreRank() : -1);
+	}
+	
+	
 	/**
 	 * Gets the year of birth.
 	 *
@@ -4361,6 +4372,12 @@ public class Athlete {
 	@Transient
 	@JsonIgnore
 	public void setTotalRank(int ignored) {
+		// ignored. computed property. setter needed for beans introspection.
+	}
+	
+	@Transient
+	@JsonIgnore
+	public void setScoreRank(int ignored) {
 		// ignored. computed property. setter needed for beans introspection.
 	}
 

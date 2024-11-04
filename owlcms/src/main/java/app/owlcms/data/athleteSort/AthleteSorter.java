@@ -515,6 +515,7 @@ public class AthleteSorter implements Serializable {
 			case TOTAL:
 			case CUSTOM:
 			case CLEANJERK:
+			case SCORE:
 				resultsOrder(sorted, rankingType, false);
 				break;
 		}
@@ -548,6 +549,7 @@ public class AthleteSorter implements Serializable {
 			case TOTAL:
 			case CUSTOM:
 			case CLEANJERK:
+			case SCORE:
 				resultsOrder(sorted, rankingType, absoluteOrder);
 				break;
 		}

@@ -68,10 +68,12 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 				// usual ordering.
 				logger.warn("YYYYYYYYYYYY ranking order {}", rankingOrder());
 				logger.debug("eligible getSortedAthletes {}", this.sortedAthletes.size());
+				
+				//FIXME: this should be Ranking.SCORE, reflecting category-specific scoring, defaulting to TOTAL
 				Ranking rankingOrder = Ranking.TOTAL;
 				if (championship != null && sortedAthletes.size() > 0) {
 					Athlete athlete = sortedAthletes.get(1);
-					athlete.getCustomScoreComputed();
+					athlete.computedScore();
 					rankingOrder = athlete.getAgeGroup().getComputedScoringSystem();
 					logger.warn("athlete {} scoring {}", athlete, rankingOrder);
 					if (rankingOrder == null) {

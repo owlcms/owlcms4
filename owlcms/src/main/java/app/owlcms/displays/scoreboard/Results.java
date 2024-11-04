@@ -1082,7 +1082,7 @@ public class Results extends LitTemplate
 		Ranking scoringSystem = current3.getScoringSystem();
 		
 		if (ageGroupScoringSystem != null && !sinclair && !displayGlobal) {
-			double value = Ranking.getRankingValue(a, Ranking.CUSTOM);
+			double value = Ranking.getRankingValue(a, Ranking.SCORE);
 			String score;
 			if (ageGroupScoringSystem == Ranking.TOTAL) {
 				score = value > 0.001 ? String.format("%.0f", value) : "-";

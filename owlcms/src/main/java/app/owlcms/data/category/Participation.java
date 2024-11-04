@@ -53,6 +53,10 @@ public class Participation implements IRankHolder {
 	@Column(columnDefinition = "integer default 0")
 	private int cleanJerkRank;
 	@Column(columnDefinition = "integer default 0")
+	private int totalRank;
+	@Column(columnDefinition = "integer default 0")
+	private int scoreRank;
+	@Column(columnDefinition = "integer default 0")
 	private int combinedRank;
 	@Column(columnDefinition = "integer default 0")
 	private int customRank;
@@ -78,8 +82,7 @@ public class Participation implements IRankHolder {
 	private int teamSnatchRank;
 	@Column(columnDefinition = "integer default 0")
 	private int teamTotalRank;
-	@Column(columnDefinition = "integer default 0")
-	private int totalRank;
+
 
 	public Participation(Athlete athlete, Category category) {
 		this();
@@ -100,6 +103,7 @@ public class Participation implements IRankHolder {
 		this.snatchRank = p.snatchRank;
 		this.totalRank = p.totalRank;
 		this.combinedRank = p.combinedRank;
+		this.setScoreRank(p.getScoreRank());
 		this.setTeamMember(p.isTeamMember());
 	}
 
@@ -303,5 +307,13 @@ public class Participation implements IRankHolder {
 
 	private boolean isTeamMember() {
 		return this.teamMember;
+	}
+
+	public int getScoreRank() {
+		return scoreRank;
+	}
+
+	public void setScoreRank(int scoreRank) {
+		this.scoreRank = scoreRank;
 	}
 }

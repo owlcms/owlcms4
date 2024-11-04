@@ -77,7 +77,7 @@ public class AthleteCardFormFactory extends OwlcmsCrudFormFactory<Athlete> imple
 	private static final int CHANGE1 = DECLARATION + 1;
 	private static final int CHANGE2 = CHANGE1 + 1;
 	private static final int ACTUAL = CHANGE2 + 1;
-	private static final int SCORE = ACTUAL + 1;
+	private static final int CUSTOM = ACTUAL + 1;
 	private static final int LEFT = 1;
 	private static final int SNATCH1 = LEFT + 1;
 	private static final int SNATCH2 = SNATCH1 + 1;
@@ -88,7 +88,7 @@ public class AthleteCardFormFactory extends OwlcmsCrudFormFactory<Athlete> imple
 	/**
 	 * text field array to facilitate setting focus when form is opened
 	 */
-	private TextField[][] textfields = new TextField[SCORE][CJ3];
+	private TextField[][] textfields = new TextField[CUSTOM][CJ3];
 	private TextField cj1ActualLift;
 	private TextField cj1Change1;
 	private TextField cj1Change2;
@@ -815,11 +815,11 @@ public class AthleteCardFormFactory extends OwlcmsCrudFormFactory<Athlete> imple
 		atRowAndColumn(this.gridLayout, this.cj3ActualLift, ACTUAL, CJ3);
 
 		if (Competition.getCurrent().isCustomScore()) {
-			TextField custom = createPositiveWeightField(SCORE, CJ3);
+			TextField custom = createPositiveWeightField(CUSTOM, CJ3);
 			this.binder.forField(custom)
 			        .withConverter(new StringToDoubleConverter(0.0D, Translator.translate("NumberExpected")))
-			        .bind(Athlete::getCustomScoreComputed, Athlete::setCustomScore);
-			atRowAndColumn(this.gridLayout, custom, SCORE, CJ3);
+			        .bind(Athlete::getCustomScore, Athlete::setCustomScore);
+			atRowAndColumn(this.gridLayout, custom, CUSTOM, CJ3);
 		}
 
 		this.binder.withValidator((a, v) -> {
@@ -1305,7 +1305,7 @@ public class AthleteCardFormFactory extends OwlcmsCrudFormFactory<Athlete> imple
 		atRowAndColumn(gridLayout, new NativeLabel(Translator.translate("WeightLifted")), ACTUAL, LEFT, RowAlign.CENTER,
 		        ColumnAlign.END);
 		if (Competition.getCurrent().isCustomScore()) {
-			atRowAndColumn(gridLayout, new NativeLabel(Translator.translate("Score")), SCORE, LEFT, RowAlign.CENTER,
+			atRowAndColumn(gridLayout, new NativeLabel(Translator.translate("Score")), CUSTOM, LEFT, RowAlign.CENTER,
 			        ColumnAlign.END);
 		}
 

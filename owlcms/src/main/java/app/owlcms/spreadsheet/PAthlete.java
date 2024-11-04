@@ -405,11 +405,6 @@ public class PAthlete extends Athlete implements IRankHolder {
 	}
 
 	@Override
-	public Double getCustomScoreComputed() {
-		return this.a.getCustomScoreComputed();
-	}
-
-	@Override
 	public String getDisplayCategory() {
 		Category category = this.getCategory();
 		return category != null ? category.getDisplayName() : null;
@@ -896,6 +891,11 @@ public class PAthlete extends Athlete implements IRankHolder {
 	@Override
 	public int getTotalRank() {
 		return this.p.getTotalRank();
+	}
+	
+	@Override
+	public int getScoreRank() {
+		return this.p.getScoreRank();
 	}
 
 	@Override
