@@ -1520,7 +1520,8 @@ public class FieldOfPlay implements IUnregister {
 	private Ranking computeResultOrderRanking(boolean groupDone) {
 		boolean _3medals = Competition.getCurrent().isSnatchCJTotalMedals();
 		if (groupDone || (isCjStarted() && !_3medals)) {
-			return Ranking.TOTAL;
+			// this falls back to TOTAL for categories that are not score-based
+			return Ranking.CATEGORY_SCORE;
 		} else if (_3medals && isCjStarted()) {
 			return Ranking.CLEANJERK;
 		} else {
