@@ -641,16 +641,26 @@ public class Results extends LitTemplate
 	 */
 	protected int countBWClasses(List<Athlete> displayOrder) {
 		int nbCats = 0;
-		String prevCat = null;
+		String prevBWCat = null;
+		Category prevCat = null;
 		List<Athlete> athletes = displayOrder != null ? Collections.unmodifiableList(displayOrder)
 		        : Collections.emptyList();
 		for (Athlete a : athletes) {
-			String curCat = a.getBWCategory();
-			if (curCat != null && (prevCat == null || !prevCat.contentEquals(curCat))) {
-				// changing categories, put marker before athlete
-				prevCat = curCat;
-				nbCats++;
+			Category curCat = a.getCategory();
+			String curBWCat = a.getBWCategory();
+			if (isAllBWCategory(a)) {
+				if (curCat != null && !curCat.sameAs(prevCat)) {
+					// changing categories, put marker before athlete
+					nbCats++;
+				}
+			} else {
+				if (curBWCat != null && (prevBWCat == null || !prevBWCat.contentEquals(curBWCat))) {
+					// changing categories, put marker before athlete
+					nbCats++;
+				}
 			}
+			prevBWCat = curBWCat;
+			prevCat = curCat;
 		}
 		return nbCats;
 	}
@@ -668,9 +678,10 @@ public class Results extends LitTemplate
 			Category curCat = a.getCategory();
 			if (curCat != null && !curCat.sameAs(prevCat)) {
 				// changing categories, put marker before athlete
-				prevCat = curCat;
 				nbCats++;
 			}
+
+			prevCat = curCat;
 		}
 		return nbCats;
 	}
@@ -792,8 +803,10 @@ public class Results extends LitTemplate
 		ja.put("custom1", a.getCustom1() != null ? a.getCustom1() : "");
 		ja.put("custom2", a.getCustom2() != null ? a.getCustom2() : "");
 
-		ja.put("sinclair", computedScore(a));
-		ja.put("sinclairRank", computedScoreRank(a));
+		if (a.getComputedScoringSystem() != Ranking.TOTAL) {
+			ja.put("sinclair", computedScore(a));
+			ja.put("sinclairRank", computedScoreRank(a));
+		}
 
 		boolean notDone = a.getAttemptsDone() < 6;
 		String blink = (notDone ? " blink" : "");
@@ -967,7 +980,8 @@ public class Results extends LitTemplate
 		BiPredicate<Athlete, Athlete> separator = (cur, prev) -> {
 			if (prev == null) {
 				return true;
-			} else if (displayByAgeGroup) {
+			} else if (displayByAgeGroup || isAllBWCategory(cur)) {
+				// score-based all-bodyweight categories need separator in spite of same bounds
 				return (cur.getCategory() != null
 				        && !cur.getCategory().sameAs(prev.getCategory()));
 			} else {
@@ -976,6 +990,14 @@ public class Results extends LitTemplate
 			}
 		};
 		return separator;
+	}
+
+	private boolean isAllBWCategory(Athlete cur) {
+		// score-based all-bodyweight categories need to be identified
+		var cat = cur.getCategory();
+		var min = cat.getMinimumWeight();
+		var max = cat.getMaximumWeight();
+		return (min < 10 && max > 900);
 	}
 
 	/**
@@ -1056,7 +1078,6 @@ public class Results extends LitTemplate
 	}
 
 	protected void setTranslationMap() {
-		this.logger.warn("setTranslationMap {}", LoggerUtils.stackTrace());
 		JsonObject translations = Json.createObject();
 		Enumeration<String> keys = Translator.getKeys();
 		while (keys.hasMoreElements()) {
@@ -1125,7 +1146,7 @@ public class Results extends LitTemplate
 		Ranking scoringSystem = current3.getScoringSystem();
 
 		if (ageGroupScoringSystem != null && !sinclair && !displayGlobal) {
-			double value = Ranking.getRankingValue(a, Ranking.SCORE);
+			double value = Ranking.getRankingValue(a, Ranking.CATEGORY_SCORE);
 			String score;
 			if (ageGroupScoringSystem == Ranking.TOTAL) {
 				score = value > 0.001 ? String.format("%.0f", value) : "-";

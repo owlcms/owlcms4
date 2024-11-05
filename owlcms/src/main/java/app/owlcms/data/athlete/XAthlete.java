@@ -566,11 +566,11 @@ public class XAthlete extends Athlete {
 
 	/**
 	 * @return
-	 * @see app.owlcms.data.athlete.Athlete#computedScore()
+	 * @see app.owlcms.data.athlete.Athlete#computedCategoryScore()
 	 */
 	@Override
-	public Double getScore() {
-		return this.a.getScore();
+	public Double getCategoryScore() {
+		return this.a.getCategoryScore();
 	}
 
 	/**

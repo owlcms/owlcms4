@@ -55,7 +55,7 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
 				return compareCleanJerkResultOrder(lifter1, lifter2, this.ignoreCategories);
 			case TOTAL:
 				return compareTotalResultOrder(lifter1, lifter2, this.ignoreCategories);
-			case SCORE:
+			case CATEGORY_SCORE:
 				return compareScoreResultOrder(lifter1, lifter2, this.ignoreCategories);
 			case CUSTOM:
 				return compareCustomResultOrder(lifter1, lifter2, this.ignoreCategories);

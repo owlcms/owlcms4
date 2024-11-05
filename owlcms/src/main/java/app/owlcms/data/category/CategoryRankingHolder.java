@@ -18,7 +18,7 @@ public class CategoryRankingHolder implements IRankHolder {
 	protected int customRank = 0;
 	protected int snatchRank = 0;
 	protected int totalRank = 0;
-	protected int scoreRank = 0;
+	protected int categoryScoreRank = 0;
 
 	public int getCleanJerkRank() {
 		return this.cleanJerkRank;
@@ -60,11 +60,11 @@ public class CategoryRankingHolder implements IRankHolder {
 		this.totalRank = totalRank;
 	}
 
-	public int getScoreRank() {
-		return scoreRank;
+	public int getCategoryScoreRank() {
+		return categoryScoreRank;
 	}
 
-	public void setScoreRank(int scoreRank) {
-		this.scoreRank = scoreRank;
+	public void setCategoryScoreRank(int scoreRank) {
+		this.categoryScoreRank = scoreRank;
 	}
 }

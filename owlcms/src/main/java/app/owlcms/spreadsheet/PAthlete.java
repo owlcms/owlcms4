@@ -894,8 +894,8 @@ public class PAthlete extends Athlete implements IRankHolder {
 	}
 	
 	@Override
-	public int getScoreRank() {
-		return this.p.getScoreRank();
+	public int getCategoryScoreRank() {
+		return this.p.getCategoryScoreRank();
 	}
 
 	@Override

@@ -71,8 +71,8 @@ public class AthleteSorter implements Serializable {
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
 		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.SCORE, true);
-		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.SCORE);
+		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, true);
+		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CATEGORY_SCORE);
 
 		// for (Athlete a : impactedAthletes) {
 		// Participation p = a.getMainRankings();
@@ -107,8 +107,8 @@ public class AthleteSorter implements Serializable {
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
 		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.SCORE, true);
-		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.SCORE);
+		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, true);
+		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CATEGORY_SCORE);
 
 		// if (logger.isEnabledFor(Level.DEBUG)) {
 		// for (Athlete a : impactedAthletes) {
@@ -519,7 +519,7 @@ public class AthleteSorter implements Serializable {
 			case TOTAL:
 			case CUSTOM:
 			case CLEANJERK:
-			case SCORE:
+			case CATEGORY_SCORE:
 				resultsOrder(sorted, rankingType, false);
 				break;
 		}
@@ -553,7 +553,7 @@ public class AthleteSorter implements Serializable {
 			case TOTAL:
 			case CUSTOM:
 			case CLEANJERK:
-			case SCORE:
+			case CATEGORY_SCORE:
 				resultsOrder(sorted, rankingType, absoluteOrder);
 				break;
 		}

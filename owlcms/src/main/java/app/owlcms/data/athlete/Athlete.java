@@ -1644,7 +1644,7 @@ public class Athlete {
 	@Transient
 	@JsonIgnore
 	public int getCustomRank() {
-		return (getMainRankings() != null ? getMainRankings().getScoreRank() : -1);
+		return (getMainRankings() != null ? getMainRankings().getCategoryScoreRank() : -1);
 	}
 
 	public Double getCustomScore() {
@@ -1653,9 +1653,9 @@ public class Athlete {
 	
 	@Transient
 	@JsonIgnore
-	public Double getScore() {
-		Double computedScore = computedScore();
-		logger.warn("{} getScore {}", this.getClass().getSimpleName(), this.getCategoryCode(), computedScore);
+	public Double getCategoryScore() {
+		Double computedScore = computedCategoryScore();
+		//logger.debug("{} getCategoryScore {}", this.getClass().getSimpleName(), this.getCategoryCode(), computedScore);
 		return computedScore;
 	}
 
@@ -1666,13 +1666,13 @@ public class Athlete {
 	 */
 	@Transient
 	@JsonIgnore
-	public Double computedScore() {
+	public Double computedCategoryScore() {
 		AgeGroup ageGroup = getAgeGroup();
 		if (ageGroup == null) {
 			return 0.0;
 		}
 		Ranking scoringSystem = ageGroup.getComputedScoringSystem();
-		// avoid infinite recursion
+		//logger.debug("{} {} {}", this.getLastName(), scoringSystem,  Ranking.getRankingValue(this, scoringSystem));
 		if (scoringSystem != null) {
 			return Ranking.getRankingValue(this, scoringSystem);
 		} else {
@@ -3001,8 +3001,8 @@ public class Athlete {
 		return (getMainRankings() != null ? getMainRankings().getTotalRank() : -1);
 	}
 
-	public int getScoreRank() {
-		return (getMainRankings() != null ? getMainRankings().getScoreRank() : -1);
+	public int getCategoryScoreRank() {
+		return (getMainRankings() != null ? getMainRankings().getCategoryScoreRank() : -1);
 	}
 	
 	
@@ -4377,7 +4377,7 @@ public class Athlete {
 	
 	@Transient
 	@JsonIgnore
-	public void setScoreRank(int ignored) {
+	public void setCategoryScoreRank(int ignored) {
 		// ignored. computed property. setter needed for beans introspection.
 	}
 
@@ -5677,5 +5677,15 @@ public class Athlete {
 
 	public void setMainRankings(Participation mainRankings) {
 		this.mainRankings = mainRankings;
+	}
+
+	public Ranking getComputedScoringSystem() {
+		var category2 = this.getCategory();
+		if (category2 == null) return Ranking.TOTAL;
+		var group2 = category2.getAgeGroup();
+		if (group2 == null) return Ranking.TOTAL;
+		var css = group2.getComputedScoringSystem();
+		if (css == null) return Ranking.TOTAL;
+		return css;
 	}
 }

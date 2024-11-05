@@ -20,7 +20,7 @@ public enum Ranking {
 	TOTAL("Tot"),
 	CUSTOM("Cus"), // modified total / custom score (e.g. technical merit for kids competition)
 	SNATCH_CJ_TOTAL("Combined"), // sum of all three point scores
-	SCORE("SCORE"), // copy of TOTAL, CUSTOM or any of the global scoring systems if used to award category medals
+	CATEGORY_SCORE("SCORE"), // copy of TOTAL, CUSTOM or any of the global scoring systems if used to award category medals
 
     // global scoring systems
 	BW_SINCLAIR("Sinclair"), // normal Sinclair
@@ -80,8 +80,8 @@ public enum Ranking {
 			case AGEFACTORS:
 				value = curLifter.getAgeAdjustedTotalRank();
 				break;
-			case SCORE:
-				value = curLifter.getScoreRank();
+			case CATEGORY_SCORE:
+				value = curLifter.getCategoryScoreRank();
 				break;
 		}
 		// logger.debug("{} ranking value: {}", curLifter.getShortName(), value);
@@ -142,15 +142,15 @@ public enum Ranking {
 			case QAGE:
 				d = curLifter.getQAge();
 				break;
-			case SCORE:
-				d = curLifter.getScore();
+			case CATEGORY_SCORE:
+				d = curLifter.getCategoryScore();
 				break;
 		}
 		return d != null ? d : 0D;
 	}
 
 	public static String getScoringTitle(Ranking rankingType) {
-		if (rankingType == null || rankingType == Ranking.SCORE) {
+		if (rankingType == null || rankingType == Ranking.CATEGORY_SCORE) {
 			return Translator.translate("Score");
 		}
 		switch (rankingType) {
@@ -170,7 +170,7 @@ public enum Ranking {
 	}
 
 	public static String getScoringExplanation(Ranking rankingType) {
-		if (rankingType == null || rankingType == Ranking.SCORE) {
+		if (rankingType == null || rankingType == Ranking.CATEGORY_SCORE) {
 			return Translator.translate("Score");
 		}
 		switch (rankingType) {

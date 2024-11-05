@@ -29,7 +29,7 @@ public class MultiCategoryRankSetter {
 	private int cjRank = 0;
 	private int totalRank = 0;
 	private int customRank = 0;
-	private int scoreRank = 0;
+	private int categoryScoreRank = 0;
 
 	public void increment(Athlete a, Ranking r, double rankingValue) {
 		if (a == null) {
@@ -46,7 +46,7 @@ public class MultiCategoryRankSetter {
 			case CLEANJERK:
 			case TOTAL:
 			case CUSTOM:
-			case SCORE:
+			case CATEGORY_SCORE:
 				doCategoryBasedRankings(a, r, category, zero);
 				break;
 			case BW_SINCLAIR:
@@ -137,18 +137,18 @@ public class MultiCategoryRankSetter {
 						// logger.debug("skipping total rank {} {} {}", a, curCat, 0);
 					}
 				}
-				case SCORE: {
+				case CATEGORY_SCORE: {
 					CategoryRankingHolder curRankings = getCategoryRankings(curCat);
 					if (!zero && a.isEligibleForIndividualRanking()) {
-						this.scoreRank = curRankings.getScoreRank();
-						this.scoreRank = this.scoreRank + 1;
-						p.setScoreRank(this.scoreRank);
-						curRankings.setScoreRank(this.scoreRank);
+						this.categoryScoreRank = curRankings.getCategoryScoreRank();
+						this.categoryScoreRank = this.categoryScoreRank + 1;
+						p.setCategoryScoreRank(this.categoryScoreRank);
+						curRankings.setCategoryScoreRank(this.categoryScoreRank);
 						// logger.debug("setting score rank {} {} {} {} {}", a, curCat, scoreRank,
 						// System.identityHashCode(p),
 						// System.identityHashCode(curRankings));
 					} else {
-						p.setScoreRank(a.isEligibleForIndividualRanking() ? 0 : -1);
+						p.setCategoryScoreRank(a.isEligibleForIndividualRanking() ? 0 : -1);
 						// logger.debug("skipping score rank {} {} {}", a, curCat, 0);
 					}
 				}
