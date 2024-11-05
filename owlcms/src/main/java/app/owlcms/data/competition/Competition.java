@@ -24,6 +24,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -346,13 +347,19 @@ public class Competition {
 			for (Athlete a : rankedAthletes) {
 				// fetch the participation that matches the current athlete registration
 				// category
-				Optional<Participation> matchingParticipation = a.getParticipations().stream()
-				        .filter(p -> p.getCategory().sameAs(category)).findFirst();
+				Stream<Participation> filter = a.getParticipations().stream()
+				        // .peek(p -> logger.debug("a {} {} p {}", a.getLastName(), a.getCategory(), p.getCategory()))
+				        .filter(p -> p.getCategory().sameAs(category));
+				// logger.warn("*** athlete {} matching participations {}",a.getLastName(), filter.toList());
+				Optional<Participation> matchingParticipation = filter.findFirst();
 				// get a PAthlete proxy wrapper that has the rankings for that participation
 				if (matchingParticipation.isPresent()) {
-					currentCategoryAthletes.add(new PAthlete(matchingParticipation.get()));
+					PAthlete e = new PAthlete(matchingParticipation.get());
+					currentCategoryAthletes.add(e);
+					logger.warn("***    adding {} {} {}", e.getAbbreviatedName(), e.getCategory(), e.getTotalRank());
 				}
 			}
+			logger.warn("*** category {} members {}", category, currentCategoryAthletes.stream().map(a2 -> a2.getAbbreviatedName()).toList());
 
 			// all rankings are from a PAthlete, i.e., for the current medal category
 			List<Athlete> snatchLeaders = null;
@@ -365,31 +372,43 @@ public class Competition {
 			        .stream().filter(a -> a.getBestCleanJerk() > 0 && a.isEligibleForIndividualRanking())
 			        .collect(Collectors.toList());
 			// }
-			List<Athlete> totalLeaders = AthleteSorter.resultsOrderCopy(currentCategoryAthletes, Ranking.TOTAL)
-			        .stream().filter(a -> a.getTotal() > 0 && a.isEligibleForIndividualRanking())
-			        .collect(Collectors.toList());
-			List<Athlete> notFinished = AthleteSorter.resultsOrderCopy(currentCategoryAthletes, Ranking.TOTAL)
-			        .stream().filter(a -> a.isEligibleForIndividualRanking() && a.getActuallyAttemptedLifts() < 6)
-			        .collect(Collectors.toList());
 
-			// Athletes excluded from Total due to bombing out can still win medals, so we
-			// add them
-			TreeSet<Athlete> medalists = new TreeSet<>(new WinningOrderComparator(Ranking.TOTAL, false));
-			medalists.addAll(totalLeaders);
-			// if (isSnatchCJTotalMedals()) {
-			medalists.addAll(cjLeaders);
-			medalists.addAll(snatchLeaders);
-			medalists.addAll(notFinished);
-			// }
-			medals.put(category.getCode(), medalists);
-
-			if (StartupUtils.isTraceSetting()) {
-				logger./**/warn("medalists for {}", category);
-				for (Athlete medalist : medalists) {
-					logger./**/warn("{}\tS{} C{} T{} Sinc {}", medalist.getShortName(), medalist.getSnatchRank(),
-					        medalist.getCleanJerkRank(), medalist.getTotalRank(), medalist.getSinclairRank());
-				}
+			TreeSet<Athlete> medalists;
+			if (category.getAgeGroup().getComputedScoringSystem() == Ranking.TOTAL) {
+				List<Athlete> totalLeaders = AthleteSorter.resultsOrderCopy(currentCategoryAthletes, Ranking.TOTAL)
+				        .stream().filter(a -> a.getTotal() > 0 && a.isEligibleForIndividualRanking())
+				        .collect(Collectors.toList());
+				List<Athlete> notFinished = AthleteSorter.resultsOrderCopy(currentCategoryAthletes, Ranking.TOTAL)
+				        .stream().filter(a -> a.isEligibleForIndividualRanking() && a.getActuallyAttemptedLifts() < 6)
+				        .collect(Collectors.toList());
+				// Athletes excluded from Total due to bombing out can still win medals, so we
+				// add them
+				medalists = new TreeSet<>(new WinningOrderComparator(Ranking.TOTAL, false));
+				medalists.addAll(totalLeaders);
+				medalists.addAll(cjLeaders);
+				medalists.addAll(snatchLeaders);
+				medalists.addAll(notFinished);
+				medals.put(category.getCode(), medalists);
+			} else {
+				List<Athlete> totalLeaders = AthleteSorter.resultsOrderCopy(currentCategoryAthletes, Ranking.CATEGORY_SCORE)
+				        .stream().filter(a -> a.getTotal() > 0 && a.isEligibleForIndividualRanking())
+				        .collect(Collectors.toList());
+				List<Athlete> notFinished = AthleteSorter.resultsOrderCopy(currentCategoryAthletes, Ranking.CATEGORY_SCORE)
+				        .stream().filter(a -> a.isEligibleForIndividualRanking() && a.getActuallyAttemptedLifts() < 6)
+				        .collect(Collectors.toList());
+				medalists = new TreeSet<>(new WinningOrderComparator(Ranking.CATEGORY_SCORE, false));
+				medalists.addAll(totalLeaders);
+				medalists.addAll(notFinished);
+				medals.put(category.getCode(), medalists);
 			}
+
+			// if (StartupUtils.isTraceSetting()) {
+			logger./**/warn("medalists for {}", category);
+			for (Athlete medalist : medalists) {
+				logger./**/warn("   {}\tS{} C{} T{} Sinc {}", medalist.getShortName(), medalist.getSnatchRank(),
+				        medalist.getCleanJerkRank(), medalist.getTotalRank(), medalist.getSinclairRank());
+			}
+			// }
 		}
 		return medals;
 	}
@@ -454,7 +473,7 @@ public class Competition {
 			doReporting(nodupAthletes, Ranking.QAGE, true); // Q-masters
 			doReporting(nodupAthletes, Ranking.CAT_SINCLAIR, true);
 			doReporting(nodupAthletes, Ranking.GAMX, true);
-			doReporting(nodupAthletes, Ranking.AGEFACTORS, true);  // Q-youth
+			doReporting(nodupAthletes, Ranking.AGEFACTORS, true); // Q-youth
 			// long afterReporting = System.currentTimeMillis();
 			// logger.debug("------------------------- full reporting {}ms", afterReporting - beforeReporting);
 		}
@@ -1557,7 +1576,7 @@ public class Competition {
 		// substitutes are not included -- they should be marked as
 		// !isEligibleForTeamRanking
 		suffix = suffix != null ? suffix : "";
-		
+
 		List<Athlete> sortedAthletes;
 		List<Athlete> sortedMen = new ArrayList<>();
 		List<Athlete> sortedWomen = new ArrayList<>();
@@ -1644,14 +1663,14 @@ public class Competition {
 		getOrCreateBean("wSinclair");
 		this.reportingBeans.put("wSinclair", sortedWomen);
 	}
-	
+
 	private void reportQPoints(List<Athlete> sortedMen, List<Athlete> sortedWomen) {
 		getOrCreateBean("mQPoints");
 		this.reportingBeans.put("mQPoints", sortedMen);
 		getOrCreateBean("wQPoints");
 		this.reportingBeans.put("wQPoints", sortedWomen);
 	}
-	
+
 	private void reportQAge(List<Athlete> sortedMen, List<Athlete> sortedWomen) {
 		getOrCreateBean("mQAge");
 		this.reportingBeans.put("mQAge", sortedMen);
@@ -1814,7 +1833,7 @@ public class Competition {
 		AthleteSorter.teamPointsOrder(sortedWomen, Ranking.SMM);
 
 		reportSMF(sortedMen, sortedWomen);
-		
+
 		sortedMen = getOrCreateBean("mTeamQPoints" + adName);
 		sortedWomen = getOrCreateBean("wTeamQPoints" + adName);
 		AthleteSorter.teamPointsOrder(sortedMen, Ranking.QPOINTS);

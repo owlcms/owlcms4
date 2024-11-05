@@ -1296,6 +1296,11 @@ public class FieldOfPlay implements IUnregister {
 	 * @param leaders the leaders to set
 	 */
 	public void setLeaders(List<Athlete> leaders) {
+		logger.warn("%%% setting leaders {}", LoggerUtils.whereFrom());
+		if (leaders != null && leaders.size()>0) {
+			var a = leaders.get(0);
+			logger.warn("%%% leader {} {} {} {}", a.getAbbreviatedName(), a.getClass().getSimpleName(), a.getCategory(), a.getTotalRank());
+		}
 		this.leaders = leaders;
 	}
 
@@ -2169,12 +2174,12 @@ public class FieldOfPlay implements IUnregister {
 			return;
 		}
 
-		if (getCurAthlete() != null && getCurAthlete().getAgeGroup() != null && getCurAthlete().getAgeGroup().getComputedScoringSystem() != null) {
+		if (getCurAthlete() != null && getCurAthlete().getAgeGroup() != null && getCurAthlete().getAgeGroup().getComputedScoringSystem() != Ranking.TOTAL) {
 			// compute leaders according to score.
 			Category category = getCurAthlete().getCategory();
 			TreeSet<Athlete> medalists = getMedals().get(category.getCode());
 			List<Athlete> scoreMedalists = medalists.stream().filter(a -> {
-				int r = a.getCustomRank();
+				int r = a.getCategoryScoreRank();
 				return r <= 3 && r > 0;
 			}).collect(Collectors.toList());
 			// logger.debug("total medalists {}", totalMedalists);

@@ -143,7 +143,6 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 	private String forwardedFopName;
 	private String liftType;
 	private String liftTypeKey;
-
 	private static Map<String, EventForwarder> eventForwarderByName = new HashMap<>();
 
 	synchronized public static EventForwarder initEventForwarderByName(String name, FieldOfPlay fieldOfPlay) {
@@ -175,7 +174,7 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 		this.translatorResetTimeStamp = 0L;
 
 		// update key is actually not mandatory
-		//String updateKey = Config.getCurrent().getParamUpdateKey();
+		// String updateKey = Config.getCurrent().getParamUpdateKey();
 		String updateUrl = Config.getCurrent().getParamPublicResultsURL();
 		if (updateUrl == null || updateUrl.trim().isEmpty()) {
 			logger.info("{}publicresults not enabled.", FieldOfPlay.getLoggingName(getFop()));
@@ -187,9 +186,9 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 		}
 
 		// update key is actually not mandatory
-		//String updateKeyV = Config.getCurrent().getParamVideoDataKey();
+		// String updateKeyV = Config.getCurrent().getParamVideoDataKey();
 		String updateUrlV = Config.getCurrent().getParamVideoDataURL();
-		if (updateUrlV == null  || updateUrlV.trim().isEmpty()) {
+		if (updateUrlV == null || updateUrlV.trim().isEmpty()) {
 			logger.info("{}video data  not enabled.", FieldOfPlay.getLoggingName(getFop()));
 		} else {
 			logger.info("{}video data enabled, pushing to {}", FieldOfPlay.getLoggingName(getFop()), updateUrlV);
@@ -681,14 +680,14 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 
 	@Override
 	public void unregister() {
-		// we do nothing.  We now have exactly one EventForwarder per name
+		// we do nothing. We now have exactly one EventForwarder per name
 		// and we reuse it if we ever recreate the field of play
 
-//		logger.info("unregistering event forwarder for platform {}",getForwardedFopName());
-//		this.postBus.unregister(this);
-//		this.setFop(null);
-//		OwlcmsFactory.getFOPByName(getForwardedFopName()).setEventForwarder(null);
-//		eventForwarderByName.remove(getForwardedFopName());
+		// logger.info("unregistering event forwarder for platform {}",getForwardedFopName());
+		// this.postBus.unregister(this);
+		// this.setFop(null);
+		// OwlcmsFactory.getFOPByName(getForwardedFopName()).setEventForwarder(null);
+		// eventForwarderByName.remove(getForwardedFopName());
 	}
 
 	protected void setTranslationMap() {
@@ -710,7 +709,6 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 	void setAttemptNumber(Integer attemptNumber) {
 		this.attemptNumber = attemptNumber;
 	}
-
 
 	void setFullName(String fullName) {
 		this.fullName = fullName;
@@ -769,12 +767,14 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 
 		if (displayOrder != null && displayOrder.size() > 0) {
 			List<Athlete> liftingOrder = getFop().getLiftingOrder();
-			Athlete currentAthlete = liftingOrder.get(0);
-			updateGroupInfo(computeLiftType(currentAthlete));
-			setLiftTypeKey(computeLiftTypeKey(currentAthlete));
-			setLiftType(computeLiftType(currentAthlete));
-			setGroupAthletes(getAthletesJson(displayOrder, liftingOrder, true));
-			setLiftingOrderAthletes(getAthletesJson(liftingOrder, liftingOrder, false));
+			if (liftingOrder != null && liftingOrder.size() > 0) {
+				Athlete currentAthlete = liftingOrder.get(0);
+				updateGroupInfo(computeLiftType(currentAthlete));
+				setLiftTypeKey(computeLiftTypeKey(currentAthlete));
+				setLiftType(computeLiftType(currentAthlete));
+				setGroupAthletes(getAthletesJson(displayOrder, liftingOrder, true));
+				setLiftingOrderAthletes(getAthletesJson(liftingOrder, liftingOrder, false));
+			}
 		} else {
 			updateGroupInfo(null);
 			setGroupAthletes(null);
@@ -1257,22 +1257,22 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 	}
 
 	private void dumpMap(String string, String string2, Map<String, String> map) {
-//		if (StartupUtils.isDebugSetting()) {
-//			Level level = logger.getLevel();
-//			try {
-//				logger.setLevel(Level.TRACE);
-//				logger.trace("=== {}\n{}", string, string2);
-//				for (Entry<String, String> m : map.entrySet()) {
-//					if (m.getKey() == "updateKey") {
-//						logger.trace("    {} = {}", m.getKey(), m.getValue() != null ? "masked "+m.getValue().length() : "masked null value");
-//					} else {
-//						logger.trace("    {} = {}", m.getKey(), m.getValue());
-//					}
-//				}
-//			} finally {
-//				logger.setLevel(level);
-//			}
-//		}
+		// if (StartupUtils.isDebugSetting()) {
+		// Level level = logger.getLevel();
+		// try {
+		// logger.setLevel(Level.TRACE);
+		// logger.trace("=== {}\n{}", string, string2);
+		// for (Entry<String, String> m : map.entrySet()) {
+		// if (m.getKey() == "updateKey") {
+		// logger.trace(" {} = {}", m.getKey(), m.getValue() != null ? "masked "+m.getValue().length() : "masked null value");
+		// } else {
+		// logger.trace(" {} = {}", m.getKey(), m.getValue());
+		// }
+		// }
+		// } finally {
+		// logger.setLevel(level);
+		// }
+		// }
 	}
 
 	private String formatAttempt(Integer attemptNo) {
@@ -1528,8 +1528,8 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 	}
 
 	/**
-	 * push updates every n seconds in case publicresults is restarted. The individual instances for each viewer need to
-	 * debounce because they will get duplicate events.
+	 * push updates every n seconds in case publicresults is restarted. The individual instances for each viewer need to debounce because they will get
+	 * duplicate events.
 	 *
 	 */
 	private synchronized void pushUpdate(UIEvent e2) {

@@ -1044,7 +1044,6 @@ public class Results extends LitTemplate
 	}
 
 	protected void resultsInit() {
-		// Ranking ageGroupRanking[] = { null };
 		boolean scoring[] = { false };
 		OwlcmsSession.withFop(fop -> {
 			setId("scoreboard-" + fop.getName());
@@ -1054,14 +1053,6 @@ public class Results extends LitTemplate
 
 			List<Athlete> athletes = fop.getDisplayOrder();
 			if (athletes != null && athletes.size() > 0) {
-				// Ranking scoringSystem = athletes.get(0).getAgeGroup().getScoringSystem();
-				// boolean unanimous = athletes.stream().allMatch(s -> {
-				// Ranking scoringSystem2 = s.getAgeGroup().getScoringSystem();
-				// return scoringSystem != null && scoringSystem.equals(scoringSystem2);
-				// });
-				// if (unanimous) {
-				// ageGroupRanking[0] = scoringSystem;
-				// }
 				boolean any = athletes.stream().map(a -> a.getAgeGroup().getScoringSystem())
 				        .anyMatch(s -> s != null && s != Ranking.TOTAL);
 				scoring[0] = any;
@@ -1133,7 +1124,7 @@ public class Results extends LitTemplate
 		computeRecords(done);
 	}
 
-	private String computedScore(Athlete a) {
+	protected String computedScore(Athlete a) {
 		AgeGroup ageGroup = a.getAgeGroup();
 		Ranking ageGroupScoringSystem = ageGroup != null ? ageGroup.getComputedScoringSystem() : null;
 		// logger.debug("a {} agegroup {} scoring {}", a.getLastName(), a.getAgeGroup(), a.getAgeGroup().getScoringSystem());
@@ -1161,7 +1152,7 @@ public class Results extends LitTemplate
 		}
 	}
 
-	private String computedScoreRank(Athlete a) {
+	protected String computedScoreRank(Athlete a) {
 		Ranking ageGroupScoringSystem = a.getAgeGroup().getComputedScoringSystem();
 
 		Competition current = Competition.getCurrent();
@@ -1169,14 +1160,14 @@ public class Results extends LitTemplate
 		Competition current2 = Competition.getCurrent();
 		boolean displayGlobal = current2.isDisplayScoreRanks();
 		Competition current3 = Competition.getCurrent();
-		Ranking scoringSystem = current3.getScoringSystem();
+		Ranking bestLifterScoringSystem = current3.getScoringSystem();
 
 		if (a.isEligibleForIndividualRanking()) {
 			if (ageGroupScoringSystem != null && !sinclair && !displayGlobal) {
-				Integer value = Ranking.getRanking(a, Ranking.CUSTOM);
+				Integer value = Ranking.getRanking(a, Ranking.CATEGORY_SCORE);
 				return value != null && value > 0 ? "" + value : "-";
 			} else {
-				Integer value = Ranking.getRanking(a, scoringSystem);
+				Integer value = Ranking.getRanking(a, bestLifterScoringSystem);
 				return value != null && value > 0 ? "" + value : "-";
 			}
 		} else {
