@@ -55,6 +55,8 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
 				return compareCleanJerkResultOrder(lifter1, lifter2, this.ignoreCategories);
 			case TOTAL:
 				return compareTotalResultOrder(lifter1, lifter2, this.ignoreCategories);
+			case SCORE:
+				return compareScoreResultOrder(lifter1, lifter2, this.ignoreCategories);
 			case CUSTOM:
 				return compareCustomResultOrder(lifter1, lifter2, this.ignoreCategories);
 			case ROBI:
@@ -186,6 +188,32 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
 
 		compare = compareCustomScore(lifter1, lifter2);
 		traceComparison("customScore", lifter1, lifter2, compare);
+		if (compare != 0) {
+			return -compare; // we want reverse order - smaller comes after
+		}
+
+		compare = compareTotal(lifter1, lifter2);
+		traceComparison("total", lifter1, lifter2, compare);
+		if (compare != 0) {
+			return -compare; // we want reverse order - smaller comes after
+		}
+
+		return tieBreak(lifter1, lifter2, Competition.getCurrent().isUseOldBodyWeightTieBreak());
+	}
+	
+	public int compareScoreResultOrder(Athlete lifter1, Athlete lifter2, boolean ignoreCategories) {
+		int compare = 0;
+
+		if (!ignoreCategories) {
+			compare = ObjectUtils.compare(lifter1.getCategory(), lifter2.getCategory(), true);
+			traceComparison("!ignoreCategories", lifter1, lifter2, compare);
+			if (compare != 0) {
+				return compare;
+			}
+		}
+
+		compare = compareScore(lifter1, lifter2);
+		traceComparison("score", lifter1, lifter2, compare);
 		if (compare != 0) {
 			return -compare; // we want reverse order - smaller comes after
 		}

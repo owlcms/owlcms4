@@ -276,6 +276,19 @@ public class AbstractLifterComparator {
 		}
 		return lifter1Value.compareTo(lifter2Value);
 	}
+	
+	int compareScore(Athlete lifter1, Athlete lifter2) {
+		Double lifter1Value = lifter1.getScore();
+		Double lifter2Value = lifter2.getScore();
+		final Double notScored = 0D;
+		if (lifter1Value == null) {
+			lifter1Value = notScored;
+		}
+		if (lifter2Value == null) {
+			lifter2Value = notScored;
+		}
+		return lifter1Value.compareTo(lifter2Value);
+	}
 
 	/**
 	 * Compare lot number.

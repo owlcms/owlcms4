@@ -71,6 +71,8 @@ public class AthleteSorter implements Serializable {
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
 		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
+		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.SCORE, true);
+		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.SCORE);
 
 		// for (Athlete a : impactedAthletes) {
 		// Participation p = a.getMainRankings();
@@ -105,6 +107,8 @@ public class AthleteSorter implements Serializable {
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
 		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
+		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.SCORE, true);
+		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.SCORE);
 
 		// if (logger.isEnabledFor(Level.DEBUG)) {
 		// for (Athlete a : impactedAthletes) {

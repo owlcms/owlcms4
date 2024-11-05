@@ -87,38 +87,38 @@ public class Results extends LitTemplate
         implements DisplayParameters, SafeEventBusRegistration, UIEventProcessor, BreakDisplay,
         RequireDisplayLogin, HasBoardMode, StylesDirSelection {
 
-	@Id("timer")
-	private AthleteTimerElement timer; // WebComponent, injected by Vaadin
-	@Id("breakTimer")
-	private BreakTimerElement breakTimer; // WebComponent, injected by Vaadin
-	@Id("decisions")
-	private DecisionElement decisions; // WebComponent, injected by Vaadin
-	private final Logger logger = (Logger) LoggerFactory.getLogger(Results.class);
-	private final Logger uiEventLogger = (Logger) LoggerFactory.getLogger("UI" + this.logger.getName());
-	private JsonArray cattempts;
-	private Group curGroup;
-	private JsonArray sattempts;
-	private List<Athlete> displayOrder;
-	private int liftsDone;
-	private boolean darkMode = true;
+	protected Group curGroup;
+	protected List<Athlete> displayOrder;
 	protected EventBus uiEventBus;
 	Map<String, List<String>> urlParameterMap = new HashMap<>();
-	private boolean teamFlags;
+	private boolean abbreviatedName;
+	private HashMap<Athlete, String> athleteToFlag = new HashMap<>();
+	@Id("breakTimer")
+	private BreakTimerElement breakTimer; // WebComponent, injected by Vaadin
+	private JsonArray cattempts;
+	private boolean darkMode = true;
+	@Id("decisions")
+	private DecisionElement decisions; // WebComponent, injected by Vaadin
+	private boolean downSilenced;
+	private Double emFontSize;
 	private FieldOfPlay fop;
 	private Group group;
+	private boolean leadersDisplay;
+	private int liftsDone;
 	private Location location;
 	private UI locationUI;
-	private String routeParameter;
-	private boolean silenced;
-	private boolean abbreviatedName;
-	private Double emFontSize;
+	private final Logger logger = (Logger) LoggerFactory.getLogger(Results.class);
 	private boolean publicDisplay;
-	private Double teamWidth;
-	private boolean leadersDisplay;
 	private boolean recordsDisplay;
-	private HashMap<Athlete, String> athleteToFlag = new HashMap<>();
+	private String routeParameter;
+	private JsonArray sattempts;
+	private boolean silenced;
+	private boolean teamFlags;
+	private Double teamWidth;
+	@Id("timer")
+	private AthleteTimerElement timer; // WebComponent, injected by Vaadin
+	private final Logger uiEventLogger = (Logger) LoggerFactory.getLogger("UI" + this.logger.getName());
 	private boolean video;
-	private boolean downSilenced;
 
 	public Results() {
 		this.uiEventLogger.setLevel(Level.INFO);
@@ -232,6 +232,10 @@ public class Results extends LitTemplate
 	@Override
 	public final boolean isDownSilenced() {
 		return this.downSilenced;
+	}
+
+	public boolean isJury() {
+		return false;
 	}
 
 	@Override
@@ -1017,7 +1021,42 @@ public class Results extends LitTemplate
 		}
 	}
 
+	protected void resultsInit() {
+		// Ranking ageGroupRanking[] = { null };
+		boolean scoring[] = { false };
+		OwlcmsSession.withFop(fop -> {
+			setId("scoreboard-" + fop.getName());
+			this.curGroup = fop.getGroup();
+			setWideTeamNames(false);
+			this.getElement().setProperty("competitionName", Competition.getCurrent().getCompetitionName());
+
+			List<Athlete> athletes = fop.getDisplayOrder();
+			if (athletes != null && athletes.size() > 0) {
+				// Ranking scoringSystem = athletes.get(0).getAgeGroup().getScoringSystem();
+				// boolean unanimous = athletes.stream().allMatch(s -> {
+				// Ranking scoringSystem2 = s.getAgeGroup().getScoringSystem();
+				// return scoringSystem != null && scoringSystem.equals(scoringSystem2);
+				// });
+				// if (unanimous) {
+				// ageGroupRanking[0] = scoringSystem;
+				// }
+				boolean any = athletes.stream().map(a -> a.getAgeGroup().getScoringSystem())
+				        .anyMatch(s -> s != null && s != Ranking.TOTAL);
+				scoring[0] = any;
+			}
+		});
+		setTranslationMap();
+		if (scoring[0] || Competition.getCurrent().isDisplayScores() || Competition.getCurrent().isSinclair()) {
+			this.getElement().setProperty("showSinclair", true);
+		}
+		if (scoring[0] || Competition.getCurrent().isDisplayScoreRanks() || Competition.getCurrent().isSinclair()) {
+			this.getElement().setProperty("showSinclairRank", true);
+		}
+		this.displayOrder = ImmutableList.of();
+	}
+
 	protected void setTranslationMap() {
+		this.logger.warn("setTranslationMap {}", LoggerUtils.stackTrace());
 		JsonObject translations = Json.createObject();
 		Enumeration<String> keys = Translator.getKeys();
 		while (keys.hasMoreElements()) {
@@ -1028,6 +1067,10 @@ public class Results extends LitTemplate
 		}
 		translations.put("ScoringTitle", Translator.translate("Score"));
 		this.getElement().setPropertyJson("t", translations);
+	}
+
+	protected void setWideTeamNames(boolean wide) {
+		this.getElement().setProperty("teamWidthClass", (wide ? "wideTeams" : "narrowTeams"));
 	}
 
 	protected void uiLog(UIEvent e) {
@@ -1072,15 +1115,15 @@ public class Results extends LitTemplate
 	private String computedScore(Athlete a) {
 		AgeGroup ageGroup = a.getAgeGroup();
 		Ranking ageGroupScoringSystem = ageGroup != null ? ageGroup.getComputedScoringSystem() : null;
-		//logger.debug("a {} agegroup {} scoring {}", a.getLastName(), a.getAgeGroup(), a.getAgeGroup().getScoringSystem());
-		
+		// logger.debug("a {} agegroup {} scoring {}", a.getLastName(), a.getAgeGroup(), a.getAgeGroup().getScoringSystem());
+
 		Competition current = Competition.getCurrent();
 		boolean sinclair = current.isSinclair();
 		Competition current2 = Competition.getCurrent();
 		boolean displayGlobal = current2.isDisplayScores();
 		Competition current3 = Competition.getCurrent();
 		Ranking scoringSystem = current3.getScoringSystem();
-		
+
 		if (ageGroupScoringSystem != null && !sinclair && !displayGlobal) {
 			double value = Ranking.getRankingValue(a, Ranking.SCORE);
 			String score;
@@ -1099,14 +1142,14 @@ public class Results extends LitTemplate
 
 	private String computedScoreRank(Athlete a) {
 		Ranking ageGroupScoringSystem = a.getAgeGroup().getComputedScoringSystem();
-		
+
 		Competition current = Competition.getCurrent();
 		boolean sinclair = current.isSinclair();
 		Competition current2 = Competition.getCurrent();
 		boolean displayGlobal = current2.isDisplayScoreRanks();
 		Competition current3 = Competition.getCurrent();
 		Ranking scoringSystem = current3.getScoringSystem();
-		
+
 		if (a.isEligibleForIndividualRanking()) {
 			if (ageGroupScoringSystem != null && !sinclair && !displayGlobal) {
 				Integer value = Ranking.getRanking(a, Ranking.CUSTOM);
@@ -1160,40 +1203,6 @@ public class Results extends LitTemplate
 		        : (total.startsWith("-") ? "(" + total.substring(1) + ")" : total);
 	}
 
-	private void resultsInit() {
-		// Ranking ageGroupRanking[] = { null };
-		boolean scoring[] = { false };
-		OwlcmsSession.withFop(fop -> {
-			setId("scoreboard-" + fop.getName());
-			this.curGroup = fop.getGroup();
-			setWideTeamNames(false);
-			this.getElement().setProperty("competitionName", Competition.getCurrent().getCompetitionName());
-
-			List<Athlete> athletes = fop.getDisplayOrder();
-			if (athletes != null && athletes.size() > 0) {
-				// Ranking scoringSystem = athletes.get(0).getAgeGroup().getScoringSystem();
-				// boolean unanimous = athletes.stream().allMatch(s -> {
-				// Ranking scoringSystem2 = s.getAgeGroup().getScoringSystem();
-				// return scoringSystem != null && scoringSystem.equals(scoringSystem2);
-				// });
-				// if (unanimous) {
-				// ageGroupRanking[0] = scoringSystem;
-				// }
-				boolean any = athletes.stream().map(a -> a.getAgeGroup().getScoringSystem())
-				        .anyMatch(s -> s != null && s != Ranking.TOTAL);
-				scoring[0] = any;
-			}
-		});
-		setTranslationMap();
-		if (scoring[0] || Competition.getCurrent().isDisplayScores() || Competition.getCurrent().isSinclair()) {
-			this.getElement().setProperty("showSinclair", true);
-		}
-		if (scoring[0] || Competition.getCurrent().isDisplayScoreRanks() || Competition.getCurrent().isSinclair()) {
-			this.getElement().setProperty("showSinclairRank", true);
-		}
-		this.displayOrder = ImmutableList.of();
-	}
-
 	private void setDisplay() {
 		OwlcmsSession.withFop(fop -> {
 			setBoardMode(fop.getState(), fop.getBreakType(), fop.getCeremonyType(), this.getElement());
@@ -1225,10 +1234,6 @@ public class Results extends LitTemplate
 
 	private void setLiftsDoneProperty(String value) {
 		this.getElement().setProperty("liftsDone", value);
-	}
-
-	private void setWideTeamNames(boolean wide) {
-		this.getElement().setProperty("teamWidthClass", (wide ? "wideTeams" : "narrowTeams"));
 	}
 
 	private boolean showCurrent(FieldOfPlay fop) {
@@ -1309,10 +1314,6 @@ public class Results extends LitTemplate
 			}
 			setGroupNameProperty("");
 		}
-	}
-
-	public boolean isJury() {
-		return false;
 	}
 
 }

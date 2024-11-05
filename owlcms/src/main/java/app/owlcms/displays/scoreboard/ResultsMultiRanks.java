@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
 
@@ -57,7 +58,7 @@ public class ResultsMultiRanks extends Results {
 			return "&ndash;";
 		} else if (total == -1) {
 			// invited lifter, not eligible.
-			return Translator.translate("Results.Extra/Invited"); 
+			return Translator.translate("Results.Extra/Invited");
 		} else {
 			return total.toString();
 		}
@@ -85,8 +86,8 @@ public class ResultsMultiRanks extends Results {
 		} else {
 			fullName = a.getFullName() != null ? a.getFullName() : "";
 		}
-		if (!a.isEligibleForIndividualRanking() && !fullName.isBlank() ) {
-			fullName = Translator.translate("Scoreboard.Extra/Invited",fullName);
+		if (!a.isEligibleForIndividualRanking() && !fullName.isBlank()) {
+			fullName = Translator.translate("Scoreboard.Extra/Invited", fullName);
 		}
 		ja.put("fullName", fullName);
 		ja.put("teamName", a.getTeam() != null ? a.getTeam() : "");
@@ -132,6 +133,45 @@ public class ResultsMultiRanks extends Results {
 		ja.put("classname", highlight);
 
 		setTeamFlag(a, ja);
+	}
+
+	@Override
+	protected void resultsInit() {
+		// Ranking ageGroupRanking[] = { null };
+		// boolean scoring[] = { false };
+		// OwlcmsSession.withFop(fop -> {
+		// setId("scoreboard-" + fop.getName());
+		// this.curGroup = fop.getGroup();
+		// setWideTeamNames(false);
+		// this.getElement().setProperty("competitionName", Competition.getCurrent().getCompetitionName());
+		//
+		// List<Athlete> athletes = fop.getDisplayOrder();
+		// if (athletes != null && athletes.size() > 0) {
+		// // Ranking scoringSystem = athletes.get(0).getAgeGroup().getScoringSystem();
+		// // boolean unanimous = athletes.stream().allMatch(s -> {
+		// // Ranking scoringSystem2 = s.getAgeGroup().getScoringSystem();
+		// // return scoringSystem != null && scoringSystem.equals(scoringSystem2);
+		// // });
+		// // if (unanimous) {
+		// // ageGroupRanking[0] = scoringSystem;
+		// // }
+		// boolean any = athletes.stream().map(a -> a.getAgeGroup().getScoringSystem())
+		// .anyMatch(s -> s != null && s != Ranking.TOTAL);
+		// scoring[0] = any;
+		// }
+		// });
+		setTranslationMap();
+		if (
+		// scoring[0] ||
+		Competition.getCurrent().isDisplayScores() || Competition.getCurrent().isSinclair()) {
+			this.getElement().setProperty("showSinclair", true);
+		}
+		if (
+		// scoring[0] ||
+		Competition.getCurrent().isDisplayScoreRanks() || Competition.getCurrent().isSinclair()) {
+			this.getElement().setProperty("showSinclairRank", true);
+		}
+		this.displayOrder = ImmutableList.of();
 	}
 
 	private String computedScore(Athlete a) {

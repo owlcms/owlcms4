@@ -616,7 +616,8 @@ public class CurrentAthlete extends Results {
 		this.groupDone = b;
 	}
 
-	private void setWideTeamNames(boolean wide) {
+	@Override
+	protected void setWideTeamNames(boolean wide) {
 		this.getElement().setProperty("teamWidthClass", (wide ? "wideTeams" : "narrowTeams"));
 	}
 
