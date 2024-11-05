@@ -31,7 +31,6 @@ import app.owlcms.data.athlete.Athlete;
 import app.owlcms.data.athlete.LiftDefinition.Changes;
 import app.owlcms.data.athlete.LiftInfo;
 import app.owlcms.data.athlete.XAthlete;
-import app.owlcms.data.athleteSort.Ranking;
 import app.owlcms.data.category.Category;
 import app.owlcms.data.category.CategoryRepository;
 import app.owlcms.data.category.Participation;
@@ -415,6 +414,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		this.getElement().setPropertyJson("t", translations);
 	}
 
+	@Override
 	protected void setWideTeamNames(boolean wide) {
 		this.getElement().setProperty("teamWidthClass", (wide ? "wideTeams" : "narrowTeams"));
 	}
@@ -450,17 +450,19 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		});
 	}
 
-	private String computedScore(Athlete a) {
-		Ranking scoringSystem = Competition.getCurrent().getScoringSystem();
-		double value = Ranking.getRankingValue(a, scoringSystem);
-		String score = value > 0.001 ? String.format("%.3f", value) : "-";
-		return score;
-	}
-
-	private String computedScoreRank(Athlete a) {
-		Integer value = Ranking.getRanking(a, Competition.getCurrent().getScoringSystem());
-		return value != null && value > 0 ? "" + value : "-";
-	}
+//	@Override
+//	protected String computedScore(Athlete a) {
+//		Ranking scoringSystem = Competition.getCurrent().getScoringSystem();
+//		double value = Ranking.getRankingValue(a, scoringSystem);
+//		String score = value > 0.001 ? String.format("%.3f", value) : "-";
+//		return score;
+//	}
+//
+//	@Override
+//	protected String computedScoreRank(Athlete a) {
+//		Integer value = Ranking.getRanking(a, Competition.getCurrent().getScoringSystem());
+//		return value != null && value > 0 ? "" + value : "-";
+//	}
 
 	private void computeGroupMedalsJson(TreeMap<String, TreeSet<Athlete>> medals2) {
 		OwlcmsSession.withFop(fop -> {
