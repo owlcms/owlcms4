@@ -2236,6 +2236,8 @@ public class FieldOfPlay implements IUnregister {
 		long endMedals = 0;
 		long endDisplayOrder = 0;
 		long endLeaders = 0;
+		
+		var initialList = getLiftingOrder();
 
 		logger.debug("{}recompute ranks recomputeCategoryRanks={} [{}]", FieldOfPlay.getLoggingName(this),
 		        recomputeCategoryRanks, LoggerUtils.whereFrom());
@@ -2272,7 +2274,7 @@ public class FieldOfPlay implements IUnregister {
 			// athletes have been updated in database, refetch them. They are in 2nd-level cache
 			List<Athlete> currentGroupAthletes = JPAService.runInTransaction(em -> {
 				ArrayList<Athlete> nAth = new ArrayList<>();
-				for (Athlete a : getLiftingOrder()) {
+				for (Athlete a : initialList) {
 					Athlete nA = em.find(Athlete.class, a.getId());
 					nAth.add(nA);
 				}
