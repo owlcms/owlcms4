@@ -1297,7 +1297,7 @@ public class FieldOfPlay implements IUnregister {
 	 */
 	public void setLeaders(List<Athlete> leaders) {
 		logger.warn("%%% setting leaders {}", LoggerUtils.whereFrom());
-		if (leaders != null && leaders.size()>0) {
+		if (leaders != null && leaders.size() > 0) {
 			var a = leaders.get(0);
 			logger.warn("%%% leader {} {} {} {}", a.getAbbreviatedName(), a.getClass().getSimpleName(), a.getCategory(), a.getTotalRank());
 		}
@@ -1326,7 +1326,7 @@ public class FieldOfPlay implements IUnregister {
 
 	public void setNewRecords(List<RecordEvent> newRecords) {
 		if (newRecords == null || newRecords.isEmpty()) {
-//			this.logger.debug("{} + clearing athlete records {}", FieldOfPlay.getLoggingName(this), LoggerUtils.whereFrom());
+			// this.logger.debug("{} + clearing athlete records {}", FieldOfPlay.getLoggingName(this), LoggerUtils.whereFrom());
 		}
 		this.newRecords = newRecords;
 	}
@@ -2240,9 +2240,10 @@ public class FieldOfPlay implements IUnregister {
 		logger.debug("{}recompute ranks recomputeCategoryRanks={} [{}]", FieldOfPlay.getLoggingName(this),
 		        recomputeCategoryRanks, LoggerUtils.whereFrom());
 		if (recomputeCategoryRanks) {
+			logger.warn("----------------- fetchForCategoryRanks --------------------------");
 			// we update the ranks all athletes in our category, as well as the current scoring system
 			athletes = JPAService.runInTransaction(em -> {
-				List<Athlete> l = AthleteSorter.assignCategoryRanks(em, g);
+				List<Athlete> l = AthleteSorter.fetchForCategoryRanks(em, g);
 				List<Athlete> nl = updateScoringSystemRanking(em, l);
 				return nl;
 			});
@@ -2263,11 +2264,23 @@ public class FieldOfPlay implements IUnregister {
 			recomputeRecords(null);
 		} else {
 			if (recomputeCategoryRanks) {
+				logger.warn("----------------- computing medals --------------------------");
 				setMedals(Competition.getCurrent().computeMedals(g, athletes));
 			}
 			endMedals = System.nanoTime();
 
-			List<Athlete> currentGroupAthletes = AthleteSorter.displayOrderCopy(athletes).stream()
+			// athletes have been updated in database, refetch them. They are in 2nd-level cache
+			List<Athlete> currentGroupAthletes = JPAService.runInTransaction(em -> {
+				ArrayList<Athlete> nAth = new ArrayList<>();
+				for (Athlete a : getLiftingOrder()) {
+					Athlete nA = em.find(Athlete.class, a.getId());
+					nAth.add(nA);
+				}
+				return nAth;
+			});
+
+			AthleteSorter.displayOrder(currentGroupAthletes);
+			currentGroupAthletes.stream()
 			        .filter(a -> a.getGroup() != null ? a.getGroup().equals(g) : false)
 			        .peek(a -> {
 				        if (a.getAttemptsDone() > 3 && !isCjStarted()) {
@@ -2885,7 +2898,7 @@ public class FieldOfPlay implements IUnregister {
 		recomputeLeadersAndRecords(this.displayOrder);
 
 		changePlatformEquipment(curAthlete2, this.curWeight);
-		
+
 		logger.debug("&&&& {} {} {} previous {} current {} change {} from[{}]", curAthlete2, nextAthlete, newWeight,
 		        getPrevWeight(), curWeight, newWeight,
 		        LoggerUtils.whereFrom());

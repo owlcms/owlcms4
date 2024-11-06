@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
@@ -71,19 +73,35 @@ public class AthleteSorter implements Serializable {
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
 		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, true);
+
+		// FIXME: this is not an absolute ranking, must be category per category
+		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, false);
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CATEGORY_SCORE);
 
-		// for (Athlete a : impactedAthletes) {
-		// Participation p = a.getMainRankings();
-		// if (p != null) logger.debug("** {} {}", a, p.long_dump());
+		TreeMap<String, TreeSet<Athlete>> medals = Competition.getCurrent().computeMedals(g);
+		logger.warn(medals.keySet().toString());
+		// TreeSet<Athlete> athletes = medals.get("Open_M81");
+		//
+		// for (Athlete a : athletes) {
+		// logger.warn("---{} {} {} {}",a.getAbbreviatedName(), a.getCategory(), a.getCategoryScore(), a.getCategoryScoreRank());
 		// }
+		return impactedAthletes;
+	}
+	
+	public static List<Athlete> fetchForCategoryRanks(EntityManager em, Group g) {
+		List<Athlete> impactedAthletes;
+		if (g != null) {
+			impactedAthletes = AthleteRepository.findAthletesForGlobalRanking(em, g);
+			// logger.debug"all athletes in group's categories {}", impactedAthletes);
+		} else {
+			impactedAthletes = AthleteRepository.doFindAllByGroupAndWeighIn(em, null, true, null);
+			// logger.debug("all athletes in all groups {}", impactedAthletes);
+		}
 		return impactedAthletes;
 	}
 
 	/**
-	 * Assign ranks within each category, for all athletes in categories present in group. Returns the list of these
-	 * athletes (i.e. not only these in group g)
+	 * Assign ranks within each category, for all athletes in categories present in group. Returns the list of these athletes (i.e. not only these in group g)
 	 *
 	 * @param g
 	 * @return
@@ -107,8 +125,18 @@ public class AthleteSorter implements Serializable {
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
 		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, true);
+
+		// FIXME: this is not an absolute ranking, must be category per category
+		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, false);
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CATEGORY_SCORE);
+
+		TreeMap<String, TreeSet<Athlete>> medals = Competition.getCurrent().computeMedals(g);
+		logger.warn(medals.keySet().toString());
+		// TreeSet<Athlete> athletes = medals.get("Open_M81");
+		//
+		// for (Athlete a : athletes) {
+		// logger.warn("---{} {} {} {}",a.getAbbreviatedName(), a.getCategory(), a.getCategoryScore(), a.getCategoryScoreRank());
+		// }
 
 		// if (logger.isEnabledFor(Level.DEBUG)) {
 		// for (Athlete a : impactedAthletes) {
@@ -236,7 +264,7 @@ public class AthleteSorter implements Serializable {
 	 * @param athletes the to be sorted
 	 */
 	static public void displayOrder(List<? extends Athlete> athletes) {
-		//Collections.sort(athletes, new DisplayOrderComparator());
+		// Collections.sort(athletes, new DisplayOrderComparator());
 		Collections.sort(athletes, new RegistrationOrderComparator());
 	}
 
@@ -309,8 +337,7 @@ public class AthleteSorter implements Serializable {
 	}
 
 	/**
-	 * Check that Athlete is one of the howMany previous athletes. The list of athletes is assumed to have been sorted
-	 * with {@link #liftTimeOrderCopy}
+	 * Check that Athlete is one of the howMany previous athletes. The list of athletes is assumed to have been sorted with {@link #liftTimeOrderCopy}
 	 *
 	 * @param Athlete       the athlete
 	 * @param sortedLifters the sorted lifters
@@ -649,12 +676,23 @@ public class AthleteSorter implements Serializable {
 	private static void assignEligibleCategoryRanks(List<Athlete> absoluteOrderList, Ranking rankingType) {
 		MultiCategoryRankSetter rt = new MultiCategoryRankSetter();
 		for (Athlete curLifter : absoluteOrderList) {
-			//if (curLifter.isEligibleForIndividualRanking()) {
-				final double rankingValue = Ranking.getRankingValue(curLifter, rankingType);
-				rt.increment(curLifter, rankingType, rankingValue);
-			//}
+			// if (curLifter.isEligibleForIndividualRanking()) {
+			final double rankingValue = Ranking.getRankingValue(curLifter, rankingType);
+			rt.increment(curLifter, rankingType, rankingValue);
+			// }
 		}
+	}
 
+	
+	public static void updateEligibleCategoryRanks(List<Athlete> absoluteOrderList, Ranking rankingType, EntityManager em) {
+		MultiCategoryRankSetter rt = new MultiCategoryRankSetter();
+		for (Athlete curLifter : absoluteOrderList) {
+			em.find(Athlete.class, curLifter.getId());
+			// if (curLifter.isEligibleForIndividualRanking()) {
+			final double rankingValue = Ranking.getRankingValue(curLifter, rankingType);
+			rt.increment(curLifter, rankingType, rankingValue);
+			// }
+		}
 	}
 
 	/**

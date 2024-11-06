@@ -60,8 +60,7 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 			// logger.debug("YYYYYYYYYYYY sorted athletes {}",LoggerUtils.whereFrom());
 			// we are provided with an externally computed list.
 			if (this.resultsByCategory) {
-				// we need to complete all the athletes with their participations, before filtering.
-				// don't do this here, will be done later
+				logger.warn("here**********");
 				//this.sortedAthletes = mapToParticipations(this.sortedAthletes);
 
 				// if there are age group-specific scoring systems, this can be different than the total
@@ -69,19 +68,17 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 				//logger.debug("YYYYYYYYYYYY ranking order {}", rankingOrder());
 				//logger.debug("eligible getSortedAthletes {}", this.sortedAthletes.size());
 				
-				//FIXME: this should be Ranking.SCORE, reflecting category-specific scoring, defaulting to TOTAL
-				Ranking rankingOrder = Ranking.TOTAL;
-				if (championship != null && sortedAthletes.size() > 0) {
-					Athlete athlete = sortedAthletes.get(1);
-					athlete.computedCategoryScore();
-					rankingOrder = athlete.getAgeGroup().getComputedScoringSystem();
-					logger.warn("athlete {} scoring {}", athlete, rankingOrder);
-					if (rankingOrder == null) {
-						rankingOrder = Ranking.TOTAL;
-					}
-				}
-				AthleteSorter.resultsOrder(this.sortedAthletes, rankingOrder, false);
-				// logger.debug("YYYYYYYYYYYY eligible getSortedAthletes {}", this.sortedAthletes.size());
+				Ranking rankingOrder = Ranking.CATEGORY_SCORE;
+//				if (championship != null && sortedAthletes.size() > 0) {
+//					Athlete athlete = sortedAthletes.get(0);
+//					rankingOrder = athlete.getAgeGroup().getComputedScoringSystem();
+//					logger.warn("--- athlete {} scoring {}", athlete, rankingOrder);
+//					if (rankingOrder == null) {
+//						rankingOrder = Ranking.TOTAL;
+//					}
+//				}
+				AthleteSorter.resultsOrder(this.sortedAthletes, rankingOrder, true);
+				logger.warn("YYYYYYYYYYYY eligible getSortedAthletes {}", this.sortedAthletes);
 				return this.sortedAthletes;
 			} else {
 				// logger.debug("YYYYYYYYYYYY unique athletes");

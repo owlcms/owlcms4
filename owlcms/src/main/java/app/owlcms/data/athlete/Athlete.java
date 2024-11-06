@@ -375,7 +375,7 @@ public class Athlete {
 	@Transient
 	@JsonIgnore
 	private final Level NORMAL_LEVEL = Level.INFO;
-	@OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JsonProperty(index = 200)
 	private List<Participation> participations = new ArrayList<>();
 	private Integer personalBestCleanJerk;

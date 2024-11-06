@@ -40,7 +40,7 @@ public class MultiCategoryRankSetter {
 		boolean zero = rankingValue <= 0;
 
 		int rank = eligible ? (rankingValue == 0 ? 0 : ++this.rank) : -1;
-		//logger.debug("a {} v {} z {} e {} rank={}", a.getShortName(), rankingValue, zero, eligible, rank);
+		logger.warn("c {} r {} -- a {} v {} z {} e {} rank={}", category, r, a.getShortName(), rankingValue, zero, eligible, rank);
 		switch (r) {
 			case SNATCH:
 			case CLEANJERK:
@@ -92,6 +92,7 @@ public class MultiCategoryRankSetter {
 	private void doCategoryBasedRankings(Athlete a, Ranking r, Category category, boolean zero) {
 		for (Participation p : a.getParticipations()) {
 			Category curCat = p.getCategory();
+			boolean useTotalAsScore = a.getComputedScoringSystem() == Ranking.TOTAL;
 			switch (r) {
 				case SNATCH: {
 					CategoryRankingHolder curRankings = getCategoryRankings(curCat);
@@ -100,10 +101,11 @@ public class MultiCategoryRankSetter {
 						this.snatchRank = this.snatchRank + 1;
 						p.setSnatchRank(this.snatchRank);
 						curRankings.setSnatchRank(this.snatchRank);
-						//logger.debug("setting snatch rank {} {} {} {} {}", a, curCat, snatchRank, System.identityHashCode(p), System.identityHashCode(curRankings));
+						// logger.debug("setting snatch rank {} {} {} {} {}", a, curCat, snatchRank, System.identityHashCode(p),
+						// System.identityHashCode(curRankings));
 					} else {
 						p.setSnatchRank(a.isEligibleForIndividualRanking() ? 0 : -1);
-						//logger.debug("skipping snatch rank {} {} {}", a, curCat, this.snatchRank);
+						// logger.debug("skipping snatch rank {} {} {}", a, curCat, this.snatchRank);
 					}
 				}
 					break;
@@ -129,27 +131,34 @@ public class MultiCategoryRankSetter {
 						this.totalRank = this.totalRank + 1;
 						p.setTotalRank(this.totalRank);
 						curRankings.setTotalRank(this.totalRank);
-						// logger.debug("setting total rank {} {} {} {} {}", a, curCat, totalRank,
-						// System.identityHashCode(p),
-						// System.identityHashCode(curRankings));
+						if (useTotalAsScore) {
+							p.setCategoryScoreRank(this.totalRank);
+							curRankings.setCategoryScoreRank(this.totalRank);
+							logger.warn("setting score and total rank {} {} {}", a, curCat, totalRank);
+						} else {
+							logger.warn("setting total rank {} {} {}", a, curCat, totalRank);
+						}
+
 					} else {
 						p.setTotalRank(a.isEligibleForIndividualRanking() ? 0 : -1);
 						// logger.debug("skipping total rank {} {} {}", a, curCat, 0);
 					}
 				}
+					break;
 				case CATEGORY_SCORE: {
-					CategoryRankingHolder curRankings = getCategoryRankings(curCat);
-					if (!zero && a.isEligibleForIndividualRanking()) {
-						this.categoryScoreRank = curRankings.getCategoryScoreRank();
-						this.categoryScoreRank = this.categoryScoreRank + 1;
-						p.setCategoryScoreRank(this.categoryScoreRank);
-						curRankings.setCategoryScoreRank(this.categoryScoreRank);
-						// logger.debug("setting score rank {} {} {} {} {}", a, curCat, scoreRank,
-						// System.identityHashCode(p),
-						// System.identityHashCode(curRankings));
-					} else {
-						p.setCategoryScoreRank(a.isEligibleForIndividualRanking() ? 0 : -1);
-						// logger.debug("skipping score rank {} {} {}", a, curCat, 0);
+					// if useTotalAsScore, we have already computed CATEGORY_SCORE
+					if (!useTotalAsScore) {
+						CategoryRankingHolder curRankings = getCategoryRankings(curCat);
+						if (!zero && a.isEligibleForIndividualRanking()) {
+							this.categoryScoreRank = curRankings.getCategoryScoreRank();
+							this.categoryScoreRank = this.categoryScoreRank + 1;
+							p.setCategoryScoreRank(this.categoryScoreRank);
+							curRankings.setCategoryScoreRank(this.categoryScoreRank);
+							logger.warn("setting score rank {} {} {}", a, curCat, categoryScoreRank);
+						} else {
+							p.setCategoryScoreRank(a.isEligibleForIndividualRanking() ? 0 : -1);
+							// logger.debug("skipping score rank {} {} {}", a, curCat, 0);
+						}
 					}
 				}
 					break;
