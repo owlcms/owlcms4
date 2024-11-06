@@ -687,11 +687,10 @@ public class AthleteSorter implements Serializable {
 	public static void updateEligibleCategoryRanks(List<Athlete> absoluteOrderList, Ranking rankingType, EntityManager em) {
 		MultiCategoryRankSetter rt = new MultiCategoryRankSetter();
 		for (Athlete curLifter : absoluteOrderList) {
-			em.find(Athlete.class, curLifter.getId());
-			// if (curLifter.isEligibleForIndividualRanking()) {
+			var ath = em.find(Athlete.class, curLifter.getId());
 			final double rankingValue = Ranking.getRankingValue(curLifter, rankingType);
-			rt.increment(curLifter, rankingType, rankingValue);
-			// }
+			rt.increment(ath, rankingType, rankingValue);
+			em.merge(ath);
 		}
 	}
 
