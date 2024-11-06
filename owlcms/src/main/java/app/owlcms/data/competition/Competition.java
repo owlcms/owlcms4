@@ -351,7 +351,7 @@ public class Competition {
 				if (matchingParticipation.isPresent()) {
 					PAthlete e = new PAthlete(matchingParticipation.get());
 					currentCategoryAthletes.add(e);
-					logger.warn("***    adding {} {} {}", e.getAbbreviatedName(), e.getCategory(), e.getTotalRank());
+					//logger.debug("***    adding {} {} {}", e.getAbbreviatedName(), e.getCategory(), e.getTotalRank());
 				}
 			}
 			logger.warn("*** category {} members {}", category, currentCategoryAthletes.stream().map(a2 -> a2.getAbbreviatedName()).toList());
@@ -369,7 +369,7 @@ public class Competition {
 				snatchLeaders = updatedAthletes;
 				logger./**/warn("snatchLeaders for {}", category);
 				for (Athlete medalist : snatchLeaders) {
-					logger./**/warn("   {}\tS{} C{} T{} Sc{}", medalist, medalist.getSnatchRank(),
+					logger./**/warn("   {}\tS{} C{} T{} Sc{}", medalist.getAbbreviatedName(), medalist.getSnatchRank(),
 					        medalist.getCleanJerkRank(), medalist.getTotalRank(), medalist.getCategoryScoreRank());
 				}
 
@@ -381,13 +381,12 @@ public class Competition {
 				
 				logger./**/warn("cjLeaders for {}", category);
 				for (Athlete medalist : cjLeaders) {
-					logger./**/warn("   {}\tS{} C{} T{} Sc{}", medalist, medalist.getSnatchRank(),
+					logger./**/warn("   {}\tS{} C{} T{} Sc{}", medalist.getAbbreviatedName(), medalist.getSnatchRank(),
 					        medalist.getCleanJerkRank(), medalist.getTotalRank(), medalist.getCategoryScoreRank());
 				}
 
 				TreeSet<Athlete> medalists;
 				if (category.getAgeGroup().getComputedScoringSystem() == Ranking.TOTAL) {
-					logger.warn("---- updating TOTAL");
 					// this also updates CATEGORY_SCORE rankings same as TOTAL.
 					List<Athlete> totalLeaders = AthleteSorter.resultsOrderCopy(updatedAthletes, Ranking.TOTAL)
 					        .stream().filter(a -> a.getTotal() > 0 && a.isEligibleForIndividualRanking())
@@ -409,7 +408,6 @@ public class Competition {
 					updateAthletesSet.addAll(updatedAthletes);
 					medals.put(category.getCode(), updateAthletesSet);
 				} else {
-					logger.warn("---- updating CATEGORY_SCORE");
 					List<Athlete> scoreLeaders = AthleteSorter.resultsOrderCopy(currentCategoryAthletes, Ranking.CATEGORY_SCORE)
 					        .stream().filter(a -> a.getTotal() > 0 && a.isEligibleForIndividualRanking())
 					        .collect(Collectors.toList());
@@ -429,7 +427,7 @@ public class Competition {
 				// if (StartupUtils.isTraceSetting()) {
 				logger./**/warn("medalists for {}", category);
 				for (Athlete medalist : medalists) {
-					logger./**/warn("   {}\tS{} C{} T{} Sc{}", medalist, medalist.getSnatchRank(),
+					logger./**/warn("   {}\tS{} C{} T{} Sc{}", medalist.getAbbreviatedName(), medalist.getSnatchRank(),
 					        medalist.getCleanJerkRank(), medalist.getTotalRank(), medalist.getCategoryScoreRank());
 				}
 				;
@@ -468,6 +466,7 @@ public class Competition {
 		doComputeReportingInfo(true, weighedInAthletes, ageGroupPrefix, ad);
 		AthleteSorter.resultsOrder(allPAthletes, Ranking.TOTAL, false);
 		this.reportingBeans.put("allPAthletes", allPAthletes);
+
 		return this.reportingBeans;
 	}
 
@@ -1503,7 +1502,7 @@ public class Competition {
 	private void doComputeReportingInfo(boolean full, List<Athlete> athletes, String ageGroupPrefix,
 	        Championship ad) {
 		// reporting does many database queries. fork a low-priority thread.
-		// logger.debug("------------------------- doComputeReportingInfo {}",LoggerUtils.whereFrom());
+		logger.warn("------------------------- doComputeReportingInfo {}",LoggerUtils.whereFrom());
 		runInThread(() -> {
 			if (athletes.isEmpty()) {
 				// prevent outputting silliness.

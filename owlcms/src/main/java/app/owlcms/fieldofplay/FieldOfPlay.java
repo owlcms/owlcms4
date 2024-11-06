@@ -2238,6 +2238,7 @@ public class FieldOfPlay implements IUnregister {
 		long endLeaders = 0;
 		
 		var initialList = getLiftingOrder();
+		logger.warn("initial list {}", initialList);
 
 		logger.debug("{}recompute ranks recomputeCategoryRanks={} [{}]", FieldOfPlay.getLoggingName(this),
 		        recomputeCategoryRanks, LoggerUtils.whereFrom());

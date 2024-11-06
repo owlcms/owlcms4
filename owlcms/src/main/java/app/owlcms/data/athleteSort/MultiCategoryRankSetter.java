@@ -40,7 +40,7 @@ public class MultiCategoryRankSetter {
 		boolean zero = rankingValue <= 0;
 
 		int rank = eligible ? (rankingValue == 0 ? 0 : ++this.rank) : -1;
-		logger.warn("c {} r {} -- a {} v {} z {} e {} rank={}", category, r, a.getShortName(), rankingValue, zero, eligible, rank);
+		//logger.debug("c {} r {} -- a {} v {} z {} e {} rank={} {}", category, r, a.getShortName(), rankingValue, zero, eligible, rank, ""); //LoggerUtils.stackTrace());
 		switch (r) {
 			case SNATCH:
 			case CLEANJERK:

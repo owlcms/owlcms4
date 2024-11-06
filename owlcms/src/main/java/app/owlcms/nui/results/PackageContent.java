@@ -51,7 +51,6 @@ import app.owlcms.data.agegroup.Championship;
 import app.owlcms.data.athlete.Athlete;
 import app.owlcms.data.athlete.AthleteRepository;
 import app.owlcms.data.athlete.Gender;
-import app.owlcms.data.athleteSort.AthleteSorter;
 import app.owlcms.data.athleteSort.Ranking;
 import app.owlcms.data.category.Category;
 import app.owlcms.data.competition.Competition;
@@ -107,8 +106,7 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 	private Ranking scoringSystem;
 
 	/**
-	 * Instantiates a new announcer content. Does nothing. Content is created in
-	 * {@link #setParameter(BeforeEvent, String)} after URL parameters are parsed.
+	 * Instantiates a new announcer content. Does nothing. Content is created in {@link #setParameter(BeforeEvent, String)} after URL parameters are parsed.
 	 */
 	public PackageContent() {
 	}
@@ -168,12 +166,12 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 		String key = "mwTot";
 		@SuppressWarnings("unchecked")
 		List<Athlete> ranked = (List<Athlete>) beans.get(key);
-		
+
 		boolean allCategories = Boolean.TRUE.equals(this.includeUnfinishedCategories.getValue());
 		// unfinished categories need to be computed using all relevant athletes, including not weighed-in yet
 		@SuppressWarnings("unchecked")
 		Set<String> unfinishedCategories = AthleteRepository.allUnfinishedCategories();
-		logger.debug("unfinished categories {}", unfinishedCategories);
+		logger.info("unfinished categories {}", unfinishedCategories);
 
 		if (ranked == null || ranked.isEmpty()) {
 			return new ArrayList<>();
@@ -181,24 +179,22 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 
 		Category catFilterValue = getCategoryValue();
 		Stream<Athlete> stream = ranked.stream()
+		        .peek(r -> logger.debug("looking at {} {}", r, r.getCategory().getCode()))
 		        .filter(a -> {
 			        Gender genderFilterValue = this.getGender();
 			        Gender athleteGender = a.getGender();
 			        boolean catOk = (catFilterValue == null
 			                || (a.getCategory() != null && catFilterValue.getCode().equals(a.getCategory().getCode())))
 			                && (genderFilterValue == null || genderFilterValue == athleteGender)
-			                && (allCategories || !unfinishedCategories.contains(a.getCategory().getCode()))
-			                ;
+			                && (allCategories || !unfinishedCategories.contains(a.getCategory().getCode()));
 			        return catOk;
 		        })
-		        //.peek(r -> logger.debug("including {} {}",r, r.getCategory().getCode()))
-		        ;
+		        .peek(r -> logger.debug("including {} {}", r, r.getCategory().getCode()));
 		List<Athlete> found = stream.collect(Collectors.toList());
 		logger.debug("{} PackageContent findAll", found.size());
 		updateURLLocations();
 		return found;
 	}
-	
 
 	@Override
 	public AgeGroup getAgeGroup() {
@@ -427,7 +423,7 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 					this.crudLayout.addToolbarComponent(reset);
 					Element toolbar = reset.getParent().get().getElement();
 					toolbar.getStyle().set("flex-wrap", "wrap").set("align-content", "center");
-					
+
 				}
 			}
 
@@ -471,15 +467,16 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 		this.reset = new Button(Translator.translate("RecomputeRanks"), new Icon(VaadinIcon.REFRESH),
 		        (e) -> {
 			        JPAService.runInTransaction(em -> {
-						// assign ranks to all groups, recompute global
-						List<Athlete> l = AthleteSorter.assignCategoryRanks(null);
-						Competition.getCurrent().doGlobalRankings(l, true);
-						for (Athlete a : l) {
-							em.merge(a);
-						}
-						em.flush();
-						return null;
-					});
+				        // assign ranks to all categories, recompute global
+				        List<Athlete> l = AthleteRepository.findAllByGroupAndWeighIn(null, true);
+				        Competition.getCurrent().computeMedalsByCategory(l);
+				        Competition.getCurrent().doGlobalRankings(l, true);
+				        for (Athlete a : l) {
+					        em.merge(a);
+				        }
+				        em.flush();
+				        return null;
+			        });
 			        refresh();
 		        });
 
@@ -493,8 +490,8 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 		defineFilterCascade(crud);
 		includeUnfinishedCategories = new Checkbox(Translator.translate("Video.includeNotCompleted"));
 		getCrudLayout(crud).addFilterComponent(includeUnfinishedCategories);
-		defineSelectionListeners();		
-		
+		defineSelectionListeners();
+
 		this.includeUnfinishedCategories.addValueChangeListener(e -> crud.refreshGrid());
 		Button clearFilters = new Button(null, VaadinIcon.CLOSE.create());
 		clearFilters.addClickListener(event -> {
@@ -503,7 +500,7 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 		});
 
 		getCrudLayout(crud).addFilterComponent(clearFilters);
-		
+
 		if (this.getRankingSelector() == null) {
 			ComboBox<Ranking> scoringCombo = new ComboBox<>(Translator.translate("Ranking.BestAthlete"));
 			scoringCombo.setItems(Ranking.scoringSystems());
@@ -541,7 +538,7 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 		this.setGenderFilter(null);
 		this.setRankingSelector(null);
 		init();
-		
+
 	}
 
 	private void setScoringSystem(Ranking value) {
@@ -634,10 +631,10 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 			        rs.setAgeGroupPrefix(this.ageGroupPrefix);
 			        rs.setCategory(this.categoryValue);
 			        rs.setIncludeUnfinished(Boolean.TRUE.equals(this.includeUnfinishedCategories.getValue()));
-			        
+
 			        Ranking computeScoringSystem = computeScoringSystem();
-		        	logger.debug("setBestLifterScoringSystem {} {}",computeScoringSystem, computeScoringSystem.getMReportingName());
-					rs.setBestLifterScoringSystem(computeScoringSystem);
+			        logger.debug("setBestLifterScoringSystem {} {}", computeScoringSystem, computeScoringSystem.getMReportingName());
+			        rs.setBestLifterScoringSystem(computeScoringSystem);
 			        return rs;
 		        },
 		        "/templates/competitionBook",
