@@ -134,9 +134,9 @@ public class MultiCategoryRankSetter {
 						if (useTotalAsScore) {
 							p.setCategoryScoreRank(this.totalRank);
 							curRankings.setCategoryScoreRank(this.totalRank);
-							logger.warn("setting score and total rank {} {} {}", a, curCat, totalRank);
+							logger.debug("setting score and total rank {} {} {}", a, curCat, totalRank);
 						} else {
-							logger.warn("setting total rank {} {} {}", a, curCat, totalRank);
+							logger.debug("setting total rank {} {} {}", a, curCat, totalRank);
 						}
 
 					} else {
