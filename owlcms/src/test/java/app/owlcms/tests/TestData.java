@@ -106,7 +106,8 @@ public class TestData {
         p.setGender(Gender.M);
         Category cat = CategoryRepository.findByCode("SR_M81");
         p.setCategory(cat);
-        logger.debug("athlete {} category {} participations {}", p, p.getCategory(), p.getParticipations());
+        logger.warn("athlete {} category {} participations{} group {}", p, p.getCategory(), p.getParticipations(), p.getGroup());
+
     }
 
     protected static Competition createDefaultCompetition(EnumSet<ChampionshipType> championshipTypes) {
@@ -134,16 +135,16 @@ public class TestData {
             Random r,
             int cat1, int cat2, int liftersToLoad) {
         for (int i = 0; i < liftersToLoad; i++) {
-            Athlete p = new Athlete();
+            Athlete ath = new Athlete();
             Group mg = (em.contains(group) ? group : em.merge(group));
-            p.setGroup(mg);
-            p.setFirstName(fnames[r.nextInt(fnames.length)]);
-            p.setLastName(lnames[r.nextInt(lnames.length)]);
-            p.setFullBirthDate(LocalDate.of(testDateNow().getYear() - 40, 1, 1));
-            p.setLotNumber(lotNumber);
+            ath.setGroup(mg);
+            ath.setFirstName(fnames[r.nextInt(fnames.length)]);
+            ath.setLastName(lnames[r.nextInt(lnames.length)]);
+            ath.setFullBirthDate(LocalDate.of(testDateNow().getYear() - 40, 1, 1));
+            ath.setLotNumber(lotNumber);
             lotNumber++;
-            createAthlete(em, r, p, 0.0D, cat1);
-            em.persist(p);
+            createAthlete(em, r, ath, 0.0D, cat1);
+            em.persist(ath);
         }
     }
 
@@ -185,6 +186,7 @@ public class TestData {
         groupC.setPlatform(platform1);
 
         insertSampleLifters(em, liftersToLoad, groupA, groupB, groupC);
+        AthleteRepository.resetParticipations();
 
 //        em.persist(groupA);
 //        em.persist(groupB);

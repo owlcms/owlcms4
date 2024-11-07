@@ -115,6 +115,7 @@ public class TwoMinutesRuleTest {
 
     public void testPrepState3(FieldOfPlay fopState, EventBus fopBus, Logger logger2) {
         fopState.testBefore();
+        gA = GroupRepository.findByName("A");
         fopState.loadGroup(gA, this, true);
         athletes = fopState.getDisplayOrder();
         final Athlete schneiderF = athletes.get(0);

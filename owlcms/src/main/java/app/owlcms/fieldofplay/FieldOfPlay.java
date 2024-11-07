@@ -60,6 +60,7 @@ import app.owlcms.data.category.Participation;
 import app.owlcms.data.competition.Competition;
 import app.owlcms.data.config.Config;
 import app.owlcms.data.group.Group;
+import app.owlcms.data.group.GroupRepository;
 import app.owlcms.data.jpa.JPAService;
 import app.owlcms.data.platform.Platform;
 import app.owlcms.data.records.RecordConfig;
@@ -147,7 +148,10 @@ public class FieldOfPlay implements IUnregister {
 		mFop.uiEventBus = new EventBus("UI-" + mFop.name);
 		mFop.eventForwardingBus = new EventBus("POST-" + mFop.name);
 		mFop.setTestingMode(true);
-		mFop.setGroup(new Group());
+		Group group = GroupRepository.findByName("A");
+		mFop.setGroup(group);
+
+		System.err.println/*logger.warn("*/("init mockFieldOfPlay");
 		mFop.init(athletes, timer1, breakTimer1, true);
 
 		mFop.fopEventBus.register(mFop);
@@ -984,8 +988,7 @@ public class FieldOfPlay implements IUnregister {
 	}
 
 	public void init(List<Athlete> athletes, IProxyTimer timer, IProxyTimer breakTimer, boolean alreadyLoaded) {
-		// logger.debug("start of init state={} \\n{}", state, LoggerUtils.
-		// stackTrace());
+		logger.warn("======= start of init state={} \n{}", state, LoggerUtils.stackTrace());
 		this.athleteTimer = timer;
 		this.athleteTimer.setFop(this);
 		this.breakTimer = breakTimer;
@@ -1000,6 +1003,9 @@ public class FieldOfPlay implements IUnregister {
 			this.ageGroupMap.put(ag.getCode(), null);
 		}
 		this.setMedals(new TreeMap<>());
+		if (this.getGroup() != null) {
+			Competition.getCurrent().computeMedals(this.getGroup());
+		}
 		this.recomputeRecordsMap(athletes);
 
 		boolean done = false;
@@ -1119,6 +1125,9 @@ public class FieldOfPlay implements IUnregister {
 				        LoggerUtils.whereFrom());
 			}
 			List<Athlete> groupAthletes = AthleteRepository.findAllByGroupAndWeighIn(group, true);
+			logger.warn("athletes for group {} {}",group,groupAthletes.size());
+			
+			
 			if (groupAthletes.stream().map(Athlete::getStartNumber).anyMatch(sn -> sn == 0)) {
 				this.logger./**/warn("start numbers were not assigned correctly");
 				AthleteRepository.assignStartNumbers(group);
@@ -2187,9 +2196,10 @@ public class FieldOfPlay implements IUnregister {
 			setLeaders(scoreMedalists);
 		} else if (getCurAthlete() != null) {
 			Category category = getCurAthlete().getCategory();
-
+			logger.warn("category {} categories {}",category.getCode(), getMedals().keySet());
+			
 			TreeSet<Athlete> medalists = getMedals().get(category.getCode());
-			// logger.debug("medals {}", medalists);
+
 			List<Athlete> snatchMedalists = medalists.stream().filter(a -> {
 				int r = a.getSnatchRank();
 				return r <= 3 && r > 0;

@@ -339,12 +339,14 @@ public class AthleteRepository {
 				a.computeMainAndEligibleCategories();
 				a.getParticipations().stream().forEach(p -> p.setTeamMember(true));
 				em.merge(a);
+				logger.warn("a {} {} participations {}", a.getAbbreviatedName(), a.getGroup(), a.getParticipations());
 			}
+
 			em.flush();
 			Competition.getCurrent().setRankingsInvalid(true);
 			return null;
 		});
-		assignCategoryRanks();
+		//assignCategoryRanks();
 	}
 
 	/**
@@ -376,10 +378,23 @@ public class AthleteRepository {
 			        + " and c2.code = c.code and b.bodyWeight > 0.01)";
 
 			 // following 4 lines are a trace, disable when confirmed.
+			 TypedQuery<Group> q1 = em.createQuery("select x from CompetitionGroup x" //where x.id = :groupId"
+					 , Group.class);
+			 //q1.setParameter("groupId", g.getId());
+			 List<Group> q1Results = q1.getResultList();
+			 logger.warn("currentGroup {} {}",g.getId(), q1Results);
+			 if (q1Results != null && q1Results.isEmpty()) {
+				 throw new RuntimeException("no group");
+			 }
+			
+			 // following 4 lines are a trace, disable when confirmed.
 			 TypedQuery<Category> q2 = em.createQuery(categoriesFromCurrentGroup, Category.class);
 			 q2.setParameter("groupId", g.getId());
 			 List<Category> q2Results = q2.getResultList();
-			 logger.debug("categories for currentGroup {}",q2Results);
+			 logger.warn("categories for currentGroup {}",q2Results);
+			 if (q2Results != null && q2Results.isEmpty()) {
+				 throw new RuntimeException("no categories");
+			 }
 		}
 		Query q = em.createQuery(
 		        "select distinct a, p from Athlete a join fetch a.participations p"
@@ -401,7 +416,7 @@ public class AthleteRepository {
 			List<Athlete> r = q.getResultList();
 			resultList = r;
 		}
-		logger.debug("athletes in categories from group {} {}", g, resultList);
+		logger.warn("athletes in categories from group {} {}", g, resultList);
 		return resultList;
 	}
 

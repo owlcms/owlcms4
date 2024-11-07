@@ -296,8 +296,10 @@ public class Competition {
 	 * @return for each category represented in group g where all athletes have lifted, the medals
 	 */
 	public TreeMap<String, TreeSet<Athlete>> computeMedals(Group g) {
+		logger.warn("computing medals for group {}",g);
 		List<Athlete> rankedAthletes = AthleteRepository.findAthletesForGlobalRanking(g, false);
-		// logger.debug("*** ranked athletes for group {} {}",g,rankedAthletes.stream().map(a->a.getLastName()).toList());
+		logger.warn("*** ranked athletes for group {} {}",g,rankedAthletes.stream().map(a->a.getLastName()).toList());
+		logger.warn("{}",LoggerUtils.stackTrace());
 		return computeMedals(g, rankedAthletes);
 	}
 
