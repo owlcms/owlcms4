@@ -154,7 +154,7 @@ public class MultiCategoryRankSetter {
 							this.categoryScoreRank = this.categoryScoreRank + 1;
 							p.setCategoryScoreRank(this.categoryScoreRank);
 							curRankings.setCategoryScoreRank(this.categoryScoreRank);
-							logger.warn("setting score rank {} {} {}", a, curCat, categoryScoreRank);
+							// logger.debug("setting score rank {} {} {}", a, curCat, categoryScoreRank);
 						} else {
 							p.setCategoryScoreRank(a.isEligibleForIndividualRanking() ? 0 : -1);
 							// logger.debug("skipping score rank {} {} {}", a, curCat, 0);

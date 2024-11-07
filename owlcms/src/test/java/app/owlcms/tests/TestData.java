@@ -106,8 +106,7 @@ public class TestData {
         p.setGender(Gender.M);
         Category cat = CategoryRepository.findByCode("SR_M81");
         p.setCategory(cat);
-        logger.warn("athlete {} category {} participations{} group {}", p, p.getCategory(), p.getParticipations(), p.getGroup());
-
+        // logger.debug("athlete {} category {} participations{} group {}", p, p.getCategory(), p.getParticipations(), p.getGroup());
     }
 
     protected static Competition createDefaultCompetition(EnumSet<ChampionshipType> championshipTypes) {

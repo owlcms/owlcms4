@@ -150,8 +150,6 @@ public class FieldOfPlay implements IUnregister {
 		mFop.setTestingMode(true);
 		Group group = GroupRepository.findByName("A");
 		mFop.setGroup(group);
-
-		System.err.println/*logger.warn("*/("init mockFieldOfPlay");
 		mFop.init(athletes, timer1, breakTimer1, true);
 
 		mFop.fopEventBus.register(mFop);
@@ -988,7 +986,6 @@ public class FieldOfPlay implements IUnregister {
 	}
 
 	public void init(List<Athlete> athletes, IProxyTimer timer, IProxyTimer breakTimer, boolean alreadyLoaded) {
-		logger.warn("======= start of init state={} \n{}", state, LoggerUtils.stackTrace());
 		this.athleteTimer = timer;
 		this.athleteTimer.setFop(this);
 		this.breakTimer = breakTimer;
@@ -1125,8 +1122,6 @@ public class FieldOfPlay implements IUnregister {
 				        LoggerUtils.whereFrom());
 			}
 			List<Athlete> groupAthletes = AthleteRepository.findAllByGroupAndWeighIn(group, true);
-			logger.warn("athletes for group {} {}",group,groupAthletes.size());
-			
 			
 			if (groupAthletes.stream().map(Athlete::getStartNumber).anyMatch(sn -> sn == 0)) {
 				this.logger./**/warn("start numbers were not assigned correctly");
@@ -1305,11 +1300,6 @@ public class FieldOfPlay implements IUnregister {
 	 * @param leaders the leaders to set
 	 */
 	public void setLeaders(List<Athlete> leaders) {
-		logger.warn("%%% setting leaders {}", LoggerUtils.whereFrom());
-		if (leaders != null && leaders.size() > 0) {
-			var a = leaders.get(0);
-			logger.warn("%%% leader {} {} {} {}", a.getAbbreviatedName(), a.getClass().getSimpleName(), a.getCategory(), a.getTotalRank());
-		}
 		this.leaders = leaders;
 	}
 
@@ -2196,8 +2186,6 @@ public class FieldOfPlay implements IUnregister {
 			setLeaders(scoreMedalists);
 		} else if (getCurAthlete() != null) {
 			Category category = getCurAthlete().getCategory();
-			logger.warn("category {} categories {}",category.getCode(), getMedals().keySet());
-			
 			TreeSet<Athlete> medalists = getMedals().get(category.getCode());
 
 			List<Athlete> snatchMedalists = medalists.stream().filter(a -> {
@@ -2248,12 +2236,9 @@ public class FieldOfPlay implements IUnregister {
 		long endLeaders = 0;
 		
 		var initialList = getLiftingOrder();
-		logger.warn("initial list {}", initialList);
-
 		logger.debug("{}recompute ranks recomputeCategoryRanks={} [{}]", FieldOfPlay.getLoggingName(this),
 		        recomputeCategoryRanks, LoggerUtils.whereFrom());
 		if (recomputeCategoryRanks) {
-			logger.warn("----------------- fetchForCategoryRanks --------------------------");
 			// we update the ranks all athletes in our category, as well as the current scoring system
 			athletes = JPAService.runInTransaction(em -> {
 				List<Athlete> l = AthleteSorter.fetchForCategoryRanks(em, g);
@@ -2277,7 +2262,7 @@ public class FieldOfPlay implements IUnregister {
 			recomputeRecords(null);
 		} else {
 			if (recomputeCategoryRanks) {
-				logger.warn("----------------- computing medals --------------------------");
+				logger.warn("--- computing medals ---");
 				setMedals(Competition.getCurrent().computeMedals(g, athletes));
 			}
 			endMedals = System.nanoTime();

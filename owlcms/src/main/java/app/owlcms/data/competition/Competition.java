@@ -296,10 +296,8 @@ public class Competition {
 	 * @return for each category represented in group g where all athletes have lifted, the medals
 	 */
 	public TreeMap<String, TreeSet<Athlete>> computeMedals(Group g) {
-		logger.warn("computing medals for group {}",g);
 		List<Athlete> rankedAthletes = AthleteRepository.findAthletesForGlobalRanking(g, false);
 		logger.warn("*** ranked athletes for group {} {}",g,rankedAthletes.stream().map(a->a.getLastName()).toList());
-		logger.warn("{}",LoggerUtils.stackTrace());
 		return computeMedals(g, rankedAthletes);
 	}
 
@@ -347,7 +345,7 @@ public class Competition {
 				Stream<Participation> filter = a.getParticipations().stream()
 				        // .peek(p -> logger.debug("a {} {} p {}", a.getLastName(), a.getCategory(), p.getCategory()))
 				        .filter(p -> p.getCategory().sameAs(category));
-				// logger.warn("*** athlete {} matching participations {}",a.getLastName(), filter.toList());
+				// logger.debug("*** athlete {} matching participations {}",a.getLastName(), filter.toList());
 				Optional<Participation> matchingParticipation = filter.findFirst();
 				// get a PAthlete proxy wrapper that has the rankings for that participation
 				if (matchingParticipation.isPresent()) {

@@ -12,8 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
@@ -78,16 +76,16 @@ public class AthleteSorter implements Serializable {
 		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, false);
 		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CATEGORY_SCORE);
 
-		TreeMap<String, TreeSet<Athlete>> medals = Competition.getCurrent().computeMedals(g);
-		logger.warn(medals.keySet().toString());
+		// TreeMap<String, TreeSet<Athlete>> medals =
+		Competition.getCurrent().computeMedals(g);
 		// TreeSet<Athlete> athletes = medals.get("Open_M81");
 		//
 		// for (Athlete a : athletes) {
-		// logger.warn("---{} {} {} {}",a.getAbbreviatedName(), a.getCategory(), a.getCategoryScore(), a.getCategoryScoreRank());
+		// logger.debug("---{} {} {} {}",a.getAbbreviatedName(), a.getCategory(), a.getCategoryScore(), a.getCategoryScoreRank());
 		// }
 		return impactedAthletes;
 	}
-	
+
 	public static List<Athlete> fetchForCategoryRanks(EntityManager em, Group g) {
 		List<Athlete> impactedAthletes;
 		if (g != null) {
@@ -116,34 +114,19 @@ public class AthleteSorter implements Serializable {
 			// logger.debug("all athletes in all groups {}", impactedAthletes);
 		}
 
-		List<Athlete> sortedAthletes;
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.SNATCH, true);
-		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.SNATCH);
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CLEANJERK, true);
-		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CLEANJERK);
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.TOTAL, true);
-		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
-		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
+//		List<Athlete> sortedAthletes;
+//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.SNATCH, true);
+//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.SNATCH);
+//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CLEANJERK, true);
+//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CLEANJERK);
+//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.TOTAL, true);
+//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
+//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
+//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
+//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, false);
+//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CATEGORY_SCORE);
 
-		// FIXME: this is not an absolute ranking, must be category per category
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, false);
-		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CATEGORY_SCORE);
-
-		TreeMap<String, TreeSet<Athlete>> medals = Competition.getCurrent().computeMedals(g);
-		logger.warn(medals.keySet().toString());
-		// TreeSet<Athlete> athletes = medals.get("Open_M81");
-		//
-		// for (Athlete a : athletes) {
-		// logger.warn("---{} {} {} {}",a.getAbbreviatedName(), a.getCategory(), a.getCategoryScore(), a.getCategoryScoreRank());
-		// }
-
-		// if (logger.isEnabledFor(Level.DEBUG)) {
-		// for (Athlete a : impactedAthletes) {
-		// Participation p = a.getMainRankings();
-		// if (p != null) logger.debug("** {} {}", a, p.long_dump());
-		// }
-		// }
+		Competition.getCurrent().computeMedals(g);
 		return impactedAthletes;
 	}
 
@@ -683,7 +666,6 @@ public class AthleteSorter implements Serializable {
 		}
 	}
 
-	
 	public static List<Athlete> updateEligibleCategoryRanks(List<Athlete> absoluteOrderList, Ranking rankingType, EntityManager em) {
 		MultiCategoryRankSetter rt = new MultiCategoryRankSetter();
 		ArrayList<Athlete> nList = new ArrayList<>();

@@ -319,7 +319,7 @@ public class AthleteRepository {
 	 * Use the athlete bodyweight (or presumed body weight if weigh-in has not taken place) to determine category.
 	 */
 	public static void resetParticipations() {
-		// logger.debug("recomputing eligibles");
+
 		JPAService.runInTransaction(em -> {
 			List<Athlete> athletes = AthleteRepository.doFindAll(em);
 			for (Athlete a : athletes) {
@@ -332,21 +332,19 @@ public class AthleteRepository {
 			Competition.getCurrent().setRankingsInvalid(true);
 			return null;
 		});
-		// logger.debug("recomputing main cat");
+
 		JPAService.runInTransaction(em -> {
 			List<Athlete> athletes = AthleteRepository.doFindAll(em);
 			for (Athlete a : athletes) {
 				a.computeMainAndEligibleCategories();
 				a.getParticipations().stream().forEach(p -> p.setTeamMember(true));
 				em.merge(a);
-				logger.warn("a {} {} participations {}", a.getAbbreviatedName(), a.getGroup(), a.getParticipations());
 			}
 
 			em.flush();
 			Competition.getCurrent().setRankingsInvalid(true);
 			return null;
 		});
-		//assignCategoryRanks();
 	}
 
 	/**
@@ -376,25 +374,12 @@ public class AthleteRepository {
 			String categoriesFromCurrentGroup = "select distinct c2 from Athlete b join b.group g join b.participations p join p.category c2 where g.id = :groupId";
 			onlyCategoriesFromCurrentGroup = " join p.category c where exists (" + categoriesFromCurrentGroup
 			        + " and c2.code = c.code and b.bodyWeight > 0.01)";
-
-			 // following 4 lines are a trace, disable when confirmed.
-			 TypedQuery<Group> q1 = em.createQuery("select x from CompetitionGroup x" //where x.id = :groupId"
-					 , Group.class);
-			 //q1.setParameter("groupId", g.getId());
-			 List<Group> q1Results = q1.getResultList();
-			 logger.warn("currentGroup {} {}",g.getId(), q1Results);
-			 if (q1Results != null && q1Results.isEmpty()) {
-				 throw new RuntimeException("no group");
-			 }
 			
 			 // following 4 lines are a trace, disable when confirmed.
 			 TypedQuery<Category> q2 = em.createQuery(categoriesFromCurrentGroup, Category.class);
 			 q2.setParameter("groupId", g.getId());
 			 List<Category> q2Results = q2.getResultList();
-			 logger.warn("categories for currentGroup {}",q2Results);
-			 if (q2Results != null && q2Results.isEmpty()) {
-				 throw new RuntimeException("no categories");
-			 }
+			 logger.info("categories for currentGroup {}",q2Results);
 		}
 		Query q = em.createQuery(
 		        "select distinct a, p from Athlete a join fetch a.participations p"
@@ -416,7 +401,7 @@ public class AthleteRepository {
 			List<Athlete> r = q.getResultList();
 			resultList = r;
 		}
-		logger.warn("athletes in categories from group {} {}", g, resultList);
+		logger.debug("athletes in categories from group {} {}", g, resultList);
 		return resultList;
 	}
 
