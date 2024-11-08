@@ -16,6 +16,7 @@ import com.vaadin.flow.server.communication.IndexHtmlRequestListener;
 import com.vaadin.flow.server.communication.IndexHtmlResponse;
 import com.vaadin.flow.theme.Theme;
 
+import app.owlcms.init.OwlcmsFactory;
 import app.owlcms.init.OwlcmsSession;
 import app.owlcms.servlet.StopProcessingException;
 import app.owlcms.utils.LoggerUtils;
@@ -35,6 +36,7 @@ public class AppShell implements AppShellConfigurator, VaadinServiceInitListener
 	 */
 	@Override
 	public void configurePage(AppShellSettings settings) {
+		OwlcmsFactory.waitDBInitialized();
 		HttpServletResponse response = VaadinServletResponse.getCurrent().getHttpServletResponse();
 		response.addHeader("Content-Language", getCurrentUserLanguage());
 		// not a recommended practice
