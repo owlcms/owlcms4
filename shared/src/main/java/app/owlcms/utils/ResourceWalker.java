@@ -391,16 +391,14 @@ public class ResourceWalker {
 		}
 		byte[] blob = localZipBlobSupplier != null ? localZipBlobSupplier.get() : null;
 		if (blob != null && blob.length > 0) {
-			if (logger.isEnabledFor(Level.DEBUG)) {
-				logger.debug("override zip blob found");
-			}
 			try {
 				unzipBlobToTemp(blob);
+				logger.info("override zip blob: found and extracted.");
 			} catch (Exception e) {
 				checkForLocalOverrideDirectory();
 			}
 		} else {
-			logger.debug("checking for override.");
+			logger.warn("no blob, checking for override.");
 			checkForLocalOverrideDirectory();
 		}
 		setInitializedLocalDir(true);

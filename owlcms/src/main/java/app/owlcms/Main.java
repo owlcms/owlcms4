@@ -152,7 +152,7 @@ public class Main {
 		// app config injection
 		Translator.setLocaleSupplier(() -> OwlcmsSession.computeLocale());
 		ResourceWalker.setLocaleSupplier(Translator.getLocaleSupplier());
-		//ResourceWalker.setLocalZipBlobSupplier(() -> Config.getCurrent().getLocalZipBlob());
+		ResourceWalker.setLocalZipBlobSupplier(() -> Config.getCurrent().getLocalZipBlob());
 	}
 
 	/**
