@@ -671,6 +671,10 @@ public class Athlete {
 	@Transient
 	@JsonIgnore
 	public String getAbbreviatedName() {
+		var fn = this.getFullName();
+		if (fn.isBlank()) {
+			return fn;
+		}
 		String upperCase = this.getLastName() != null ? this.getLastName().toUpperCase() : "";
 		String firstName2 = this.getFirstName() != null ? this.getFirstName() : "";
 		String[] hyphenatedParts = firstName2.split("-");

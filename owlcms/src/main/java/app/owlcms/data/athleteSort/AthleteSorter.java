@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import app.owlcms.data.athlete.Athlete;
 import app.owlcms.data.athlete.AthleteRepository;
 import app.owlcms.data.athlete.Gender;
+import app.owlcms.data.category.Category;
 import app.owlcms.data.category.Participation;
 import app.owlcms.data.competition.Competition;
 import app.owlcms.data.group.Group;
@@ -62,19 +63,17 @@ public class AthleteSorter implements Serializable {
 			// logger.debug("all athletes in all groups {}", impactedAthletes);
 		}
 
-		List<Athlete> sortedAthletes;
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.SNATCH, true);
-		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.SNATCH);
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CLEANJERK, true);
-		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CLEANJERK);
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.TOTAL, true);
-		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
-		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
-
-		// FIXME: this is not an absolute ranking, must be category per category
-		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, false);
-		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CATEGORY_SCORE);
+//		List<Athlete> sortedAthletes;
+//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.SNATCH, true);
+//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.SNATCH);
+//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CLEANJERK, true);
+//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CLEANJERK);
+//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.TOTAL, true);
+//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
+//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
+//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
+//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, false);
+//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CATEGORY_SCORE);
 
 		// TreeMap<String, TreeSet<Athlete>> medals =
 		Competition.getCurrent().computeMedals(g);
@@ -661,18 +660,19 @@ public class AthleteSorter implements Serializable {
 		for (Athlete curLifter : absoluteOrderList) {
 			// if (curLifter.isEligibleForIndividualRanking()) {
 			final double rankingValue = Ranking.getRankingValue(curLifter, rankingType);
-			rt.increment(curLifter, rankingType, rankingValue);
+			rt.increment(curLifter, rankingType, rankingValue, null);
 			// }
 		}
 	}
 
-	public static List<Athlete> updateEligibleCategoryRanks(List<Athlete> absoluteOrderList, Ranking rankingType, EntityManager em) {
+	public static List<Athlete> updateEligibleCategoryRanks(List<Athlete> absoluteOrderList, Ranking rankingType, EntityManager em, Category category) {
 		MultiCategoryRankSetter rt = new MultiCategoryRankSetter();
 		ArrayList<Athlete> nList = new ArrayList<>();
+		logger.warn("============= absoluteOrderList {}", absoluteOrderList.size());
 		for (Athlete curLifter : absoluteOrderList) {
 			var ath = em.find(Athlete.class, curLifter.getId());
 			final double rankingValue = Ranking.getRankingValue(curLifter, rankingType);
-			rt.increment(ath, rankingType, rankingValue);
+			rt.increment(ath, rankingType, rankingValue, category);
 			em.merge(ath);
 			nList.add(ath);
 		}

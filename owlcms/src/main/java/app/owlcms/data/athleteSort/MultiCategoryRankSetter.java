@@ -31,23 +31,25 @@ public class MultiCategoryRankSetter {
 	private int customRank = 0;
 	private int categoryScoreRank = 0;
 
-	public void increment(Athlete a, Ranking r, double rankingValue) {
+	public void increment(Athlete a, Ranking r, double rankingValue, Category participationCategory) {
 		if (a == null) {
 			return;
 		}
-		Category category = a.getCategory();
 		boolean eligible = a.isEligibleForIndividualRanking();
 		boolean zero = rankingValue <= 0;
+		if (participationCategory == null) {
+			participationCategory = a.getCategory();
+		}
 
 		int rank = eligible ? (rankingValue == 0 ? 0 : ++this.rank) : -1;
-		//logger.debug("c {} r {} -- a {} v {} z {} e {} rank={} {}", category, r, a.getShortName(), rankingValue, zero, eligible, rank, ""); //LoggerUtils.stackTrace());
+		logger.warn("c {} r {} -- a {} v {} z {} e {} rank={} {}", participationCategory, r, a.getShortName(), rankingValue, zero, eligible, rank, ""); //LoggerUtils.stackTrace());
 		switch (r) {
 			case SNATCH:
 			case CLEANJERK:
 			case TOTAL:
 			case CUSTOM:
 			case CATEGORY_SCORE:
-				doCategoryBasedRankings(a, r, category, zero);
+				doCategoryBasedRankings(a, r, participationCategory, zero);
 				break;
 			case BW_SINCLAIR:
 				a.setSinclairRank(rank);
@@ -90,8 +92,14 @@ public class MultiCategoryRankSetter {
 	}
 
 	private void doCategoryBasedRankings(Athlete a, Ranking r, Category category, boolean zero) {
+		logger.warn("+++ a {} participations {}", a.getAbbreviatedName(), a.getParticipations());;
 		for (Participation p : a.getParticipations()) {
 			Category curCat = p.getCategory();
+			if (!curCat.sameAs(category)) {
+				// we can get called with an athlete that has multiple participations.
+				// we only care about the one that matches.
+				continue;
+			}
 			boolean useTotalAsScore = a.getComputedScoringSystem() == Ranking.TOTAL;
 			switch (r) {
 				case SNATCH: {
