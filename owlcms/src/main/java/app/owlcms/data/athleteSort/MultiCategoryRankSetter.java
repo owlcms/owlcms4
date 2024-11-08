@@ -42,7 +42,7 @@ public class MultiCategoryRankSetter {
 		}
 
 		int rank = eligible ? (rankingValue == 0 ? 0 : ++this.rank) : -1;
-		logger.warn("c {} r {} -- a {} v {} z {} e {} rank={} {}", participationCategory, r, a.getShortName(), rankingValue, zero, eligible, rank, ""); // LoggerUtils.stackTrace());
+		//logger.debug("c {} r {} -- a {} v {} z {} e {} rank={} {}", participationCategory, r, a.getShortName(), rankingValue, zero, eligible, rank, ""); // LoggerUtils.stackTrace());
 		switch (r) {
 			case SNATCH:
 			case CLEANJERK:
@@ -92,8 +92,7 @@ public class MultiCategoryRankSetter {
 	}
 
 	private void doCategoryBasedRankings(Athlete a, Ranking r, Category category, boolean zero) {
-		logger.warn("+++ a {} participations {}", a.getAbbreviatedName(), a.getParticipations());
-		;
+		//logger.debug("+++ a {} participations {}", a.getAbbreviatedName(), a.getParticipations());
 		for (Participation p : a.getParticipations()) {
 			Category curCat = p.getCategory();
 			if (!curCat.sameAs(category)) {
@@ -154,10 +153,10 @@ public class MultiCategoryRankSetter {
 						this.categoryScoreRank = this.categoryScoreRank + 1;
 						p.setCategoryScoreRank(this.categoryScoreRank);
 						curRankings.setCategoryScoreRank(this.categoryScoreRank);
-						logger.warn("setting score rank {} {} {} {}", a.getAbbreviatedName(), curCat, categoryScoreRank, p);
+						//logger.debug("setting score rank {} {} {} {}", a.getAbbreviatedName(), curCat, categoryScoreRank, p);
 					} else {
 						p.setCategoryScoreRank(a.isEligibleForIndividualRanking() ? 0 : -1);
-						logger.warn("clearing score rank {} {} {} {}", a.getAbbreviatedName(), curCat, 0, p);
+						//logger.debug("clearing score rank {} {} {} {}", a.getAbbreviatedName(), curCat, 0, p);
 					}
 				}
 					break;
