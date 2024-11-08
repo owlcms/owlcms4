@@ -6,6 +6,9 @@
 - Maintenance log:
   - 54.0.0-alpha01: initial release of scoreboard cleanup
 - Scoreboards now correctly display ranks and leaders for categories where medals are given based on a score (see documentation for [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions))
+- Results
+  - During a competition with both score-based and total-based rankings, from the Competition Results page, using the Eligibility Categories report with the Score template will produce correct interim or final results.   Each category will be ranked according to it's scoring system.
+
 - Templates:
   - the athlete's score and ranks in the current category are now obtained by using `${l.categoryScore}` `${l.categoryScoreRank}` (where l is the loop variable giving the current athlete).  If the current category is not score-based, this returns the total and the totalRank.
 
