@@ -80,13 +80,13 @@ public class GroupCategorySelectionMenu extends MenuBar {
 	}
 
 	private Set<String> getAllCategories(Group g) {
-		TreeMap<String, TreeSet<Athlete>> medals = Competition.getCurrent().getMedals(g, false);
+		TreeMap<String, List<Athlete>> medals = Competition.getCurrent().getMedals(g, false);
 		return medals.keySet();
 	}
 
 	private Set<String> getFinishedCategories(Group g) {
 		Set<String> finishedCategories = new TreeSet<>();
-		TreeMap<String, TreeSet<Athlete>> medals = Competition.getCurrent().getMedals(g, true);
+		TreeMap<String, List<Athlete>> medals = Competition.getCurrent().getMedals(g, true);
 		finishedCategories = medals.keySet();
 		return finishedCategories;
 	}

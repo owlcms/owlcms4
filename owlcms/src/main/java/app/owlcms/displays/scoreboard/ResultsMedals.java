@@ -12,7 +12,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.LoggerFactory;
@@ -68,7 +67,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	final private Logger uiEventLogger = (Logger) LoggerFactory.getLogger("UI" + this.logger.getName());
 	private Category category;
 	private JsonArray cattempts;
-	private TreeMap<String, TreeSet<Athlete>> medals;
+	private TreeMap<String, List<Athlete>> medals;
 	private JsonArray sattempts;
 	private EventBus uiEventBus;
 	private boolean snatchCJTotalMedals;
@@ -427,9 +426,9 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		computeMedalsJson(this.medals);
 	}
 
-	private void computeCategoryMedalsJson(TreeMap<String, TreeSet<Athlete>> medals2) {
+	private void computeCategoryMedalsJson(TreeMap<String, List<Athlete>> medals2) {
 		OwlcmsSession.withFop(fop -> {
-			TreeSet<Athlete> medalists = medals2.get(getCategory().getCode());
+			List<Athlete> medalists = medals2.get(getCategory().getCode());
 			// logger.debug("medalists {}", medalists);
 
 			JsonArray jsonMCArray = Json.createArray();
@@ -464,14 +463,14 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 //		return value != null && value > 0 ? "" + value : "-";
 //	}
 
-	private void computeGroupMedalsJson(TreeMap<String, TreeSet<Athlete>> medals2) {
+	private void computeGroupMedalsJson(TreeMap<String, List<Athlete>> medals2) {
 		OwlcmsSession.withFop(fop -> {
 			// logger.debug("computeGroupMedalsJson = {} {}", getGroup(),LoggerUtils.stackTrace());
 			JsonArray jsonMCArray = Json.createArray();
 			int mcX = 0;
-			for (Entry<String, TreeSet<Athlete>> medalCat : medals2.entrySet()) {
+			for (Entry<String, List<Athlete>> medalCat : medals2.entrySet()) {
 				JsonObject jMC = Json.createObject();
-				TreeSet<Athlete> medalists = medalCat.getValue();
+				List<Athlete> medalists = medalCat.getValue();
 				if (medalists != null && !medalists.isEmpty()) {
 					String key = medalCat.getKey();
 					Category cat = CategoryRepository.findByCode(key);
@@ -504,7 +503,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		return liftType;
 	}
 
-	private void computeMedalsJson(TreeMap<String, TreeSet<Athlete>> medals2) {
+	private void computeMedalsJson(TreeMap<String, List<Athlete>> medals2) {
 		if (getCategory() != null) {
 			computeCategoryMedalsJson(medals2);
 		} else {
@@ -528,7 +527,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 				}
 				this.getElement().setProperty("fillerDisplay", "");
 			} else {
-				TreeSet<Athlete> catMedals = Competition.getCurrent().computeMedalsForCategory(this.getCategory());
+				List<Athlete> catMedals = Competition.getCurrent().computeMedalsForCategory(this.getCategory());
 				// logger.debug("group {} category {} catMedals {}", getGroup(), getCategory(),
 				// catMedals);
 				this.medals = new TreeMap<>();
@@ -560,7 +559,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 						this.medals = Competition.getCurrent().getMedals(e.getFop().getGroup(), false);
 					}
 				} else {
-					TreeSet<Athlete> catMedals = Competition.getCurrent().computeMedalsForCategory(this.getCategory());
+					List<Athlete> catMedals = Competition.getCurrent().computeMedalsForCategory(this.getCategory());
 					// logger.debug("group {} category {} catMedals {}", getGroup(), getCategory(),
 					// catMedals);
 					this.medals = new TreeMap<>();

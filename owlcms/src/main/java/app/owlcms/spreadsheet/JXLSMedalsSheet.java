@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Workbook;
@@ -50,10 +49,10 @@ public class JXLSMedalsSheet extends JXLSWorkbookStreamSource {
 		}
 
 		Group group = getGroup();
-		TreeMap<String, TreeSet<Athlete>> medals = Competition.getCurrent().getMedals(group, true);
+		TreeMap<String, List<Athlete>> medals = Competition.getCurrent().getMedals(group, true);
 		this.sortedAthletes = new ArrayList<>();
-		for (Entry<String, TreeSet<Athlete>> medalCat : medals.entrySet()) {
-			TreeSet<Athlete> medalists = medalCat.getValue();
+		for (Entry<String, List<Athlete>> medalCat : medals.entrySet()) {
+			List<Athlete> medalists = medalCat.getValue();
 			if (medalists != null && !medalists.isEmpty()) {
 				for (Athlete p : medalists) {
 					// logger.trace("Competition.getCurrent().isSnatchCJTotalMedals()

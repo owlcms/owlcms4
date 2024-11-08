@@ -179,7 +179,7 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 
 		Category catFilterValue = getCategoryValue();
 		Stream<Athlete> stream = ranked.stream()
-		        .peek(r -> logger.debug("looking at {} {}", r, r.getCategory().getCode()))
+		        //.peek(r -> logger.debug("looking at {} {} *** {}", r.getAbbreviatedName(), r.getCategory().getCode(), r.getParticipations().get(0)))
 		        .filter(a -> {
 			        Gender genderFilterValue = this.getGender();
 			        Gender athleteGender = a.getGender();
@@ -189,7 +189,7 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 			                && (allCategories || !unfinishedCategories.contains(a.getCategory().getCode()));
 			        return catOk;
 		        })
-		        .peek(r -> logger.debug("including {} {}", r, r.getCategory().getCode()));
+		        .peek(r -> logger.warn("including {} {} *** {}", r.getAbbreviatedName(), r.getCategory().getCode(), r.getParticipations().get(0)));
 		List<Athlete> found = stream.collect(Collectors.toList());
 		logger.debug("{} PackageContent findAll", found.size());
 		updateURLLocations();

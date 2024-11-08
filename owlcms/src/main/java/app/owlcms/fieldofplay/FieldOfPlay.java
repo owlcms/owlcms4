@@ -29,7 +29,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.TimerTask;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -187,7 +186,7 @@ public class FieldOfPlay implements IUnregister {
 	private List<Athlete> liftingOrder;
 	private int liftsDoneAtLastStart;
 	final private Logger logger = (Logger) LoggerFactory.getLogger(FieldOfPlay.class);
-	private TreeMap<String, TreeSet<Athlete>> medals;
+	private TreeMap<String, List<Athlete>> medals;
 	private String name;
 	private Platform platform = null;
 	private EventBus eventForwardingBus = null;
@@ -462,7 +461,7 @@ public class FieldOfPlay implements IUnregister {
 		return this.logger;
 	}
 
-	public TreeMap<String, TreeSet<Athlete>> getMedals() {
+	public TreeMap<String, List<Athlete>> getMedals() {
 		return this.medals;
 	}
 
@@ -1310,8 +1309,8 @@ public class FieldOfPlay implements IUnregister {
 		this.liftsDoneAtLastStart = liftsDoneAtLastStart;
 	}
 
-	public void setMedals(TreeMap<String, TreeSet<Athlete>> medals) {
-		this.medals = medals;
+	public void setMedals(TreeMap<String, List<Athlete>> treeMap) {
+		this.medals = treeMap;
 	}
 
 	/**
@@ -2177,7 +2176,7 @@ public class FieldOfPlay implements IUnregister {
 		if (getCurAthlete() != null && getCurAthlete().getAgeGroup() != null && getCurAthlete().getAgeGroup().getComputedScoringSystem() != Ranking.TOTAL) {
 			// compute leaders according to score.
 			Category category = getCurAthlete().getCategory();
-			TreeSet<Athlete> medalists = getMedals().get(category.getCode());
+			List<Athlete> medalists = getMedals().get(category.getCode());
 			List<Athlete> scoreMedalists = medalists.stream().filter(a -> {
 				int r = a.getCategoryScoreRank();
 				return r <= 3 && r > 0;
@@ -2186,7 +2185,7 @@ public class FieldOfPlay implements IUnregister {
 			setLeaders(scoreMedalists);
 		} else if (getCurAthlete() != null) {
 			Category category = getCurAthlete().getCategory();
-			TreeSet<Athlete> medalists = getMedals().get(category.getCode());
+			List<Athlete> medalists = getMedals().get(category.getCode());
 
 			List<Athlete> snatchMedalists = medalists.stream().filter(a -> {
 				int r = a.getSnatchRank();
