@@ -6,6 +6,7 @@
 > - It is always wise to export your current database before updating.
 
 - Maintenance log:
+  - 53.1.1: The local override zip stored in the database was not loading at startup and needed to be reloaded to take effect.
   - 53.1.0: Database failures could occur when switching from Snatch to CJ or when switching sessions.  This was more likely to happen when athletes were in multiple categories.
   - 53.1.0: When producing the competition results by eligibility category, if the championship is selected, then each category will be ordered according to the scoring system of the championship. This is useful when there are Sinclair/QYouth categories for example.
   - 53.1.0: When producing the competition results by eligibility category and without a championship filter, the athletes would appear as many times as they had eligible categories instead of once.
