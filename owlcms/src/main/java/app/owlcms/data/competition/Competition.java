@@ -297,8 +297,9 @@ public class Competition {
 	 */
 	public TreeMap<String, List<Athlete>> computeMedals(Group g) {
 		List<Athlete> rankedAthletes = AthleteRepository.findAthletesForGlobalRanking(g, false);
+		var medals = computeMedals(g, rankedAthletes);
 		logger.warn("*** ranked athletes for group {} {}", g, rankedAthletes.stream().map(a -> a.getLastName()).toList());
-		return computeMedals(g, rankedAthletes);
+		return medals;
 	}
 
 	/**
@@ -326,6 +327,7 @@ public class Competition {
 	}
 
 	public TreeMap<String, List<Athlete>> computeMedalsByCategory(List<Athlete> rankedAthletes) {
+		var before = System.currentTimeMillis();
 		// logger.trace("computeMedalsByCategory {}", rankedAthletes);
 		// extract all categories
 		Set<Category> medalCategories = rankedAthletes.stream()
@@ -437,6 +439,7 @@ public class Competition {
 				return null;
 			});
 		}
+		logger.warn("*** computeMedalsByCategory nbAthletes={} time={}ms",rankedAthletes.size(), System.currentTimeMillis()-before);
 		return medals;
 	}
 
