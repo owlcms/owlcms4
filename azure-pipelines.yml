@@ -77,7 +77,7 @@ jobs:
       - download: current
         artifact: PublicResultsSetup
       - template: src/main/azure-pipelines/steps-prepare-maven.yml
-      - task: Maven@3.205.1
+      - task: maven@4
         displayName: Build and Push Docker Images
         inputs:
           mavenPomFile: owlcms-docker/pom.xml
@@ -92,7 +92,7 @@ jobs:
           DOCKER_USER: $(DOCKER_USER)
           DOCKER_TOKEN: $(DOCKER_TOKEN)
           DOCKER_TAG: $(DOCKER_TAG)
-      - task: Maven@3.205.1
+      - task: maven@4
         displayName: Pre-process Release Notes
         inputs:
           mavenPomFile: pom.xml

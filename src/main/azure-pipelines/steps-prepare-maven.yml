@@ -25,7 +25,7 @@ steps:
       path: $(MavenCacheFolder)
    env:
       VSO_DEDUP_REDIRECT_TIMEOUT_IN_SEC: 5
-- task: Maven@3.205.1
+- task: maven@4
   displayName: update revision property
   env:
     VSO_DEDUP_REDIRECT_TIMEOUT_IN_SEC: 5

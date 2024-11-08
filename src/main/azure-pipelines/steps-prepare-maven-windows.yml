@@ -13,7 +13,7 @@ steps:
    inputs:
       key: '"maven20221011a" | $(Agent.OS)'
       path: $(MavenCacheFolder)
-- task: Maven@3.205.1
+- task: maven@4
   displayName: update revision property
   inputs:
     mavenPomFile: pom.xml
