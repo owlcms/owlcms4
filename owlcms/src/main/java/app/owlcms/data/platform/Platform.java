@@ -164,6 +164,9 @@ public class Platform implements Serializable, Comparable<Platform> {
 	@Column(name="nonStandardBarAvailable")
 	@JsonProperty("nonStandardBarAvailable")
 	private Boolean useNonStandardBar = false;
+	
+	@Column(columnDefinition = "integer default 40")
+	private Integer collarThreshold = 40;
 
 	/**
 	 * Instantiates a new platform. Used for import, no default values.
@@ -732,6 +735,16 @@ public class Platform implements Serializable, Comparable<Platform> {
 		logger.debug("SETTING platform {}: soundMixer={}", System.identityHashCode(this),
 		        soundMixer == null ? null : soundMixer.getLineInfo());
 		this.mixer = soundMixer;
+	}
+
+	@Transient
+	@JsonIgnore
+	public Integer getCollarThreshold() {
+		return collarThreshold;
+	}
+
+	public void setCollarThreshold(Integer collarThreshold) {
+		this.collarThreshold = collarThreshold;
 	}
 
 }

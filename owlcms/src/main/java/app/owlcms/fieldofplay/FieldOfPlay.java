@@ -2940,14 +2940,15 @@ public class FieldOfPlay implements IUnregister {
 			getPlatform().setNbL_2_5(1);
 			getPlatform().setNbL_5(1);
 		}
-		boolean federationRule = Config.getCurrent().featureSwitch("lightBarU13") && (a.getAgeGroup().getMinAge() <= 12 && a.getAgeGroup().getMaxAge() <= 20);
+		boolean federationRule = Config.getCurrent().featureSwitch("lightBarU13") 
+				&& (a.getAgeGroup().getMinAge() <= 12 && a.getAgeGroup().getMaxAge() <= 20);
 		use15Bar = (a != null && a.getGender() != Gender.M) || federationRule;
 
 		if (getPlatform().isUseNonStandardBar()) {
 			// logger.debug("non standard bar: {}", getPlatform().getNonStandardBarWeight());
 			this.setLightBarInUse(true);
 			this.setBarWeight(getPlatform().getNonStandardBarWeight());
-			this.setUseCollarsIfAvailable(this.curWeight >= 40);
+			this.setUseCollarsIfAvailable(this.curWeight >= getPlatform().getCollarThreshold());
 		} else if (newWeight <= 14 && getPlatform().getNbB_5() > 0) {
 			// logger.debug("<= 14");
 			this.setLightBarInUse(true);
@@ -2958,12 +2959,12 @@ public class FieldOfPlay implements IUnregister {
 			this.setLightBarInUse(true);
 			this.setBarWeight(10);
 			this.setUseCollarsIfAvailable(false);
-		} else if ((newWeight <= 39 && (getPlatform().getNbB_20() == 0 || use15Bar) && (getPlatform().getNbB_15() > 0))) {
-			// logger.debug("<= 39 15");
+		} else if ((newWeight < getPlatform().getCollarThreshold() && (getPlatform().getNbB_20() == 0 || use15Bar) && (getPlatform().getNbB_15() > 0))) {
+			// logger.debug("< 40 15");
 			this.setLightBarInUse(true);
 			this.setBarWeight(15);
 			this.setUseCollarsIfAvailable(false);
-		} else if ((newWeight >= 40 && (getPlatform().getNbB_20() == 0 || use15Bar) && (getPlatform().getNbB_15() > 0))) {
+		} else if ((newWeight >= getPlatform().getCollarThreshold() && (getPlatform().getNbB_20() == 0 || use15Bar) && (getPlatform().getNbB_15() > 0))) {
 			// logger.debug(">=40 15 collars");
 			this.setLightBarInUse(true);
 			this.setBarWeight(15);
@@ -2973,7 +2974,7 @@ public class FieldOfPlay implements IUnregister {
 			this.setLightBarInUse(false);
 			Gender gender = curAthlete != null ? curAthlete.getGender() : null;
 			this.setBarWeight((gender != null && gender == Gender.M) ? 20 : 15);
-			this.setUseCollarsIfAvailable(true);
+			this.setUseCollarsIfAvailable(newWeight >= getPlatform().getCollarThreshold());
 		}
 		return;
 	}

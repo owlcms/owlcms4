@@ -20,7 +20,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -126,7 +126,7 @@ public class TCContent extends AthleteGridContent implements HasDynamicTitle {
 			this.plates.computeImageArea(fop, true);
 		}));
 	}
-	
+
 	@Override
 	@Subscribe
 	public void slaveUpdateGrid(UIEvent.Decision e) {
@@ -134,14 +134,16 @@ public class TCContent extends AthleteGridContent implements HasDynamicTitle {
 			this.plates.computeImageArea(fop, true);
 		}));
 	}
-	
+
 	@Subscribe
 	public void slaveBarbellChanged(UIEvent.BarbellOrPlatesChanged e) {
 		FieldOfPlay fop2 = OwlcmsSession.getFop();
-		if (e.getOrigin() == this) {return;}
+		if (e.getOrigin() == this) {
+			return;
+		}
 		if (fop2 != null) {
 			this.platform = fop2.getPlatform();
-			//logger.debug("slaveBarbellChanged");
+			// logger.debug("slaveBarbellChanged");
 			plates.computeImageArea(fop2, true);
 		}
 	}
@@ -172,7 +174,7 @@ public class TCContent extends AthleteGridContent implements HasDynamicTitle {
 		OwlcmsSession.withFop((fop) -> {
 			this.plates.computeImageArea(fop, true);
 			this.platform = fop.getPlatform();
-			//logger.debug"init 5kg = {}",this.platform.getNbB_5());
+			// logger.debug"init 5kg = {}",this.platform.getNbB_5());
 		});
 		this.plates.getStyle().set("font-size", "150%");
 
@@ -245,22 +247,29 @@ public class TCContent extends AthleteGridContent implements HasDynamicTitle {
 		collar.addFormItem(nbC2_5, Translator.translate("Kg", 2.5));
 		binder.forField(nbC2_5).withConverter(bc).bind(Platform::getNbC_2_5, Platform::setNbC_2_5);
 
+		TextField collarThresholdField = new TextField();
+		collarThresholdField.setWidth("5ch");
+		collarThresholdField.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER);
+		collar.addFormItem(collarThresholdField, Translator.translate("NoCollarsUnder"));
+		binder.forField(collarThresholdField).withConverter(converter).bind(Platform::getCollarThreshold, Platform::setCollarThreshold);
+		collarThresholdField.setAutoselect(true);
+
 		Checkbox nbB5 = new Checkbox();
 		lightBar.addFormItem(nbB5, Translator.translate("Kg", 5));
 		binder.forField(nbB5).withConverter(bc).bind(Platform::getNbB_5, Platform::setNbB_5);
-		
+
 		Checkbox nbB10 = new Checkbox();
 		lightBar.addFormItem(nbB10, Translator.translate("Kg", 10));
 		binder.forField(nbB10).withConverter(bc).bind(Platform::getNbB_10, Platform::setNbB_10);
-		
+
 		Checkbox nbB15 = new Checkbox();
 		lightBar.addFormItem(nbB15, Translator.translate("Kg", 15));
 		binder.forField(nbB15).withConverter(bc).bind(Platform::getNbB_15, Platform::setNbB_15);
-		
+
 		Checkbox nbB20 = new Checkbox();
 		lightBar.addFormItem(nbB20, Translator.translate("Kg", 20));
 		binder.forField(nbB20).withConverter(bc).bind(Platform::getNbB_20, Platform::setNbB_20);
-		
+
 		Checkbox useOtherBar = new Checkbox();
 		TextField barWeight = new TextField();
 		barWeight.setWidth("5ch");
@@ -290,7 +299,7 @@ public class TCContent extends AthleteGridContent implements HasDynamicTitle {
 				binder.writeBean(this.platform);
 				Platform np = PlatformRepository.save(this.platform);
 				OwlcmsSession.withFop((fop) -> {
-					//logger.debug"after save, platform identity={}",System.identityHashCode(fop.getPlatform()));
+					// logger.debug"after save, platform identity={}",System.identityHashCode(fop.getPlatform()));
 					platesDisplay.removeAll();
 					fop.setPlatform(np);
 					// causes fop to recompute what bar to use.
@@ -300,17 +309,17 @@ public class TCContent extends AthleteGridContent implements HasDynamicTitle {
 				});
 			} catch (ValidationException e1) {
 			}
-
 		});
 
 		FlexLayout platesEdit = new FlexLayout(
-		        new H3(Translator.translate("BumperPlates")),
+		        new H4(Translator.translate("BumperPlates")),
 		        new NativeLabel(Translator.translate("PlatesPerSide")),
 		        largePlates,
-		        new H3(Translator.translate("MetalPlates")), smallPlates,
-		        new H3(Translator.translate("Collar")), collar,
-		        new H3(Translator.translate("Bar")), lightBar,
-		        new H3(""), applyButton);
+		        new H4(Translator.translate("MetalPlates")), smallPlates,
+		        new H4(Translator.translate("Collar")), collar,
+		        new H4(Translator.translate("Bar")), lightBar,
+		        applyButton);
+		platesEdit.setSizeUndefined();
 		platesEdit.getStyle().set("flex-direction", "column");
 		platesEdit.setWidth("120em");
 		HorizontalLayout leftRight = new HorizontalLayout(platesDisplay, platesEdit);
