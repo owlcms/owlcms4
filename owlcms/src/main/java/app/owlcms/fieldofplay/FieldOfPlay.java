@@ -2946,8 +2946,10 @@ public class FieldOfPlay implements IUnregister {
 
 		if (getPlatform().isUseNonStandardBar()) {
 			// logger.debug("non standard bar: {}", getPlatform().getNonStandardBarWeight());
-			this.setLightBarInUse(true);
-			this.setBarWeight(getPlatform().getNonStandardBarWeight());
+			Integer nonStandardBarWeight = getPlatform().getNonStandardBarWeight();
+			this.setBarWeight(nonStandardBarWeight);
+			this.setLightBarInUse((a.getGender() == Gender.F && nonStandardBarWeight != 15) ||
+					(a.getGender() == Gender.M && nonStandardBarWeight != 20));
 			this.setUseCollarsIfAvailable(this.curWeight >= getPlatform().getCollarThreshold());
 		} else if (newWeight <= 14 && getPlatform().getNbB_5() > 0) {
 			// logger.debug("<= 14");
@@ -2961,12 +2963,12 @@ public class FieldOfPlay implements IUnregister {
 			this.setUseCollarsIfAvailable(false);
 		} else if ((newWeight < getPlatform().getCollarThreshold() && (getPlatform().getNbB_20() == 0 || use15Bar) && (getPlatform().getNbB_15() > 0))) {
 			// logger.debug("< 40 15");
-			this.setLightBarInUse(true);
+			this.setLightBarInUse(a.getGender() != Gender.F);
 			this.setBarWeight(15);
 			this.setUseCollarsIfAvailable(false);
 		} else if ((newWeight >= getPlatform().getCollarThreshold() && (getPlatform().getNbB_20() == 0 || use15Bar) && (getPlatform().getNbB_15() > 0))) {
 			// logger.debug(">=40 15 collars");
-			this.setLightBarInUse(true);
+			this.setLightBarInUse(a.getGender() != Gender.F);
 			this.setBarWeight(15);
 			this.setUseCollarsIfAvailable(true);
 		} else {
