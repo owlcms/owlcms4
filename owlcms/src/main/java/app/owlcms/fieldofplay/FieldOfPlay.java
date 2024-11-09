@@ -2945,34 +2945,34 @@ public class FieldOfPlay implements IUnregister {
 		use15Bar = (a != null && a.getGender() != Gender.M) || federationRule;
 
 		if (getPlatform().isUseNonStandardBar()) {
-			// logger.debug("non standard bar: {}", getPlatform().getNonStandardBarWeight());
+			logger.trace("non standard bar: {}", getPlatform().getNonStandardBarWeight());
 			Integer nonStandardBarWeight = getPlatform().getNonStandardBarWeight();
 			this.setBarWeight(nonStandardBarWeight);
 			this.setLightBarInUse((a.getGender() == Gender.F && nonStandardBarWeight != 15) ||
 					(a.getGender() == Gender.M && nonStandardBarWeight != 20));
 			this.setUseCollarsIfAvailable(this.curWeight >= getPlatform().getCollarThreshold());
 		} else if (newWeight <= 14 && getPlatform().getNbB_5() > 0) {
-			// logger.debug("<= 14");
+			logger.trace("<= 14");
 			this.setLightBarInUse(true);
 			this.setBarWeight(5);
 			this.setUseCollarsIfAvailable(false);
 		} else if (newWeight <= 19 && getPlatform().getNbB_10() > 0) {
-			// logger.debug("<= 19");
+			logger.trace("<= 19");
 			this.setLightBarInUse(true);
 			this.setBarWeight(10);
 			this.setUseCollarsIfAvailable(false);
 		} else if ((newWeight < getPlatform().getCollarThreshold() && (getPlatform().getNbB_20() == 0 || use15Bar) && (getPlatform().getNbB_15() > 0))) {
-			// logger.debug("< 40 15");
+			logger.trace("< 40 15");
 			this.setLightBarInUse(a.getGender() != Gender.F);
 			this.setBarWeight(15);
 			this.setUseCollarsIfAvailable(false);
 		} else if ((newWeight >= getPlatform().getCollarThreshold() && (getPlatform().getNbB_20() == 0 || use15Bar) && (getPlatform().getNbB_15() > 0))) {
-			// logger.debug(">=40 15 collars");
+			logger.trace(">=40 15 collars");
 			this.setLightBarInUse(a.getGender() != Gender.F);
 			this.setBarWeight(15);
 			this.setUseCollarsIfAvailable(true);
 		} else {
-			// logger.debug("standard");
+			logger.trace("standard");
 			this.setLightBarInUse(false);
 			Gender gender = curAthlete != null ? curAthlete.getGender() : null;
 			this.setBarWeight((gender != null && gender == Gender.M) ? 20 : 15);
