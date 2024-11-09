@@ -1,13 +1,13 @@
 > [!IMPORTANT]
 >
-> This is an IMPORTANT BUG FIX RELEASE.  It should be installed by anyone running any of the release numbers starting with 53.0
+> 53.1 versions include IMPORTANT BUG FIXES for version 53.0 . Anyone running any of the release 53.0 versions should install the latest 53.1
 >
 > - You should test all releases, with actual data, *several days* before a competition.
 > - It is always wise to export your current database before updating.
 
 - Maintenance log:
   - 53.1.1: The local override zip stored in the database was not loading at startup and needed to be reloaded to take effect.
-  - 53.1.0: Database failures could occur when switching from Snatch to CJ or when switching sessions.  This was more likely to happen when athletes were in multiple categories.
+  - **53.1.0: The system could stop working due to database query errors.** These errors were more likely to happen if athletes were in multiple categories, and would occur when resuming after a break.
   - 53.1.0: When producing the competition results by eligibility category, if the championship is selected, then each category will be ordered according to the scoring system of the championship. This is useful when there are Sinclair/QYouth categories for example.
   - 53.1.0: When producing the competition results by eligibility category and without a championship filter, the athletes would appear as many times as they had eligible categories instead of once.
 - Selectable scoring systems for [Best Lifter](https://jflamy.github.io/owlcms4/#/ResultDocuments?id=competition-results) in a championship and [Score-based Medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions) (see the links for documentation),
