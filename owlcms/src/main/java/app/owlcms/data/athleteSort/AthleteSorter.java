@@ -675,6 +675,8 @@ public class AthleteSorter implements Serializable {
 			rt.increment(ath, rankingType, rankingValue, category);
 			em.merge(ath);
 			nList.add(ath);
+//			rt.increment(curLifter, rankingType, rankingValue, category);
+//			nList.add(curLifter);
 		}
 		return nList;
 	}
