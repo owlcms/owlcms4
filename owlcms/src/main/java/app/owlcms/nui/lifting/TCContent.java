@@ -35,8 +35,10 @@ import com.vaadin.flow.data.converter.Converter;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.validator.IntegerRangeValidator;
 import com.vaadin.flow.router.HasDynamicTitle;
+import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 
+import app.owlcms.apputils.queryparameters.SoundParameters;
 import app.owlcms.components.elements.PlatesElement;
 import app.owlcms.data.athlete.Athlete;
 import app.owlcms.data.platform.Platform;
@@ -74,6 +76,8 @@ public class TCContent extends AthleteGridContent implements HasDynamicTitle {
 	Map<String, List<String>> urlParameterMap = new HashMap<>();
 
 	public TCContent() {
+		setDefaultParameters(QueryParameters.simple(Map.of(
+		        SoundParameters.SILENT, "true")));
 	}
 
 	@Override

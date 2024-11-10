@@ -666,6 +666,7 @@ public class AthleteSorter implements Serializable {
 	}
 
 	public static List<Athlete> updateEligibleCategoryRanks(List<Athlete> absoluteOrderList, Ranking rankingType, EntityManager em, Category category) {
+		//FIXME: should not fetch and merge systematically. If it does, should return the new PAthletes.
 		MultiCategoryRankSetter rt = new MultiCategoryRankSetter();
 		ArrayList<Athlete> nList = new ArrayList<>();
 		for (Athlete curLifter : absoluteOrderList) {
