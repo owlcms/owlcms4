@@ -361,11 +361,10 @@ public class Competition {
 
 			JPAService.runInTransaction(em -> {
 				/*
-				 * AthleteSorter.updateEligibleCategoryRanks fetches the full athlete with all its participations from the database and updates the
-				 * participation that matches the category being ranked.
-				 * 
-				 * We want the medalists to be the PAthlete wrapper that contains just the participation for the medal category. For sorting to work, we need to
-				 * pass the PAthlete wrapper so the values for the current category are the only ones available.
+				 * when the last parameter "save" is true, AthleteSorter.updateEligibleCategoryRanks fetches the full athlete with all its participations from
+				 * the database and updates the participation that matches the category being ranked. We want the medalists to be the PAthlete wrapper that
+				 * contains just the participation for the medal category. For sorting to work, we need to pass the PAthlete wrapper so the values for the
+				 * current category are the only ones available.
 				 * 
 				 * All variables with a P are PAthletes with a single participation to the current category.
 				 * 
@@ -374,18 +373,14 @@ public class Competition {
 				List<Athlete> currentCatPAthletes;
 				List<Athlete> snatchPLeaders = null;
 				List<Athlete> cjPLeaders = null;
-				List<Athlete> updatedAthletes = null;
 				List<Athlete> updatedPAthletes = null;
 
 				currentCatPAthletes = getPAthletes(category, currentCategoryAthletes, false);
 				snatchPLeaders = AthleteSorter.resultsOrderCopy(currentCatPAthletes, Ranking.SNATCH);
-				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(snatchPLeaders, Ranking.SNATCH, em, category);
-				updatedPAthletes = getPAthletes(category, updatedAthletes, false);
+				updatedPAthletes = AthleteSorter.updateEligibleCategoryRanks(snatchPLeaders, Ranking.SNATCH, em, category, false);
 
 				cjPLeaders = AthleteSorter.resultsOrderCopy(updatedPAthletes, Ranking.CLEANJERK);
-				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(cjPLeaders, Ranking.CLEANJERK, em, category);
-				updatedPAthletes = getPAthletes(category, updatedAthletes, false);
-				;
+				updatedPAthletes = AthleteSorter.updateEligibleCategoryRanks(cjPLeaders, Ranking.CLEANJERK, em, category, false);
 
 				List<Athlete> pMedalists;
 				if (category.getAgeGroup().getComputedScoringSystem() == Ranking.TOTAL) {
@@ -404,11 +399,10 @@ public class Competition {
 					mSet.addAll(notPFinished); // for interim results
 					pMedalists = new ArrayList<>(mSet);
 
-					updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(updatedPAthletes), Ranking.TOTAL, em, category);
-					updatedPAthletes = getPAthletes(category, updatedAthletes, false);
+					updatedPAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(pMedalists), Ranking.TOTAL, em, category, false);
 					// update CATEGORY_SCORE rankings same as TOTAL.
-					updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(pMedalists), Ranking.CATEGORY_SCORE, em, category);
-					updatedPAthletes = getPAthletes(category, updatedAthletes, false);
+					updatedPAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(updatedPAthletes), Ranking.CATEGORY_SCORE, em, category,
+					        true);
 					medals.put(category.getCode(), updatedPAthletes);
 				} else {
 					currentCatPAthletes = getPAthletes(category, currentCategoryAthletes, false);
@@ -426,10 +420,11 @@ public class Competition {
 					mSet.addAll(notPFinished);
 					pMedalists = new ArrayList<>(mSet);
 					pMedalists.sort(new WinningOrderComparator(Ranking.TOTAL, true));
-					updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(pMedalists), Ranking.TOTAL, em, category);
-					pMedalists.sort(comparator);
-					updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(pMedalists), Ranking.CATEGORY_SCORE, em, category);
-					updatedPAthletes = getPAthletes(category, updatedAthletes, false);
+					updatedPAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(pMedalists), Ranking.TOTAL, em, category, false);
+					
+					updatedPAthletes.sort(comparator);
+					updatedPAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(updatedPAthletes), Ranking.CATEGORY_SCORE, em, category,
+					        true);
 					medals.put(category.getCode(), updatedPAthletes);
 				}
 
@@ -439,7 +434,7 @@ public class Competition {
 				return null;
 			});
 		}
-		logger.warn("*** computeMedalsByCategory nbAthletes={} time={}ms",rankedAthletes.size(), System.currentTimeMillis()-before);
+		logger.warn("*** computeMedalsByCategory nbAthletes={} time={}ms", rankedAthletes.size(), System.currentTimeMillis() - before);
 		return medals;
 	}
 
