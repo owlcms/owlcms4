@@ -298,7 +298,7 @@ public class Competition {
 	public TreeMap<String, List<Athlete>> computeMedals(Group g) {
 		List<Athlete> rankedAthletes = AthleteRepository.findAthletesForGlobalRanking(g, false);
 		var medals = computeMedals(g, rankedAthletes);
-		logger.warn("*** ranked athletes for group {} {}", g, rankedAthletes.stream().map(a -> a.getLastName()).toList());
+		logger.warn("*** ranked athletes for group {} {}", g, rankedAthletes.size());// rankedAthletes.stream().map(a -> a.getLastName()).toList());
 		return medals;
 	}
 
@@ -327,7 +327,7 @@ public class Competition {
 	}
 
 	public TreeMap<String, List<Athlete>> computeMedalsByCategory(List<Athlete> rankedAthletes) {
-		logger.warn("====================== computeMedalsByCategory athletes  {} {}", rankedAthletes.size(), rankedAthletes.get(0).getClass().getSimpleName());
+		// logger.debug("computeMedalsByCategory athletes {}\n{}", rankedAthletes.size(), LoggerUtils.stackTrace());
 		var before = System.currentTimeMillis();
 		// logger.trace("computeMedalsByCategory {}", rankedAthletes);
 		// extract all categories
@@ -335,7 +335,7 @@ public class Competition {
 		        .map(a -> a.getEligibleCategories())
 		        .flatMap(Collection::stream)
 		        .collect(Collectors.toSet());
-		logger.warn("medal categories {}", medalCategories);
+		// logger.debug("medal categories {}", medalCategories);
 
 		TreeMap<String, List<Athlete>> medals = new TreeMap<>();
 
@@ -402,11 +402,11 @@ public class Competition {
 				// update CATEGORY_SCORE rankings same as TOTAL.
 				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(updatedAthletes), Ranking.CATEGORY_SCORE, category);
 				
-				for (Athlete a : updatedAthletes) {
-					dumpAthlete(category.getCode(), a);
-				}
+//				for (Athlete a : updatedAthletes) {
+//					dumpAthlete(category.getCode(), a);
+//				}
 				
-				List<Athlete> updatedPAthletes = getPAthletes(category, updatedAthletes, true);
+				List<Athlete> updatedPAthletes = getPAthletes(category, updatedAthletes, false);
 				medals.put(category.getCode(), updatedPAthletes);
 			} else {
 				List<Athlete> scorePLeaders = AthleteSorter.resultsOrderCopy(currentCategoryPAthletes, Ranking.CATEGORY_SCORE)
@@ -425,17 +425,17 @@ public class Competition {
 				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(pMedalists), Ranking.TOTAL, category);
 				updatedAthletes.sort(comparator);
 				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(updatedAthletes), Ranking.CATEGORY_SCORE, category);
-				List<Athlete> updatedPAthletes = getPAthletes(category, updatedAthletes, true);
+				List<Athlete> updatedPAthletes = getPAthletes(category, updatedAthletes, false);
 				
-				for (Athlete a : updatedAthletes) {
-					dumpAthlete(category.getCode(), a);
-				}
+//				for (Athlete a : updatedAthletes) {
+//					dumpAthlete(category.getCode(), a);
+//				}
 	
 				medals.put(category.getCode(), updatedPAthletes);
 			}
 
-			logger./**/warn("medalists for {}", category);
-			getPAthletes(category, medals.get(category.getCode()), true);
+			//logger./**/warn("medalists for {}", category);
+			getPAthletes(category, medals.get(category.getCode()), false);
 		}
 		logger.warn("*** computeMedalsByCategory nbAthletes={} time={}ms", rankedAthletes.size(), System.currentTimeMillis() - before);
 		saveAthletes(rankedAthletes);

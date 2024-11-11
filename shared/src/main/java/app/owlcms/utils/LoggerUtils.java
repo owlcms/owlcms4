@@ -70,6 +70,9 @@ public class LoggerUtils {
 			if (i > 1 && string.trim().startsWith("app.owlcms.uievents.UIEvent")) {
 				continue;
 			}
+			if (string.trim().contains("ackTrace")) {
+				continue;
+			}
 			if (string.startsWith("com.vaadin.flow.server.")
 			        || string.startsWith("com.vaadin.flow.internal")
 			        || string.startsWith("com.vaadin.flow.router")
@@ -94,6 +97,9 @@ public class LoggerUtils {
 			// dealing with traces created in UIEvents. lines at the top are not useful.
 			// first line is java.base and we skip it.
 			if (i > 1 && string.trim().startsWith("app.owlcms.uievents.UIEvent")) {
+				continue;
+			}
+			if (string.trim().contains("ackTrace")) {
 				continue;
 			}
 			if (string.startsWith("com.vaadin.flow.server.")

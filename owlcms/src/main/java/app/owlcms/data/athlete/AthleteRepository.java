@@ -375,11 +375,11 @@ public class AthleteRepository {
 			onlyCategoriesFromCurrentGroup = " join p.category c where exists (" + categoriesFromCurrentGroup
 			        + " and c2.code = c.code and b.bodyWeight > 0.01)";
 			
-			 // following 4 lines are a trace, disable when confirmed.
-			 TypedQuery<Category> q2 = em.createQuery(categoriesFromCurrentGroup, Category.class);
-			 q2.setParameter("groupId", g.getId());
-			 List<Category> q2Results = q2.getResultList();
-			 logger.info("categories for currentGroup {}",q2Results);
+//			 // following 4 lines are a trace, disable when confirmed.
+//			 TypedQuery<Category> q2 = em.createQuery(categoriesFromCurrentGroup, Category.class);
+//			 q2.setParameter("groupId", g.getId());
+//			 List<Category> q2Results = q2.getResultList();
+//			 logger.info("categories for currentGroup {}",q2Results);
 		}
 		Query q = em.createQuery(
 		        "select distinct a, p from Athlete a join fetch a.participations p"

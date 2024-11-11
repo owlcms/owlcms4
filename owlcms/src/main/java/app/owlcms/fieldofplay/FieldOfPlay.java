@@ -999,9 +999,9 @@ public class FieldOfPlay implements IUnregister {
 			this.ageGroupMap.put(ag.getCode(), null);
 		}
 		this.setMedals(new TreeMap<>());
-		if (this.getGroup() != null) {
-			Competition.getCurrent().computeMedals(this.getGroup());
-		}
+//		if (this.getGroup() != null) {
+//			Competition.getCurrent().computeMedals(this.getGroup());
+//		}
 		this.recomputeRecordsMap(athletes);
 
 		boolean done = false;
