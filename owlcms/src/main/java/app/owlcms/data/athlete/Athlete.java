@@ -285,11 +285,9 @@ public class Athlete {
 	@Transient
 	@JsonIgnore
 	public FieldOfPlay fop;
-
 	@Transient
 	@JsonIgnore
 	protected final Logger timingLogger = (Logger) LoggerFactory.getLogger("TimingLogger");
-
 	@Transient
 	@JsonIgnore
 	DecimalFormat df = null;
@@ -313,15 +311,12 @@ public class Athlete {
 	// (it should remove it from the schema).
 	@Column(columnDefinition = "boolean default false")
 	private Boolean categoryDone = false;
-
 	@Transient
 	@JsonIgnore
 	@Column(columnDefinition = "boolean default false")
 	private Boolean categoryFinished = false;
-
 	@Column(columnDefinition = "integer default 0")
 	private int catSinclairRank;
-
 	@Transient
 	@JsonIgnore
 	private boolean checkTiming;
@@ -440,10 +435,10 @@ public class Athlete {
 	@Transient
 	@JsonIgnore
 	private Participation mainRankings = null;
-	
 	@Transient
 	@JsonIgnore
 	private boolean validation = true;
+
 	/**
 	 * Instantiates a new athlete.
 	 */
@@ -452,6 +447,7 @@ public class Athlete {
 		this.validation = true;
 		this.timingLogger.setLevel(Level.WARN);
 	}
+
 	public void addEligibleCategory(Category category) {
 		addEligibleCategory(category, true);
 	}
@@ -1654,12 +1650,12 @@ public class Athlete {
 	public Double getCustomScore() {
 		return this.customScore;
 	}
-	
+
 	@Transient
 	@JsonIgnore
 	public Double getCategoryScore() {
 		Double computedScore = computedCategoryScore();
-		//logger.debug("{} getCategoryScore {}", this.getClass().getSimpleName(), this.getCategoryCode(), computedScore);
+		// logger.debug("{} getCategoryScore {}", this.getClass().getSimpleName(), this.getCategoryCode(), computedScore);
 		return computedScore;
 	}
 
@@ -1676,7 +1672,7 @@ public class Athlete {
 			return 0.0;
 		}
 		Ranking scoringSystem = ageGroup.getComputedScoringSystem();
-		//logger.debug("{} {} {}", this.getLastName(), scoringSystem,  Ranking.getRankingValue(this, scoringSystem));
+		// logger.debug("{} {} {}", this.getLastName(), scoringSystem, Ranking.getRankingValue(this, scoringSystem));
 		if (scoringSystem != null) {
 			return Ranking.getRankingValue(this, scoringSystem);
 		} else {
@@ -2023,9 +2019,14 @@ public class Athlete {
 	public Participation getMainRankings() {
 		return this.mainRankings;
 	}
-	
+
+	/**
+	 * for an Athlete, this will be the participation to the registration category
+	 * 
+	 * for a PAthlete, this will be the participation to the PAthlete's category. A PAthlete only has one registration.
+	 */
 	public void computeMainRankings() {
-		//needs to be called in setParticipations and setCategory.
+		// needs to be called in setParticipations and setCategory.
 		Participation curRankings = null;
 		List<Participation> participations2 = getParticipations();
 		// logger.trace("athlete {} category {} participations {}", this, category,
@@ -2037,10 +2038,7 @@ public class Athlete {
 				String catCode = this.category.getComputedCode();
 				if (StringUtils.equals(eligibleCode, catCode)) {
 					curRankings = eligible;
-					// logger.trace("yep eligibleCode '{}' catCode '{}'", eligibleCode, catCode);
 					break;
-				} else {
-					// logger.trace("nope eligibleCode '{}' catCode '{}'", eligibleCode, catCode);
 				}
 			}
 		}
@@ -3008,8 +3006,7 @@ public class Athlete {
 	public int getCategoryScoreRank() {
 		return (getMainRankings() != null ? getMainRankings().getCategoryScoreRank() : -1);
 	}
-	
-	
+
 	/**
 	 * Gets the year of birth.
 	 *
@@ -3261,7 +3258,7 @@ public class Athlete {
 	}
 
 	public void setAgeAdjustedTotalRank(Integer ageAdjustedTotalRank) {
-		//logger.debug("setAgeAdjustedTotalRank {} {}", ageAdjustedTotalRank, this.getFullName());
+		// logger.debug("setAgeAdjustedTotalRank {} {}", ageAdjustedTotalRank, this.getFullName());
 		this.ageAdjustedTotalRank = ageAdjustedTotalRank;
 	}
 
@@ -4378,7 +4375,7 @@ public class Athlete {
 	public void setTotalRank(int ignored) {
 		// ignored. computed property. setter needed for beans introspection.
 	}
-	
+
 	@Transient
 	@JsonIgnore
 	public void setCategoryScoreRank(int ignored) {
@@ -5685,11 +5682,14 @@ public class Athlete {
 
 	public Ranking getComputedScoringSystem() {
 		var category2 = this.getCategory();
-		if (category2 == null) return Ranking.TOTAL;
+		if (category2 == null)
+			return Ranking.TOTAL;
 		var group2 = category2.getAgeGroup();
-		if (group2 == null) return Ranking.TOTAL;
+		if (group2 == null)
+			return Ranking.TOTAL;
 		var css = group2.getComputedScoringSystem();
-		if (css == null) return Ranking.TOTAL;
+		if (css == null)
+			return Ranking.TOTAL;
 		return css;
 	}
 }

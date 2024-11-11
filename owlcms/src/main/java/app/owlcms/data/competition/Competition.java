@@ -401,6 +401,11 @@ public class Competition {
 				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(pMedalists), Ranking.TOTAL, category);
 				// update CATEGORY_SCORE rankings same as TOTAL.
 				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(updatedAthletes), Ranking.CATEGORY_SCORE, category);
+				
+				for (Athlete a : updatedAthletes) {
+					dumpAthlete(category.getCode(), a);
+				}
+				
 				List<Athlete> updatedPAthletes = getPAthletes(category, updatedAthletes, true);
 				medals.put(category.getCode(), updatedPAthletes);
 			} else {
@@ -421,6 +426,11 @@ public class Competition {
 				updatedAthletes.sort(comparator);
 				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(updatedAthletes), Ranking.CATEGORY_SCORE, category);
 				List<Athlete> updatedPAthletes = getPAthletes(category, updatedAthletes, true);
+				
+				for (Athlete a : updatedAthletes) {
+					dumpAthlete(category.getCode(), a);
+				}
+	
 				medals.put(category.getCode(), updatedPAthletes);
 			}
 

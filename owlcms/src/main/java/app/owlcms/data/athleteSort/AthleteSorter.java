@@ -666,14 +666,19 @@ public class AthleteSorter implements Serializable {
 	}
 
 	public static List<Athlete> updateEligibleCategoryRanks(List<Athlete> absoluteOrderList, Ranking rankingType, Category category) {
+		List<Athlete> newList = new ArrayList<Athlete>();
 		MultiCategoryRankSetter rt = new MultiCategoryRankSetter();
-			for (Athlete curLifter : absoluteOrderList) {
-				final double rankingValue = Ranking.getRankingValue(curLifter, rankingType);
-				// we must update the original participations attached to the original athlete, on all updates.
-				Athlete realAthlete = ((PAthlete)curLifter)._getAthlete();
-				rt.increment(realAthlete, rankingType, rankingValue, category);
+		for (Athlete curLifter : absoluteOrderList) {
+			final double rankingValue = Ranking.getRankingValue(curLifter, rankingType);
+			// we must update the original participations attached to the original athlete, on all updates.
+			Athlete realAthlete = ((PAthlete) curLifter)._getAthlete();
+			Participation participation = rt.increment(realAthlete, rankingType, rankingValue, category);
+			if (! (participation.getAthlete() == realAthlete)) {
+				throw new RuntimeException("wrong participation");
 			}
-			return absoluteOrderList;
+			newList.add(new PAthlete(participation));
+		}
+		return newList;
 	}
 
 	/**
