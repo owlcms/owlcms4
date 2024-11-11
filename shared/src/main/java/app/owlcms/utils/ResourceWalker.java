@@ -398,7 +398,7 @@ public class ResourceWalker {
 				checkForLocalOverrideDirectory();
 			}
 		} else {
-			logger.warn("no blob, checking for override.");
+			logger.debug("no blob, checking for override.");
 			checkForLocalOverrideDirectory();
 		}
 		setInitializedLocalDir(true);

@@ -92,7 +92,7 @@ public class MultiCategoryRankSetter {
 	}
 
 	private void doCategoryBasedRankings(Athlete a, Ranking r, Category category, boolean zero) {
-		//logger.debug("+++ a {} participations {}", a.getAbbreviatedName(), a.getParticipations());
+		logger.debug("+++ a {} participations {}", a.getAbbreviatedName(), a.getParticipations());
 		for (Participation p : a.getParticipations()) {
 			Category curCat = p.getCategory();
 			if (!curCat.sameAs(category)) {
@@ -108,8 +108,7 @@ public class MultiCategoryRankSetter {
 						this.snatchRank = this.snatchRank + 1;
 						p.setSnatchRank(this.snatchRank);
 						curRankings.setSnatchRank(this.snatchRank);
-						// logger.debug("setting snatch rank {} {} {} {} {}", a, curCat, snatchRank, System.identityHashCode(p),
-						// System.identityHashCode(curRankings));
+						// logger.warn("setting snatch rank {} {} {} p {} a {}", a, curCat, snatchRank, System.identityHashCode(p), System.identityHashCode(p.getAthlete()));
 					} else {
 						p.setSnatchRank(a.isEligibleForIndividualRanking() ? 0 : -1);
 						// logger.debug("skipping snatch rank {} {} {}", a, curCat, this.snatchRank);
@@ -123,8 +122,7 @@ public class MultiCategoryRankSetter {
 						this.cjRank = this.cjRank + 1;
 						p.setCleanJerkRank(this.cjRank);
 						curRankings.setCleanJerkRank(this.cjRank);
-						// logger.debug("setting clean&jerk rank {} {} {} {} {}", a, curCat, cjRank,
-						// System.identityHashCode(p), System.identityHashCode(curRankings));
+						// logger.warn("setting clean&jerk rank {} {} {} p {} a {}", a, curCat, cjRank, System.identityHashCode(p), System.identityHashCode(p.getAthlete()));
 					} else {
 						p.setCleanJerkRank(a.isEligibleForIndividualRanking() ? 0 : -1);
 						// logger.debug("skipping clean&jerk rank {} {} {}", a, curCat, 0);
@@ -138,11 +136,11 @@ public class MultiCategoryRankSetter {
 						this.totalRank = this.totalRank + 1;
 						p.setTotalRank(this.totalRank);
 						curRankings.setTotalRank(this.totalRank);
-						logger.debug("setting total rank {} {} {}", a, curCat, totalRank);
+						// logger.warn("setting total rank {} {} {} p {} a {}", a, curCat, totalRank, System.identityHashCode(p), System.identityHashCode(p.getAthlete()));
 
 					} else {
 						p.setTotalRank(a.isEligibleForIndividualRanking() ? 0 : -1);
-						logger.debug("skipping total rank {} {} {}", a, curCat, totalRank);
+						// logger.warn("skipping total rank {} {} {}", a, curCat, totalRank);
 					}
 				}
 					break;
