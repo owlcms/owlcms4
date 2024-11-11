@@ -672,8 +672,6 @@ public class AthleteSorter implements Serializable {
 				// we must update the original participations attached to the original athlete, on all updates.
 				Athlete realAthlete = ((PAthlete)curLifter)._getAthlete();
 				rt.increment(realAthlete, rankingType, rankingValue, category);
-				// for traces, update the PAthlete as well.
-				rt.increment(curLifter, rankingType, rankingValue, category);
 			}
 			return absoluteOrderList;
 	}
