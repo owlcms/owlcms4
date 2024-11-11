@@ -63,17 +63,17 @@ public class AthleteSorter implements Serializable {
 			// logger.debug("all athletes in all groups {}", impactedAthletes);
 		}
 
-//		List<Athlete> sortedAthletes;
-//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.SNATCH, true);
-//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.SNATCH);
-//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CLEANJERK, true);
-//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CLEANJERK);
-//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.TOTAL, true);
-//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
-//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
-//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
-//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, false);
-//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CATEGORY_SCORE);
+		// List<Athlete> sortedAthletes;
+		// sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.SNATCH, true);
+		// AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.SNATCH);
+		// sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CLEANJERK, true);
+		// AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CLEANJERK);
+		// sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.TOTAL, true);
+		// AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
+		// sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
+		// AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
+		// sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, false);
+		// AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CATEGORY_SCORE);
 
 		// TreeMap<String, TreeSet<Athlete>> medals =
 		Competition.getCurrent().computeMedals(g);
@@ -113,17 +113,17 @@ public class AthleteSorter implements Serializable {
 			// logger.debug("all athletes in all groups {}", impactedAthletes);
 		}
 
-//		List<Athlete> sortedAthletes;
-//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.SNATCH, true);
-//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.SNATCH);
-//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CLEANJERK, true);
-//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CLEANJERK);
-//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.TOTAL, true);
-//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
-//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
-//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
-//		sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, false);
-//		AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CATEGORY_SCORE);
+		// List<Athlete> sortedAthletes;
+		// sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.SNATCH, true);
+		// AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.SNATCH);
+		// sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CLEANJERK, true);
+		// AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CLEANJERK);
+		// sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.TOTAL, true);
+		// AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.TOTAL);
+		// sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CUSTOM, true);
+		// AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CUSTOM);
+		// sortedAthletes = AthleteSorter.resultsOrderCopy(impactedAthletes, Ranking.CATEGORY_SCORE, false);
+		// AthleteSorter.assignEligibleCategoryRanks(sortedAthletes, Ranking.CATEGORY_SCORE);
 
 		Competition.getCurrent().computeMedals(g);
 		return impactedAthletes;
@@ -665,20 +665,20 @@ public class AthleteSorter implements Serializable {
 		}
 	}
 
-	public static List<Athlete> updateEligibleCategoryRanks(List<Athlete> absoluteOrderList, Ranking rankingType, EntityManager em, Category category) {
-		//FIXME: should not fetch and merge systematically. If it does, should return the new PAthletes.
+	public static List<Athlete> updateEligibleCategoryRanks(List<Athlete> absoluteOrderList, Ranking rankingType, Category category) {
+		List<Athlete> newList = new ArrayList<Athlete>();
 		MultiCategoryRankSetter rt = new MultiCategoryRankSetter();
-		ArrayList<Athlete> nList = new ArrayList<>();
 		for (Athlete curLifter : absoluteOrderList) {
-			var ath = em.find(Athlete.class, curLifter.getId());
 			final double rankingValue = Ranking.getRankingValue(curLifter, rankingType);
-			rt.increment(ath, rankingType, rankingValue, category);
-			em.merge(ath);
-			nList.add(ath);
-//			rt.increment(curLifter, rankingType, rankingValue, category);
-//			nList.add(curLifter);
+			// we must update the original participations attached to the original athlete, on all updates.
+			Athlete realAthlete = ((PAthlete) curLifter)._getAthlete();
+			Participation participation = rt.increment(realAthlete, rankingType, rankingValue, category);
+			if (! (participation.getAthlete() == realAthlete)) {
+				throw new RuntimeException("wrong participation");
+			}
+			newList.add(new PAthlete(participation));
 		}
-		return nList;
+		return newList;
 	}
 
 	/**
