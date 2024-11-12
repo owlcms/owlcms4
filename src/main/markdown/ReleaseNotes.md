@@ -4,6 +4,7 @@
 > - **Alpha releases are not normally used in actual competitions.** - It is always wise to export your current database before updating if it contains important data.
 
 - Maintenance log:
+  - 54.0.0-alpha03: the rank recalculation on the competition results page was not recomputing all categories, now fixed.
   - 54.0.0-alpha02: reworked the category ranking code for performance when athletes are registered in many eligibility categories.
   - 54.0.0-alpha01: initial release of scoreboard cleanup
 - Scoreboards now correctly display ranks and leaders for categories where medals are given based on a score (see documentation for [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions))
