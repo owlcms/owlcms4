@@ -676,7 +676,10 @@ public class AthleteSorter implements Serializable {
 			if (! (participation.getAthlete() == realAthlete)) {
 				throw new RuntimeException("wrong participation");
 			}
-			newList.add(new PAthlete(participation));
+			PAthlete e = new PAthlete(participation);
+			logger.warn("-=-=-=-=-=-= new PAthlete realAthlete={} _getAthlete={}", System.identityHashCode(realAthlete), System.identityHashCode(e._getAthlete()));
+			Competition.dumpAthlete("realAthlete", realAthlete);
+			newList.add(e);
 		}
 		return newList;
 	}

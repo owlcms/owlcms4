@@ -74,7 +74,7 @@ public class MAthlete extends PAthlete {
 			case TOTAL:
 				return Translator.translate("Total");
 			default:
-				return this.ranking.name();
+				return Ranking.getScoringTitle(this.ranking);
 		}
 	}
 

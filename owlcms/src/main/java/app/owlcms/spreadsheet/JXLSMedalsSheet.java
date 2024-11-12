@@ -44,6 +44,7 @@ public class JXLSMedalsSheet extends JXLSWorkbookStreamSource {
 
 	@Override
 	public List<Athlete> getSortedAthletes() {
+		logger.warn("%%% getSortedAthletes() {}",sortedAthletes);
 		if (this.sortedAthletes != null) {
 			return this.sortedAthletes;
 		}
@@ -68,7 +69,11 @@ public class JXLSMedalsSheet extends JXLSWorkbookStreamSource {
 							        p.getBestCleanJerk()));
 						}
 					}
-					if (p.getTotalRank() <= 3) {
+
+					if (p.getComputedScoringSystem() == Ranking.CATEGORY_SCORE && p.getCategoryScoreRank() <= 3) {
+						this.sortedAthletes
+						        .add(new MAthlete((PAthlete) p, Ranking.CATEGORY_SCORE, p.getCategoryScoreRank(), (p.getCategoryScore()).intValue()));
+					} else if (p.getComputedScoringSystem() == Ranking.TOTAL && p.getTotalRank() <= 3) {
 						this.sortedAthletes
 						        .add(new MAthlete((PAthlete) p, Ranking.TOTAL, p.getTotalRank(), p.getTotal()));
 					}
@@ -87,8 +92,7 @@ public class JXLSMedalsSheet extends JXLSWorkbookStreamSource {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource#
-	 * postProcess(org.apache.poi.ss.usermodel.Workbook)
+	 * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource# postProcess(org.apache.poi.ss.usermodel.Workbook)
 	 */
 	@Override
 	protected void postProcess(Workbook workbook) {

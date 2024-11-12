@@ -53,6 +53,7 @@ import app.owlcms.data.athlete.AthleteRepository;
 import app.owlcms.data.athlete.Gender;
 import app.owlcms.data.athleteSort.Ranking;
 import app.owlcms.data.category.Category;
+import app.owlcms.data.category.Participation;
 import app.owlcms.data.competition.Competition;
 import app.owlcms.data.group.Group;
 import app.owlcms.data.group.GroupRepository;
@@ -466,10 +467,26 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 	@Override
 	protected Component createReset() {
 		this.reset = new Button(Translator.translate("RecomputeRanks"), new Icon(VaadinIcon.REFRESH),
-		        (e) -> {
+				(e) -> {
+					// clear ranks, for debugging purposes
+			        JPAService.runInTransaction(em -> {
+				        List<Athlete> l = AthleteRepository.findAllByGroupAndWeighIn(null, true);
+				        for (Athlete a : l) {
+				        	for (Participation p : a.getParticipations()) {
+				        		p.setSnatchRank(-2);
+				        		p.setCleanJerkRank(-2);
+				        		p.setTotalRank(-2);
+				        		p.setCategoryScoreRank(-2);
+				        		p.setCustomRank(-2);
+				        	}
+				        	em.merge(a);
+				        }
+				        return null;
+			        });
 			        JPAService.runInTransaction(em -> {
 				        // assign ranks to all categories, recompute global
 				        List<Athlete> l = AthleteRepository.findAllByGroupAndWeighIn(null, true);
+				        
 				        Competition.getCurrent().computeMedalsByCategory(l);
 				        Competition.getCurrent().doGlobalRankings(l, true);
 				        for (Athlete a : l) {
@@ -479,7 +496,7 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 				        return null;
 			        });
 			        refresh();
-		        });
+				});
 
 		this.reset.getElement().setAttribute("title", Translator.translate("RecomputeRanks"));
 		this.reset.getElement().setAttribute("theme", "secondary contrast small icon");

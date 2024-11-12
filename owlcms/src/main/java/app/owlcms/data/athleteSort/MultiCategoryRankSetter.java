@@ -43,7 +43,8 @@ public class MultiCategoryRankSetter {
 
 		Participation participation = a.getMainRankings();
 		int rank = eligible ? (rankingValue == 0 ? 0 : ++this.rank) : -1;
-		//logger.debug("c {} r {} -- a {} v {} z {} e {} rank={} {}", participationCategory, r, a.getShortName(), rankingValue, zero, eligible, rank, ""); // LoggerUtils.stackTrace());
+		logger.warn("%%%%%% c {} r {} -- a {}/{} v {} z {} e {} rank={} {}", participationCategory, r, a.getAbbreviatedName(), System.identityHashCode(a),
+		        rankingValue, zero, eligible, rank, ""); // LoggerUtils.stackTrace());
 		switch (r) {
 			case SNATCH:
 			case CLEANJERK:
@@ -94,7 +95,7 @@ public class MultiCategoryRankSetter {
 	}
 
 	private Participation doCategoryBasedRankings(Athlete a, Ranking r, Category category, boolean zero) {
-		logger.debug("+++ a {} participations {}", a.getAbbreviatedName(), a.getParticipations());
+		logger.warn("++++++ a {} participations {}", a.getAbbreviatedName(), a.getParticipations());
 		for (Participation p : a.getParticipations()) {
 			Category curCat = p.getCategory();
 			if (curCat.sameAs(category)) {
@@ -106,8 +107,8 @@ public class MultiCategoryRankSetter {
 							this.snatchRank = this.snatchRank + 1;
 							p.setSnatchRank(this.snatchRank);
 							curRankings.setSnatchRank(this.snatchRank);
-							// logger.warn("setting snatch rank {} {} {} p={} a={}", a, curCat, snatchRank, System.identityHashCode(p),
-							// System.identityHashCode(p.getAthlete()));
+							logger.warn("%%%%% setting snatch rank {} {} {} p={} a={}", a, curCat, snatchRank, System.identityHashCode(p),
+							        System.identityHashCode(p.getAthlete()));
 						} else {
 							p.setSnatchRank(a.isEligibleForIndividualRanking() ? 0 : -1);
 							// logger.debug("skipping snatch rank {} {} {}", a, curCat, this.snatchRank);
@@ -180,8 +181,10 @@ public class MultiCategoryRankSetter {
 						        System.identityHashCode(p));
 						break;
 				}
+				return p;
+			} else {
+				logger.warn("????? curCat {} not same as category {}", curCat, category);
 			}
-			return p;
 		}
 		return null;
 	}
