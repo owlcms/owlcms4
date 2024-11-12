@@ -44,7 +44,7 @@ public class JXLSMedalsSheet extends JXLSWorkbookStreamSource {
 
 	@Override
 	public List<Athlete> getSortedAthletes() {
-		logger.warn("%%% getSortedAthletes() {}",sortedAthletes);
+		// logger.debug("%%% getSortedAthletes() {}",sortedAthletes.stream().map(a->a.getAbbreviatedName()).toList());
 		if (this.sortedAthletes != null) {
 			return this.sortedAthletes;
 		}

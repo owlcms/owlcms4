@@ -673,12 +673,9 @@ public class AthleteSorter implements Serializable {
 			// we must update the original participations attached to the original athlete, on all updates.
 			Athlete realAthlete = ((PAthlete) curLifter)._getAthlete();
 			Participation participation = rt.increment(realAthlete, rankingType, rankingValue, category);
-			if (! (participation.getAthlete() == realAthlete)) {
-				throw new RuntimeException("wrong participation");
-			}
 			PAthlete e = new PAthlete(participation);
-			logger.warn("-=-=-=-=-=-= new PAthlete realAthlete={} _getAthlete={}", System.identityHashCode(realAthlete), System.identityHashCode(e._getAthlete()));
-			Competition.dumpAthlete("realAthlete", realAthlete);
+			// logger.debug("new PAthlete realAthlete={} _getAthlete={}", System.identityHashCode(realAthlete), System.identityHashCode(e._getAthlete()));
+			// Competition.dumpAthlete("realAthlete", realAthlete);
 			newList.add(e);
 		}
 		return newList;

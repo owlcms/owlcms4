@@ -296,10 +296,9 @@ public class Competition {
 	 * @return for each category represented in group g where all athletes have lifted, the medals
 	 */
 	public TreeMap<String, List<Athlete>> computeMedals(Group g) {
-		logger.warn("%%% computeMedals no list");
 		List<Athlete> rankedAthletes = AthleteRepository.findAthletesForGlobalRanking(g, false);
 		var medals = computeMedals(g, rankedAthletes);
-		logger.warn("*** ranked athletes for group {} {}", g, rankedAthletes.size());// rankedAthletes.stream().map(a -> a.getLastName()).toList());
+		// logger.debug("*** ranked athletes for group {} {}", g, rankedAthletes.size());// rankedAthletes.stream().map(a -> a.getLastName()).toList());
 		return medals;
 	}
 
@@ -342,25 +341,23 @@ public class Competition {
 
 		// iterate over the remaining categories
 		for (Category category : medalCategories) {
-			logger.warn("%%% computing category {}", category);
-
 			List<Athlete> currentCategoryPAthletes = new ArrayList<>();
 			for (Athlete a : rankedAthletes) {
 				// fetch the participation that matches the category
 				Stream<Participation> filter = a.getParticipations().stream()
 				        .filter(p -> p.getCategory().sameAs(category))
-				        //.peek(p -> logger.warn("====== a {} {} {} p {}", a.getLastName(), a.getClass().getSimpleName(), a.getCategory(), p.getCategory()));
+				        //.peek(p -> logger./**/warn("====== a {} {} {} p {}", a.getLastName(), a.getClass().getSimpleName(), a.getCategory(), p.getCategory()));
 				        ;
 				Optional<Participation> matchingParticipation = filter.findFirst();
-				// get a PAthlete proxy wrapper that has the correct rankings
+				// get a PAthlete wrapper: this wrapped athlete has a single participation, to the category under consideration
 				if (matchingParticipation.isPresent()) {
 					PAthlete e = new PAthlete(matchingParticipation.get());
 					currentCategoryPAthletes.add(e);
-					logger.warn("*** adding {} {} {} {} -- {} {}", e.getAbbreviatedName(), e.getCategory(), e.getTotalRank(), e.getParticipations().size(), System.identityHashCode(e._getAthlete()), e._getAthlete().getParticipations().size());
+					// logger.debug("*** adding {} {} {} {} -- {} {}", e.getAbbreviatedName(), e.getCategory(), e.getTotalRank(), e.getParticipations().size(), System.identityHashCode(e._getAthlete()), e._getAthlete().getParticipations().size());
 				}
 			}
 
-			// logger.warn("*** category {} members {}", category, currentCategoryPAthletes.stream().map(a2 -> a2.getAbbreviatedName()).toList());
+			// logger.debug("*** category {} members {}", category, currentCategoryPAthletes.stream().map(a2 -> a2.getAbbreviatedName()).toList());
 
 			/*
 			 * when the last parameter "save" is true, AthleteSorter.updateEligibleCategoryRanks fetches the full athlete with all its participations from the
@@ -386,7 +383,6 @@ public class Competition {
 			if (category.getAgeGroup().getComputedScoringSystem() == Ranking.TOTAL) {
 				List<Athlete> totalPLeaders = AthleteSorter.resultsOrderCopy(updatedAthletes, Ranking.TOTAL)
 				        .stream()
-						.peek(a -> logger.warn("-------------------- total {} {} {}",a.getAbbreviatedName(), System.identityHashCode(a), System.identityHashCode(((PAthlete)a)._getAthlete())))
 				        .filter(a -> a.getTotal() > 0 && a.isEligibleForIndividualRanking())
 				        .collect(Collectors.toList());
 				List<Athlete> notPFinished = AthleteSorter.resultsOrderCopy(updatedAthletes, Ranking.TOTAL)
@@ -440,7 +436,7 @@ public class Competition {
 			// logger./**/warn("medalists for {}", category);
 			getPAthletes(category, medals.get(category.getCode()), false);
 		}
-		logger.warn("*** computeMedalsByCategory nbAthletes={} time={}ms", rankedAthletes.size(), System.currentTimeMillis() - before);
+		logger.info("*** computeMedalsByCategory nbAthletes={} time={}ms", rankedAthletes.size(), System.currentTimeMillis() - before);
 		saveAthletes(rankedAthletes);
 		return medals;
 	}
@@ -458,15 +454,15 @@ public class Competition {
 			}
 			return null;
 		});
-		logger.warn("*** computeMedalsByCategory saving {}ms", System.currentTimeMillis() - msBefore);
+		logger.info("*** computeMedalsByCategory saving {}ms", System.currentTimeMillis() - msBefore);
 	}
 
 	@SuppressWarnings("unused")
 	public static void dumpAthlete(String string, Athlete a) {
-		logger.warn("{} {} {} S={} C={} T={}", string, a.getAbbreviatedName(), System.identityHashCode(a), a.getBestSnatch(), a.getBestCleanJerk(),
+		logger./**/warn("{} {} {} S={} C={} T={}", string, a.getAbbreviatedName(), System.identityHashCode(a), a.getBestSnatch(), a.getBestCleanJerk(),
 		        a.getTotal());
 		for (Participation p : a.getParticipations()) {
-			logger.warn("    {} S{} C{} T{} Sc{} {}", p.getCategory(), p.getSnatchRank(), p.getCleanJerkRank(), p.getTotalRank(), p.getCategoryScoreRank(),
+			logger./**/warn("    {} S{} C{} T{} Sc{} {}", p.getCategory(), p.getSnatchRank(), p.getCleanJerkRank(), p.getTotalRank(), p.getCategoryScoreRank(),
 			        System.identityHashCode(p));
 		}
 	}
@@ -476,7 +472,6 @@ public class Competition {
 		List<Athlete> nMedalists = new ArrayList<>();
 		for (Athlete med : medalists) {
 			// need the right participation with the right category.
-			// med.getParticipations().stream().forEach(p -> logger.warn("==== id={} p={}",System.identityHashCode(p),p));
 			Optional<Participation> part = med.getParticipations().stream().filter(p -> p.getCategory().sameAs(category)).findFirst();
 			if (part.isPresent()) {
 				var particip = part.get();
@@ -941,7 +936,7 @@ public class Competition {
 			medals = computeMedals(g);
 		}
 		final TreeMap<String, List<Athlete>> m = new TreeMap<>(medals);
-		logger.warn("medals categories keyset {}", medals.keySet());
+		//logger.debug("medals categories keyset {}", medals.keySet());
 		if (onlyFinished) {
 			List<String> toRemove = medals.keySet().stream()
 			        .filter(k -> {
