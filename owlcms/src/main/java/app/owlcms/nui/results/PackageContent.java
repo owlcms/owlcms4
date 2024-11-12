@@ -489,6 +489,7 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 		return this.reset;
 	}
 
+	@SuppressWarnings("unused")
 	private void resetRanks() {
 		// clear ranks, for debugging purposes
 		JPAService.runInTransaction(em -> {

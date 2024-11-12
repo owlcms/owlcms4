@@ -54,6 +54,7 @@ public class JXLSMedalsSheet extends JXLSWorkbookStreamSource {
 		this.sortedAthletes = new ArrayList<>();
 		for (Entry<String, List<Athlete>> medalCat : medals.entrySet()) {
 			List<Athlete> medalists = medalCat.getValue();
+			logger.warn("+++ medalCat {} {}", medalCat.getKey(), medalCat.getValue().stream().map(a -> a.getAbbreviatedName()).toList());
 			if (medalists != null && !medalists.isEmpty()) {
 				for (Athlete p : medalists) {
 					// logger.trace("Competition.getCurrent().isSnatchCJTotalMedals()
@@ -62,20 +63,22 @@ public class JXLSMedalsSheet extends JXLSWorkbookStreamSource {
 						if (p.getSnatchRank() <= 3) {
 							this.sortedAthletes
 							        .add(new MAthlete((PAthlete) p, Ranking.SNATCH, p.getSnatchRank(),
-							                p.getBestSnatch()));
+							                (double) p.getBestSnatch()));
 						}
 						if (p.getCleanJerkRank() <= 3) {
 							this.sortedAthletes.add(new MAthlete((PAthlete) p, Ranking.CLEANJERK, p.getCleanJerkRank(),
-							        p.getBestCleanJerk()));
+							        (double) p.getBestCleanJerk()));
 						}
 					}
 
-					if (p.getComputedScoringSystem() == Ranking.CATEGORY_SCORE && p.getCategoryScoreRank() <= 3) {
+					if (p.getComputedScoringSystem() == Ranking.TOTAL && p.getTotalRank() <= 3) {
+						logger.warn("+++ adding total {}", p);
 						this.sortedAthletes
-						        .add(new MAthlete((PAthlete) p, Ranking.CATEGORY_SCORE, p.getCategoryScoreRank(), (p.getCategoryScore()).intValue()));
-					} else if (p.getComputedScoringSystem() == Ranking.TOTAL && p.getTotalRank() <= 3) {
+						        .add(new MAthlete((PAthlete) p, Ranking.TOTAL, p.getTotalRank(), (double) p.getTotal()));
+					} else if (p.getCategoryScoreRank() <= 3) {
+						logger.warn("+++ adding score {}", p);
 						this.sortedAthletes
-						        .add(new MAthlete((PAthlete) p, Ranking.TOTAL, p.getTotalRank(), p.getTotal()));
+						        .add(new MAthlete((PAthlete) p, Ranking.CATEGORY_SCORE, p.getCategoryScoreRank(), (p.getCategoryScore())));
 					}
 				}
 			}
@@ -83,7 +86,9 @@ public class JXLSMedalsSheet extends JXLSWorkbookStreamSource {
 
 		MAthlete[] array = this.sortedAthletes.toArray(new MAthlete[0]);
 		Arrays.sort(array, new MAthlete.MedalComparator());
-		this.sortedAthletes = Arrays.asList(array).stream().filter(m -> m.getLiftRank() >= 1 && m.getLiftRank() <= 3)
+		this.sortedAthletes = Arrays.asList(array).stream()
+		        .peek(m -> logger.warn("{} {} {} {}", m.getCategory(), m.getAbbreviatedName(), m.getRankingText(), m.getLiftRank()))
+		        .filter(m -> m.getLiftRank() >= 1 && m.getLiftRank() <= 3)
 		        .collect(Collectors.toList());
 		return this.sortedAthletes;
 		// @formatter:on
