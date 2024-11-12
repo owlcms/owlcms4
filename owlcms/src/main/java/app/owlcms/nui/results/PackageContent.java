@@ -468,21 +468,7 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 	protected Component createReset() {
 		this.reset = new Button(Translator.translate("RecomputeRanks"), new Icon(VaadinIcon.REFRESH),
 				(e) -> {
-					// clear ranks, for debugging purposes
-			        JPAService.runInTransaction(em -> {
-				        List<Athlete> l = AthleteRepository.findAllByGroupAndWeighIn(null, true);
-				        for (Athlete a : l) {
-				        	for (Participation p : a.getParticipations()) {
-				        		p.setSnatchRank(-2);
-				        		p.setCleanJerkRank(-2);
-				        		p.setTotalRank(-2);
-				        		p.setCategoryScoreRank(-2);
-				        		p.setCustomRank(-2);
-				        	}
-				        	em.merge(a);
-				        }
-				        return null;
-			        });
+					// resetRanks();
 			        JPAService.runInTransaction(em -> {
 				        // assign ranks to all categories, recompute global
 				        List<Athlete> l = AthleteRepository.findAllByGroupAndWeighIn(null, true);
@@ -501,6 +487,24 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 		this.reset.getElement().setAttribute("title", Translator.translate("RecomputeRanks"));
 		this.reset.getElement().setAttribute("theme", "secondary contrast small icon");
 		return this.reset;
+	}
+
+	private void resetRanks() {
+		// clear ranks, for debugging purposes
+		JPAService.runInTransaction(em -> {
+		    List<Athlete> l = AthleteRepository.findAllByGroupAndWeighIn(null, true);
+		    for (Athlete a : l) {
+		    	for (Participation p : a.getParticipations()) {
+		    		p.setSnatchRank(-2);
+		    		p.setCleanJerkRank(-2);
+		    		p.setTotalRank(-2);
+		    		p.setCategoryScoreRank(-2);
+		    		p.setCustomRank(-2);
+		    	}
+		    	em.merge(a);
+		    }
+		    return null;
+		});
 	}
 
 	@Override
