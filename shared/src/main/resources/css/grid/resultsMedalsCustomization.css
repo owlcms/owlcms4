@@ -146,6 +146,31 @@ td.flags div.flags {
     color: black;
 }
 
+:host div.wrapper.dark table.results tr td.sinclairRank {
+    color: white;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    align-content: center;
+}
+
+:host div.wrapper.dark table.results tr td.sinclairRank div {
+    text-align: center;
+}
+
+:host div.wrapper.dark table.results tr td.sinclairRank.medal1 {
+    background-color: gold;
+    color: black;
+}
+:host div.wrapper.dark table.results tr td.sinclairRank.medal2 {
+    background-color: silver;
+    color: black;
+}
+:host div.wrapper.dark table.results tr td.sinclairRank.medal3 {
+    background-color: #CD7F32;
+    color: black;
+}
+
 :host div.wrapper.light table.results tr td.rank {
     border-color: var(--lightTableBorders);
     color: white;
