@@ -224,6 +224,7 @@ public class Main {
 		    @Override
 		    public void uncaughtException(Thread t, Throwable e) {
 		        System.out.println("Caught " + e);
+		        e.printStackTrace();
 		    }
 		});
 

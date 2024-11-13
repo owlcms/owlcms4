@@ -239,8 +239,8 @@ public class VideoNavigationContent extends BaseNavigationContent
 		fop.setVideoCategory(c);
 		setMedalGroup(g);
 		setMedalCategory(c);
-		logger.info("switching to {} {}", g.getName(), c != null ? c.getNameWithAgeGroup() : "");
-		fop.getUiEventBus().post(new UIEvent.VideoRefresh(this, g, c, getFop()));
+		logger.info("============ switching {} video to {} {}", fop, g != null ? g.getName() : null, c != null ? c.getNameWithAgeGroup() : "");
+		fop.getUiEventBus().post(new UIEvent.VideoRefresh(this, g, c, fop));
 	}
 
 	private void setMedalCategory(Category c) {

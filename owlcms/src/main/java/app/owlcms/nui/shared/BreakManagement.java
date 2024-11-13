@@ -517,9 +517,9 @@ public class BreakManagement extends BaseContent implements SafeEventBusRegistra
 					                        this));
 					        setMedalGroup(g);
 					        setMedalCategory(c);
-					        this.logger.info("switching to {} {}", g.getName() != null ? g.getName() : "-",
+					        this.logger.info("======= switching {} to {} {}", fop, g.getName() != null ? g.getName() : "-",
 					                c != null ? c.getNameWithAgeGroup() : "");
-					        fop.getUiEventBus().post(new UIEvent.VideoRefresh(this, g, c, getFop()));
+					        fop.getUiEventBus().post(new UIEvent.VideoRefresh(this, g, c, fop));
 				        }
 			        });
 
@@ -1253,7 +1253,7 @@ public class BreakManagement extends BaseContent implements SafeEventBusRegistra
 
 	private void switchToTarget() {
 		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("switchToTarget breaktype={} from {} ", getBreakType(), LoggerUtils.stackTrace());
+			this.logger.debug("switchToTarget breaktype={} from {} ", getBreakType(), LoggerUtils.whereFrom());
 		}
 		this.noCountdown.setVisible(false);
 		this.waitText.setVisible(false);

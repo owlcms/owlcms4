@@ -2895,9 +2895,7 @@ public class FieldOfPlay implements IUnregister {
 
 		changePlatformEquipment(curAthlete2, this.curWeight);
 
-		logger.debug("&&&& {} {} {} previous {} current {} change {} from[{}]", curAthlete2, nextAthlete, newWeight,
-		        getPrevWeight(), curWeight, newWeight,
-		        LoggerUtils.whereFrom());
+		// logger.trace("uiDisplayCurrentAthleteAndTime {} {} {} previous {} current {} change {} from[{}]", curAthlete2, nextAthlete, newWeight, getPrevWeight(), curWeight, newWeight, LoggerUtils.whereFrom());
 		pushOutUIEvent(new UIEvent.LiftingOrderUpdated(curAthlete2, nextAthlete, getPreviousAthlete(),
 		        changingAthlete,
 		        getLiftingOrder(), getDisplayOrder(), clock, currentDisplayAffected, displayToggle, e.getOrigin(),

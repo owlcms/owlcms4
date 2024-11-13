@@ -321,15 +321,15 @@ public class Competition {
 			return medalsPerCategory;
 		}
 
-		TreeMap<String, List<Athlete>> medals = computeMedalsByCategory(rankedAthletes);
-		this.medalsByGroup.put(g, medals);
-		return medals;
+		TreeMap<String, List<Athlete>> groupMedalsByCategory = computeMedalsByCategory(rankedAthletes);
+		this.medalsByGroup.put(g, groupMedalsByCategory);
+		return groupMedalsByCategory;
 	}
 
 	public TreeMap<String, List<Athlete>> computeMedalsByCategory(List<Athlete> rankedAthletes) {
-		// logger.debug("computeMedalsByCategory athletes {}\n{}", rankedAthletes.size(), LoggerUtils.stackTrace());
+		logger.warn("!!!!!!!! computeMedalsByCategory athletes {}\n{}", rankedAthletes.size(), LoggerUtils.stackTrace());
 		var before = System.currentTimeMillis();
-		// logger.trace("computeMedalsByCategory {}", rankedAthletes);
+
 		// extract all categories
 		Set<Category> medalCategories = rankedAthletes.stream()
 		        .map(a -> a.getEligibleCategories())
@@ -337,7 +337,7 @@ public class Competition {
 		        .collect(Collectors.toSet());
 		// logger.debug("medal categories {}", medalCategories);
 
-		TreeMap<String, List<Athlete>> medals = new TreeMap<>();
+		TreeMap<String, List<Athlete>> medalsByCategory = new TreeMap<>();
 
 		// iterate over the remaining categories
 		for (Category category : medalCategories) {
@@ -406,7 +406,7 @@ public class Competition {
 				// }
 
 				List<Athlete> updatedPAthletes = getPAthletes(category, updatedAthletes, false);
-				medals.put(category.getCode(), updatedPAthletes);
+				medalsByCategory.put(category.getCode(), updatedPAthletes);
 			} else {
 				List<Athlete> scorePLeaders = AthleteSorter.resultsOrderCopy(currentCategoryPAthletes, Ranking.CATEGORY_SCORE)
 				        .stream().filter(a -> a.getTotal() > 0 && a.isEligibleForIndividualRanking())
@@ -430,15 +430,15 @@ public class Competition {
 				// dumpAthlete(category.getCode(), a);
 				// }
 
-				medals.put(category.getCode(), updatedPAthletes);
+				medalsByCategory.put(category.getCode(), updatedPAthletes);
 			}
 
 			// logger./**/warn("medalists for {}", category);
-			getPAthletes(category, medals.get(category.getCode()), false);
+			getPAthletes(category, medalsByCategory.get(category.getCode()), false);
 		}
 		logger.info("*** computeMedalsByCategory nbAthletes={} time={}ms", rankedAthletes.size(), System.currentTimeMillis() - before);
 		saveAthletes(rankedAthletes);
-		return medals;
+		return medalsByCategory;
 	}
 
 	@SuppressWarnings("unused")
@@ -448,7 +448,7 @@ public class Competition {
 			for (Athlete a : updatedAthletes) {
 				Athlete oldAthlete = em.find(Athlete.class, a.getId());
 				Athlete newAthlete = em.merge(a);
-				dumpAthlete("updated", a);
+				// dumpAthlete("updated", a);
 				// dumpAthlete("old", oldAthlete);
 				// dumpAthlete("merged", newAthlete);
 			}
