@@ -186,6 +186,7 @@ class ResultsMedals extends LitElement {
       athletes: { type: Object },
       leaders: { type: Object },
       records: { type: Object },
+      medalCategories: { type: Object },
 
       // mode (mutually exclusive, one of:
       // WAIT INTRO_COUNTDOWN LIFT_COUNTDOWN CURRENT_ATHLETE INTERRUPTION SESSION_DONE CEREMONY
