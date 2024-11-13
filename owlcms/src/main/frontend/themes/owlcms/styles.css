@@ -1,4 +1,3 @@
-@import "theme-editor.css";
 /* hide the keyboard focus ring in the grids */
 vaadin-grid::part(focused-cell) {
     display: none;
