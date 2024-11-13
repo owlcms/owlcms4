@@ -129,16 +129,16 @@ td.flags div.flags {
     color: black;
 }
 
-:host div.wrapper.dark table.results tr td.totalRrank {
+:host div.wrapper.dark table.results tr td.totalRank {
     border-color: var(--EmptyBackgroundColor);
     color: white;
     border-width: 0.6em;
     border-style: solid;
 }
 
-:host div.wrapper.light table.results tr td.totalRrank {
+:host div.wrapper.light table.results tr td.totalRank {
     border-color: var(--TableBorders);
-    color: white;
+    color: black;
     border-width: 0.6em;
     border-style: solid;
 }
@@ -191,6 +191,67 @@ td.flags div.flags {
     border-style: solid;
 }
 
+:host div.wrapper.dark table.results tr td.sinclairRank {
+    border-color: var(--EmptyBackgroundColor);
+    color: white;
+    border-width: 0.6em;
+    border-style: solid;
+}
+
+:host div.wrapper.light table.results tr td.sinclairRank {
+    border-color: var(--TableBorders);
+    color: white;
+    border-width: 0.6em;
+    border-style: solid;
+}
+
+:host div.wrapper.dark table.results tr td.sinclairRank.medal1 {
+    background-color: gold;
+    color: black;
+    border-color: var(--EmptyBackgroundColor);
+    border-width: 0.6em;
+    border-style: solid;
+}
+
+:host div.wrapper.light table.results tr td.sinclairRank.medal1 {
+    background-color: gold;
+    color: black;
+    border-color: var(--TableBorders);
+    border-width: 0.6em;
+    border-style: solid;
+}
+
+:host div.wrapper.dark table.results tr td.sinclairRank.medal2 {
+    background-color: silver;
+    color: black;
+    border-color: var(--EmptyBackgroundColor);
+    border-width: 0.6em;
+    border-style: solid;
+}
+
+:host div.wrapper.light table.results tr td.sinclairRank.medal2 {
+    background-color: silver;
+    color: black;
+    border-color: var(--TableBorders);
+    border-width: 0.6em;
+    border-style: solid;
+}
+
+:host div.wrapper.dark table.results tr td.sinclairRank.medal3 {
+    background-color: #CD7F32;
+    color: black;
+    border-color: var(--EmptyBackgroundColor);
+    border-width: 0.6em;
+    border-style: solid;
+}
+
+:host div.wrapper.light table.results tr td.sinclairRank.medal3 {
+    background-color: #CD7F32;
+    color: black;
+    border-color: var(--TableBorders);
+    border-width: 0.6em;
+    border-style: solid;
+}
 /* grid layout */
 table.medals {
     /* do not use all available vertical space */

@@ -165,7 +165,7 @@ td.flags div.flags {
     color: black;
 }
 
-:host div.wrapper.light table.results tr td.totalRrank {
+:host div.wrapper.light table.results tr td.totalRank {
     border-color: var(--lightTableBorders);
     color: white;
     border-width: 0.6em;
@@ -186,6 +186,34 @@ td.flags div.flags {
     border-style: solid;
 }
 :host div.wrapper.light table.results tr td.totalRank.medal3 {
+    background-color: #CD7F32;
+    color: black;
+    border-color: var(--lightTableBorders);
+    border-width: 0.6em;
+    border-style: solid;
+}
+
+:host div.wrapper.light table.results tr td.sinclairRank {
+    border-color: var(--lightTableBorders);
+    color: white;
+    border-width: 0.6em;
+    border-style: solid;
+}
+:host div.wrapper.light table.results tr td.sinclairRank.medal1 {
+    background-color: gold;
+    color: black;
+    border-color: var(--lightTableBorders);
+    border-width: 0.6em;
+    border-style: solid;
+}
+:host div.wrapper.light table.results tr td.sinclairRank.medal2 {
+    background-color: silver;
+    color: black;
+    border-color: var(--lightTableBorders);
+    border-width: 0.6em;
+    border-style: solid;
+}
+:host div.wrapper.light table.results tr td.sinclairRank.medal3 {
     background-color: #CD7F32;
     color: black;
     border-color: var(--lightTableBorders);

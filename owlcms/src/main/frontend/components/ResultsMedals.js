@@ -79,8 +79,8 @@ class ResultsMedals extends LitElement {
                         <th class="vspacer"></th>
                         <th class="total" .innerHTML="${this.t?.Total}"></th>
                         <th class="totalRank" .innerHTML="${this.t?.Rank}"></th>
-                  <th class="sinclair"  .innerHTML="${this.t?.ScoringTitle}"></th>
-                        <th class="sinclairRank" .innerHTML="${this.t?.Rank}"></th>
+                        <th class="sinclair"  .innerHTML="${mc.scoringTitle}"></th>
+                        <th class="sinclairRank" .innerHTML="${mc.rankingTitle}"></th>
                       </tr>
 
                       ${(mc.leaders ?? []).map(
@@ -146,7 +146,7 @@ class ResultsMedals extends LitElement {
                             <td class="sinclair">
                               <div>${leader.sinclair}</div>
                             </td>
-                            <td class="sinclairRank">
+                            <td class="${"sinclairRank " + (leader.sinclairMedal ?? "")}">
                               <div>${leader.sinclairRank}</div>
                             </td>
                           </tr>
