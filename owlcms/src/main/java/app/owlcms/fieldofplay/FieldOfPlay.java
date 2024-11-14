@@ -2094,6 +2094,7 @@ public class FieldOfPlay implements IUnregister {
 		// for 3medals, make sure that the results show total and no longer cj ranking.
 		setResultsOrder(AthleteSorter.resultsOrderCopy(getDisplayOrder(),
 		        computeResultOrderRanking(true)));
+		logger.warn("***** pushing out group done ******");
 		pushOutUIEvent(event);
 	}
 

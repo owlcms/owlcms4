@@ -38,6 +38,7 @@ import app.owlcms.data.category.Participation;
 import app.owlcms.data.competition.Competition;
 import app.owlcms.data.group.Group;
 import app.owlcms.data.team.Team;
+import app.owlcms.fieldofplay.FOPState;
 import app.owlcms.fieldofplay.FieldOfPlay;
 import app.owlcms.i18n.Translator;
 import app.owlcms.init.OwlcmsSession;
@@ -80,6 +81,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	private Championship ageDivision;
 	private String ageGroupPrefix;
 	private UI ui;
+	private boolean ceremony;
 
 	public ResultsMedals() {
 		getTimer().setSilenced(true);
@@ -107,6 +109,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	@Override
 	public void doCeremony(UIEvent.CeremonyStarted e) {
 		// logger.debug("ceremony event = {} {}", e, e.getTrace());
+		this.setCeremony(true);
 		OwlcmsSession.withFop((fop) -> {
 			Group ceremonyGroup = e.getCeremonySession();
 			setGroup(ceremonyGroup);
@@ -167,14 +170,14 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 
 	@Subscribe
 	public void slaveAllEvents(UIEvent e) {
-		// logger.trace("*** {}", e);
+		uiLog(e);
 	}
 
 	@Override
 	@Subscribe
 	public void slaveBreakDone(UIEvent.BreakDone e) {
 		uiLog(e);
-		UIEventProcessor.uiAccess(this, this.uiEventBus, e, () -> OwlcmsSession.withFop(fop -> {
+		this.getUi().access(() -> OwlcmsSession.withFop(fop -> {
 			// logger.trace("------- slaveBreakDone {}", e.getBreakType());
 			setDisplay();
 			doUpdate(e);
@@ -185,11 +188,12 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	@Subscribe
 	public void slaveCeremonyDone(UIEvent.CeremonyDone e) {
 		uiLog(e);
+		this.setCeremony(false);
 		this.getUi().access(() -> OwlcmsSession.withFop(fop -> {
-			// logger.trace("------- slaveCeremonyDone {}", e.getCeremonyType());
+			logger.warn("------- slaveCeremonyDone {}", e.getCeremonyType());
 			if (e.getCeremonyType() == CeremonyType.MEDALS) {
 				// end of medals break.
-				syncWithFOP(e.getFop());
+				syncWithFOP(fop);
 			}
 		}));
 	}
@@ -217,6 +221,8 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	@Subscribe
 	public void slaveGroupDone(UIEvent.GroupDone e) {
 		uiLog(e);
+		this.setCategory(null);
+		this.setGroup(e.getGroup());
 		this.getUi().access(() -> {
 			doRefresh(e);
 		});
@@ -244,12 +250,13 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	@Override
 	@Subscribe
 	public void slaveStartLifting(UIEvent.StartLifting e) {
-		// logger.trace("****** slaveStartLifting ");
 		uiLog(e);
 		this.getUi().access(() -> {
 			setDisplay();
-			// If this page was opened in replacement of a display, go back to the display.
-			unregister(this, this.uiEventBus);
+			// this is suspicious.  when used behind main scoreboard
+			// we probably need a toggle to ignore updates.
+//			logger.warn("!!!!!! Unregister ");
+//			unregister(this, this.uiEventBus);
 		});
 	}
 
@@ -281,9 +288,6 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 
 	protected void doUpdate(UIEvent e) {
 		FieldOfPlay fop = e.getFop();
-		// if (!leaveTopAlone) {
-		// this.getElement().callJsFunction("reset");
-		// }
 		this.logger.debug("updating bottom");
 		updateDisplay(null, fop);
 	}
@@ -666,8 +670,11 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 			setId("medals-" + fop.getName());
 			setWideTeamNames(false);
 			this.getElement().setProperty("competitionName", Competition.getCurrent().getCompetitionName());
-			this.setGroup(fop.getVideoGroup());
-			this.setCategory(fop.getVideoCategory());
+			// FIXME: confusing
+			// this.setGroup(fop.getVideoGroup());
+			// this.setCategory(fop.getVideoCategory());
+			this.setGroup(fop.getGroup());
+			this.setCategory(null);
 		});
 		setTranslationMap();
 	}
@@ -675,68 +682,63 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	private void setDisplay() {
 		OwlcmsSession.withFop(fop -> {
 			setBoardMode(fop.getState(), fop.getBreakType(), fop.getCeremonyType(), this.getElement());
-			// Group group = fop.getGroup();
-			// String description = null;
-			// if (group != null) {
-			// description = group.getDescription();
-			// if (description == null) {
-			// description = Translator.translate("Group_number", group.getName());
-			// }
-			// }
-			// this.getElement().setProperty("groupDescription", description != null ? description : "");
 			this.getElement().setProperty("groupDescription", "");
 		});
 	}
 
 	private void syncWithFOP(UIEvent.SwitchGroup e) {
-		// logger.debug("sync {}", e.getState());
 		switch (e.getState()) {
 			case INACTIVE:
 				this.setGroup(null);
+				this.setCategory(null);
 				doEmpty();
 				break;
-			case BREAK:
-				// FIXME: ceremony?
-				this.setGroup(e.getGroup());
-				if (e.getGroup() == null) {
-					doEmpty();
-				} else {
-					doUpdate(e);
-					doBreak(e);
+			// case BREAK:
+			default:
+				setCeremony(e.getFop().getCeremonyType() == CeremonyType.MEDALS);
+				if (!this.isCeremony()) {
+					this.setGroup(e.getGroup());
+					this.setCategory(null);
+					if (e.getGroup() == null) {
+						doEmpty();
+					} else {
+						doUpdate(e);
+						doBreak(e);
+					}
 				}
 				break;
-			default:
-				setDisplay();
-				doUpdate(e);
+			// default:
+			// setDisplay();
+			// doUpdate(e);
 		}
 	}
 
-	private void syncWithFOP(FieldOfPlay e) {
-		switch (e.getState()) {
+	private void syncWithFOP(FieldOfPlay fop) {
+		switch (fop.getState()) {
 			case INACTIVE:
 				this.setGroup(null);
+				this.setCategory(null);
 				doEmpty();
 				break;
-			case BREAK:
-				// FIXME: ceremony?
-				this.setGroup(e.getGroup());
-				if (e.getGroup() == null) {
-					doEmpty();
-				} else {
-					updateDisplay(null, e);
-					doBreak(e);
+			// case BREAK:
+			default:
+				setCeremony(fop.getCeremonyType() == CeremonyType.MEDALS);
+				if (!this.isCeremony()) {
+					this.setGroup(fop.getGroup());
+					this.setCategory(null);
+					doRefresh(new UIEvent.SwitchGroup(fop.getGroup(), FOPState.BREAK, fop.getCurAthlete(), this, fop));
 				}
 				break;
-			default:
-				setDisplay();
-				updateDisplay(null, e);
+			// default:
+			// setDisplay();
+			// updateDisplay(null, fop);
 		}
 	}
 
 	@Override
 	protected void uiLog(UIEvent e) {
 		// if (this.uiEventLogger.isDebugEnabled()) {
-		this.uiEventLogger.warn(">>>>> {} {} {} {}",
+		this.logger.warn(">>>>> {} {} {} {}",
 		        this.getClass().getSimpleName(), e.getClass().getSimpleName(), e.getOrigin(),
 		        LoggerUtils.whereFrom());
 		// }
@@ -755,8 +757,16 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	}
 
 	private void setUi(UI ui) {
-		logger.warn("----------------------------------------- setting ui {}",ui != null ? System.identityHashCode(ui) : null);
+		logger.warn("----------------------------------------- setting ui {}", ui != null ? System.identityHashCode(ui) : null);
 		this.ui = ui;
+	}
+
+	public boolean isCeremony() {
+		return ceremony;
+	}
+
+	public void setCeremony(boolean ceremony) {
+		this.ceremony = ceremony;
 	}
 
 }

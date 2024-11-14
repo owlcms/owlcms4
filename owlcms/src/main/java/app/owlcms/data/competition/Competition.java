@@ -327,7 +327,7 @@ public class Competition {
 	}
 
 	public TreeMap<String, List<Athlete>> computeMedalsByCategory(List<Athlete> rankedAthletes) {
-		logger.warn("!!!!!!!! computeMedalsByCategory athletes {}\n{}", rankedAthletes.size(), LoggerUtils.stackTrace());
+		//logger.debug("computeMedalsByCategory athletes {}\n{}", rankedAthletes.size(), LoggerUtils.stackTrace());
 		var before = System.currentTimeMillis();
 
 		// extract all categories

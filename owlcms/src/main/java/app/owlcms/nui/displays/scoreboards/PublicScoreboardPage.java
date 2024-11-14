@@ -63,9 +63,32 @@ public class PublicScoreboardPage extends AbstractResultsDisplayPage {
 
 	@Subscribe
 	public void slaveCeremonyStarted(UIEvent.CeremonyStarted e) {
+		logger.warn("||||||||||| public scoreboard {}",e.getCeremonyType());
 		if (e.getCeremonyType() != CeremonyType.MEDALS) {
 			return;
 		}
+		this.ui.access(() -> {
+			/* copy current parameters from results board to medals board */
+			this.getMedalsBoard().setDownSilenced(true);
+			this.getMedalsBoard().setDarkMode(((DisplayParameters) getBoard()).isDarkMode());
+			this.getMedalsBoard().setVideo(((DisplayParameters) getBoard()).isVideo());
+			this.getMedalsBoard().setPublicDisplay(((DisplayParameters) getBoard()).isPublicDisplay());
+			this.getMedalsBoard().setSingleReferee(((SoundParameters) getBoard()).isSingleReferee());
+			this.getMedalsBoard().setAbbreviatedName(((DisplayParameters) getBoard()).isAbbreviatedName());
+			this.getMedalsBoard().setTeamWidth(((DisplayParameters) getBoard()).getTeamWidth());
+			this.getMedalsBoard().setEmFontSize(((DisplayParameters) getBoard()).getEmFontSize());
+			checkVideo(this.getMedalsBoard());
+			getMedalsBoard().getStyle().set("display", "block");
+			getResultsBoard().getStyle().set("display", "none");
+		});
+	}
+	
+	@Subscribe
+	public void slaveVideoRefresh(UIEvent.VideoRefresh e) {
+		logger.warn("||||||||||| public scoreboard {}",e.getFop());
+//		if (e.getCeremonyType() != CeremonyType.MEDALS) {
+//			return;
+//		}
 		this.ui.access(() -> {
 			/* copy current parameters from results board to medals board */
 			this.getMedalsBoard().setDownSilenced(true);

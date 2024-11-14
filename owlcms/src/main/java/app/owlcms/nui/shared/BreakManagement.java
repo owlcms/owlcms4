@@ -899,6 +899,7 @@ public class BreakManagement extends BaseContent implements SafeEventBusRegistra
 	private void selectCeremonyCategory(Group g, Category c) {
 		this.endMedalCeremony.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		this.startMedalCeremony.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		//logger.debug("selectCeremonyCategory {} {}",g,c);
 		setMedalGroup(g);
 		setMedalCategory(c);
 	}
