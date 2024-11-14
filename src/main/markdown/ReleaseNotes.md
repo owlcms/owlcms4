@@ -1,10 +1,11 @@
-> [!CAUTION]
+> [!WARNING]
 >
-> - This is an **alpha release**, used for validating new features.  *Some features are likely to be incomplete or non-functional*.
-> - **Alpha releases are not normally used in actual competitions.** - It is always wise to export your current database before updating if it contains important data.
+> - This is a **beta release**, used for testing and translation. ***Some features could be non-functional***.
+> - Beta releases are **not** normally used in actual competitions, except when a new feature is required. Use extreme care in testing if you intend to do so.
 
 - Maintenance log:
-  - 54.0.0-alpha04: The medals scoreboard now correctly reacts to group switches. Also reacts correctly to medal category switches during medal ceremonies and end of medal ceremonies.
+  - 54.0.0-beta01: The medals scoreboard now correctly reacts to group switches. Also reacts correctly to medal category switches during medal ceremonies and end of medal ceremonies.
+  - 54.0.0-beta01: The public scoreboard was not switching to medals during ceremonies, now fixed.
   - 54.0.0-alpha03: the rank recalculation on the competition results page was not recomputing all categories, now fixed.
   - 54.0.0-alpha02: reworked the category ranking code for performance when athletes are registered in many eligibility categories.
   - 54.0.0-alpha01: initial release of scoreboard cleanup
