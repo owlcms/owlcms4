@@ -704,7 +704,8 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		}
 	}
 
-	private void syncWithFOP(FieldOfPlay fop) {
+	public void syncWithFOP(FieldOfPlay fop) {
+		// logger.debug("syncWithFOP");
 		switch (fop.getState()) {
 			case INACTIVE:
 				this.setGroup(null);

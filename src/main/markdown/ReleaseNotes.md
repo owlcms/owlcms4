@@ -4,6 +4,7 @@
 > - **Alpha releases are not normally used in actual competitions.** - It is always wise to export your current database before updating if it contains important data.
 
 - Maintenance log:
+  - 54.0.0-alpha04: The medals scoreboard now correctly reacts to group switches. Also reacts correctly to medal category switches during medal ceremonies and end of medal ceremonies.
   - 54.0.0-alpha03: the rank recalculation on the competition results page was not recomputing all categories, now fixed.
   - 54.0.0-alpha02: reworked the category ranking code for performance when athletes are registered in many eligibility categories.
   - 54.0.0-alpha01: initial release of scoreboard cleanup

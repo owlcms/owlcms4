@@ -818,6 +818,8 @@ public class FieldOfPlay implements IUnregister {
 					doWeightChange((WeightChange) e);
 				} else if (e instanceof ForceTime) {
 					doForceTime((ForceTime) e);
+				} else if (e instanceof CeremonyDone) {
+					// ignore, already dealt by timer
 				} else {
 					pushOutUIEvent(new UIEvent.Notification(this.getCurAthlete(), e.getOrigin(), e, this.state,
 					        UIEvent.Notification.Level.ERROR, this));
@@ -903,6 +905,8 @@ public class FieldOfPlay implements IUnregister {
 					// nothing to do, end of break when clock was already started
 				} else if (e instanceof ForceTime) {
 					doForceTime((ForceTime) e);
+				} else if (e instanceof CeremonyDone) {
+					// ignore, already dealt by timer
 				} else {
 					unexpectedEventInState(e, TIME_STOPPED);
 				}
@@ -999,9 +1003,9 @@ public class FieldOfPlay implements IUnregister {
 			this.ageGroupMap.put(ag.getCode(), null);
 		}
 		this.setMedals(new TreeMap<>());
-//		if (this.getGroup() != null) {
-//			Competition.getCurrent().computeMedals(this.getGroup());
-//		}
+		// if (this.getGroup() != null) {
+		// Competition.getCurrent().computeMedals(this.getGroup());
+		// }
 		this.recomputeRecordsMap(athletes);
 
 		boolean done = false;
@@ -1121,7 +1125,7 @@ public class FieldOfPlay implements IUnregister {
 				        LoggerUtils.whereFrom());
 			}
 			List<Athlete> groupAthletes = AthleteRepository.findAllByGroupAndWeighIn(group, true);
-			
+
 			if (groupAthletes.stream().map(Athlete::getStartNumber).anyMatch(sn -> sn == 0)) {
 				this.logger./**/warn("start numbers were not assigned correctly");
 				AthleteRepository.assignStartNumbers(group);
@@ -2233,7 +2237,7 @@ public class FieldOfPlay implements IUnregister {
 		long endMedals = 0;
 		long endDisplayOrder = 0;
 		long endLeaders = 0;
-		
+
 		var initialList = getLiftingOrder();
 		logger.debug("{}recompute ranks recomputeCategoryRanks={} [{}]", FieldOfPlay.getLoggingName(this),
 		        recomputeCategoryRanks, LoggerUtils.whereFrom());
@@ -2895,7 +2899,8 @@ public class FieldOfPlay implements IUnregister {
 
 		changePlatformEquipment(curAthlete2, this.curWeight);
 
-		// logger.trace("uiDisplayCurrentAthleteAndTime {} {} {} previous {} current {} change {} from[{}]", curAthlete2, nextAthlete, newWeight, getPrevWeight(), curWeight, newWeight, LoggerUtils.whereFrom());
+		// logger.trace("uiDisplayCurrentAthleteAndTime {} {} {} previous {} current {} change {} from[{}]", curAthlete2, nextAthlete, newWeight,
+		// getPrevWeight(), curWeight, newWeight, LoggerUtils.whereFrom());
 		pushOutUIEvent(new UIEvent.LiftingOrderUpdated(curAthlete2, nextAthlete, getPreviousAthlete(),
 		        changingAthlete,
 		        getLiftingOrder(), getDisplayOrder(), clock, currentDisplayAffected, displayToggle, e.getOrigin(),
@@ -2938,8 +2943,8 @@ public class FieldOfPlay implements IUnregister {
 			getPlatform().setNbL_2_5(1);
 			getPlatform().setNbL_5(1);
 		}
-		boolean federationRule = Config.getCurrent().featureSwitch("lightBarU13") 
-				&& (a.getAgeGroup().getMinAge() <= 12 && a.getAgeGroup().getMaxAge() <= 20);
+		boolean federationRule = Config.getCurrent().featureSwitch("lightBarU13")
+		        && (a.getAgeGroup().getMinAge() <= 12 && a.getAgeGroup().getMaxAge() <= 20);
 		use15Bar = (a != null && a.getGender() != Gender.M) || federationRule;
 
 		if (getPlatform().isUseNonStandardBar()) {
@@ -2947,7 +2952,7 @@ public class FieldOfPlay implements IUnregister {
 			Integer nonStandardBarWeight = getPlatform().getNonStandardBarWeight();
 			this.setBarWeight(nonStandardBarWeight);
 			this.setLightBarInUse((a.getGender() == Gender.F && nonStandardBarWeight != 15) ||
-					(a.getGender() == Gender.M && nonStandardBarWeight != 20));
+			        (a.getGender() == Gender.M && nonStandardBarWeight != 20));
 			this.setUseCollarsIfAvailable(this.curWeight >= getPlatform().getCollarThreshold());
 		} else if (newWeight <= 14 && getPlatform().getNbB_5() > 0) {
 			logger.trace("<= 14");
