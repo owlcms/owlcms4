@@ -936,7 +936,7 @@ public class Competition {
 			medals = computeMedals(g);
 		}
 		final TreeMap<String, List<Athlete>> m = new TreeMap<>(medals);
-		logger.warn("+++ medals categories keyset {}", medals.keySet());
+		//logger.debug("medals categories keyset {}", medals.keySet());
 		if (onlyFinished) {
 			List<String> toRemove = medals.keySet().stream()
 			        .filter(k -> {

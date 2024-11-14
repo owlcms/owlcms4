@@ -46,7 +46,6 @@ import app.owlcms.nui.lifting.UIEventProcessor;
 import app.owlcms.uievents.CeremonyType;
 import app.owlcms.uievents.UIEvent;
 import app.owlcms.utils.CSSUtils;
-import app.owlcms.utils.LoggerUtils;
 import app.owlcms.utils.URLUtils;
 import ch.qos.logback.classic.Logger;
 import elemental.json.Json;
@@ -170,7 +169,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 
 	@Subscribe
 	public void slaveAllEvents(UIEvent e) {
-		uiLog(e);
+		//uiLog(e);
 	}
 
 	@Override
@@ -190,7 +189,6 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		uiLog(e);
 		this.setCeremony(false);
 		this.getUi().access(() -> OwlcmsSession.withFop(fop -> {
-			logger.warn("------- slaveCeremonyDone {}", e.getCeremonyType());
 			if (e.getCeremonyType() == CeremonyType.MEDALS) {
 				// end of medals break.
 				syncWithFOP(fop);
@@ -255,8 +253,6 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 			setDisplay();
 			// this is suspicious.  when used behind main scoreboard
 			// we probably need a toggle to ignore updates.
-//			logger.warn("!!!!!! Unregister ");
-//			unregister(this, this.uiEventBus);
 		});
 	}
 
@@ -457,7 +453,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	}
 
 	private void computeGroupMedalsJson(TreeMap<String, List<Athlete>> medals2) {
-		// logger.warn("computeGroupMedalsJson group = {}\n{}", this.getGroup(), LoggerUtils.stackTrace());
+		// logger.debug("computeGroupMedalsJson group = {}\n{}", this.getGroup(), LoggerUtils.stackTrace());
 		JsonArray jsonMCArray = Json.createArray();
 		int mcX = 0;
 
@@ -498,7 +494,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 					jMC.put("showCatHeader", "display:none;");
 				}
 
-				// logger.warn("computeGroupMedalsJson cat={} scoreNeeded: {}\n{}", cat, scoreNeeded, LoggerUtils.stackTrace());
+				// logger.debug("computeGroupMedalsJson cat={} scoreNeeded: {}\n{}", cat, scoreNeeded, LoggerUtils.stackTrace());
 				if (scoreNeeded) {
 					this.getElement().setProperty("showSinclair", scoreNeeded);
 					this.getElement().setProperty("showSinclairRank", scoreNeeded);
@@ -508,7 +504,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 				mcX++;
 			}
 		}
-		logger.warn("setting element \n{}", LoggerUtils.stackTrace());
+		// logger.debug("setting element \n{}", LoggerUtils.stackTrace());
 		this.getElement().setPropertyJson("medalCategories", jsonMCArray);
 		if (mcX == 0) {
 			this.getElement().setProperty("noCategories", true);
@@ -545,28 +541,23 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	}
 
 	private void doRefresh(UIEvent e) {
-		logger.warn("doRefresh {}", LoggerUtils.stackTrace());
 		FieldOfPlay fop2 = e.getFop();
 		doMedals(fop2);
-		logger.warn("end doRefresh {}", LoggerUtils.stackTrace());
 	}
 
 	private void doMedals(FieldOfPlay fop2) {
 		if (this.getCategory() == null) {
 			if (this.getGroup() != null) {
-				logger.warn("=== getgroup {}", this.getGroup());
+				// logger.debug("=== getgroup {}", this.getGroup());
 				this.setMedals(Competition.getCurrent().getMedals(this.getGroup(), ONLY_FINISHED));
 			} else {
-				// OwlcmsSession.getCurrent();
-				logger.warn("=== getgroup from FOP {}", fop2.getGroup());
+				// logger.debug("=== getgroup from FOP {}", fop2.getGroup());
 				this.setMedals(Competition.getCurrent().getMedals(fop2.getGroup(), ONLY_FINISHED));
 			}
 			// this.getElement().setProperty("fillerDisplay", "");
 		} else {
-			logger.warn("=== this.getCategory {}", this.getCategory());
 			List<Athlete> catMedals = Competition.getCurrent().computeMedalsForCategory(this.getCategory());
-			logger.warn("=== group {} category {} catMedals {}", getGroup(), getCategory(),
-			        catMedals.stream().map(a -> a.getAbbreviatedName()).toList());
+			// logger.debug("=== group {} category {} catMedals {}", getGroup(), getCategory(), catMedals.stream().map(a -> a.getAbbreviatedName()).toList());
 			this.setMedals(new TreeMap<>());
 			this.getMedals().put(this.getCategory().getCode(), catMedals);
 		}
@@ -737,11 +728,9 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 
 	@Override
 	protected void uiLog(UIEvent e) {
-		// if (this.uiEventLogger.isDebugEnabled()) {
-		this.logger.warn(">>>>> {} {} {} {}",
-		        this.getClass().getSimpleName(), e.getClass().getSimpleName(), e.getOrigin(),
-		        LoggerUtils.whereFrom());
-		// }
+//		this.logger./**/warn(">>>>> {} {} {} {}",
+//		        this.getClass().getSimpleName(), e.getClass().getSimpleName(), e.getOrigin(),
+//		        LoggerUtils.whereFrom());
 	}
 
 	private TreeMap<String, List<Athlete>> getMedals() {
@@ -757,7 +746,6 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	}
 
 	private void setUi(UI ui) {
-		logger.warn("----------------------------------------- setting ui {}", ui != null ? System.identityHashCode(ui) : null);
 		this.ui = ui;
 	}
 
