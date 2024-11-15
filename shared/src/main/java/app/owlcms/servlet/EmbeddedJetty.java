@@ -6,6 +6,7 @@ import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.open.Open;
+import com.vaadin.open.Options;
 
 import ch.qos.logback.classic.Logger;
 
@@ -15,6 +16,8 @@ public class EmbeddedJetty extends com.github.mvysny.vaadinboot.VaadinBoot {
 	private Runnable initConfig;
 	private Runnable initData;
 	private CountDownLatch latch;
+	
+	Logger logger = (Logger) LoggerFactory.getLogger(EmbeddedJetty.class);
 
 	public EmbeddedJetty(CountDownLatch countDownLatch, String appName) {
 		this.setLatch(countDownLatch);
@@ -64,7 +67,17 @@ public class EmbeddedJetty extends com.github.mvysny.vaadinboot.VaadinBoot {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> stop("Shutdown hook called, shutting down")));
         startLogger.info("Press CTRL+C to shutdown");
 
-        Open.open(getServerURL());
+        //Open.open(getServerURL());
+        
+		new Thread(() -> {
+			logger.info("Starting browser");
+			Options openOptions = new Options();
+			openOptions.setNewInstance(true);
+			openOptions.setBackground(true);
+			openOptions.setWait(false);
+			Open.open(getServerURL(), openOptions);
+			logger.info("Browser started");
+		}).start();
 
     }
 
