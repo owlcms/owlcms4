@@ -107,14 +107,23 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 
 	@Override
 	public void doCeremony(UIEvent.CeremonyStarted e) {
-		// logger.debug("ceremony event = {} {}", e, e.getTrace());
 		this.setCeremony(true);
 		OwlcmsSession.withFop((fop) -> {
 			Group ceremonyGroup = e.getCeremonySession();
 			setGroup(ceremonyGroup);
 			Category ceremonyCategory = e.getCeremonyCategory();
 			setCategory(ceremonyCategory);
-			doMedalsDisplay();
+			// logger.debug("ceremony event = {} {} {} {}", e, ceremonyGroup, ceremonyCategory, LoggerUtils.stackTrace());
+			
+//			medalsInit();
+			checkVideo(this);
+			this.teamFlags = URLUtils.checkFlags();
+			doMedals(this.getFop());
+			
+			if (!Competition.getCurrent().isSnatchCJTotalMedals()) {
+				getElement().setProperty("noLiftRanks", "noranks");
+			}
+			this.getElement().setProperty("displayTitle", Translator.translate("CeremonyType.MEDALS"));
 		});
 	}
 
@@ -199,7 +208,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	@Override
 	@Subscribe
 	public void slaveCeremonyStarted(UIEvent.CeremonyStarted e) {
-		// logger.trace("------- slaveCeremonyStarted {}", e.getCeremonyType());
+		// logger.debug("------- slaveCeremonyStarted {} {} {}", e.getCeremonyType(), e.getCeremonySession(), e.getCeremonyCategory());
 		uiLog(e);
 		UIEventProcessor.uiAccess(this, this.uiEventBus, () -> {
 			setDisplay();
@@ -267,6 +276,9 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 
 	@Subscribe
 	public void slaveVideoRefresh(UIEvent.VideoRefresh e) {
+		if (!isVideo()) {
+			return;
+		}
 		this.ui.access(() -> {
 			uiLog(e);
 			var fop = e.getFop();

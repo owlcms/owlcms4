@@ -63,7 +63,7 @@ public class PublicScoreboardPage extends AbstractResultsDisplayPage {
 
 	@Subscribe
 	public void slaveCeremonyStarted(UIEvent.CeremonyStarted e) {
-		//logger.debug("public scoreboard {}",e.getCeremonyType());
+		// logger.debug("public scoreboard {}",e.getCeremonyType());
 		if (e.getCeremonyType() != CeremonyType.MEDALS) {
 			return;
 		}
@@ -87,10 +87,12 @@ public class PublicScoreboardPage extends AbstractResultsDisplayPage {
 	
 	@Subscribe
 	public void slaveVideoRefresh(UIEvent.VideoRefresh e) {
-//		logger.debug("||||||||||| public scoreboard {}",e.getFop());
-//		if (e.getCeremonyType() != CeremonyType.MEDALS) {
-//			return;
-//		}
+		// this should never have isVideo() in actual practice.
+		
+		// logger.debug("videorefresh {}",e.getFop());
+		if (!isVideo()) {
+			return;
+		}
 		this.ui.access(() -> {
 			/* copy current parameters from results board to medals board */
 			this.getMedalsBoard().setVisible(true);
