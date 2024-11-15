@@ -58,7 +58,7 @@
     box-sizing: border-box;
     --nbRanks: 1;
 
-    --TotalBackgroundColor: var(--EmptyBackgroundColor);
+    
 /*  
     --TotalBackgroundColor: var(--lightNameBackgroundColor);
     --TotalTextColor: var(--lightNameTextColor); 
@@ -72,6 +72,7 @@
 :host .dark table.results {
     --spacerWidth: 1vh;
     --rowSmallSpacerHeight: 0.25vh;
+    --TotalBackgroundColor: var(--EmptyBackgroundColor);
 }
 
 
@@ -111,8 +112,8 @@ td.flags div.flags {
 
 :host div.wrapper.light table.results tr td.rank {
     border-color: var(--TableBorders);
-    color: white;
-    border-width: 0.6em;
+    color: black;
+    /* border-width: 0.6em; */
     border-style: solid;
 }
 
@@ -139,7 +140,7 @@ td.flags div.flags {
 :host div.wrapper.light table.results tr td.totalRank {
     border-color: var(--TableBorders);
     color: black;
-    border-width: 0.6em;
+    padding: 0.6em;
     border-style: solid;
 }
 
@@ -155,7 +156,7 @@ td.flags div.flags {
     background-color: gold;
     color: black;
     border-color: var(--TableBorders);
-    border-width: 0.6em;
+    padding: 0.6em;
     border-style: solid;
 }
 
@@ -171,7 +172,7 @@ td.flags div.flags {
     background-color: silver;
     color: black;
     border-color: var(--TableBorders);
-    border-width: 0.6em;
+    padding: 0.6em;
     border-style: solid;
 }
 
@@ -187,7 +188,7 @@ td.flags div.flags {
     background-color: #CD7F32;
     color: black;
     border-color: var(--TableBorders);
-    border-width: 0.6em;
+    padding: 0.6em;
     border-style: solid;
 }
 
@@ -199,10 +200,9 @@ td.flags div.flags {
 }
 
 :host div.wrapper.light table.results tr td.sinclairRank {
-    border-color: var(--TableBorders);
-    color: white;
-    border-width: 0.6em;
-    border-style: solid;
+    background-color: var(--BackgroundColor);
+    color: var(--TextColor);
+    visibility: var(--sinclairVisibility);
 }
 
 :host div.wrapper.dark table.results tr td.sinclairRank.medal1 {
@@ -217,7 +217,7 @@ td.flags div.flags {
     background-color: gold;
     color: black;
     border-color: var(--TableBorders);
-    border-width: 0.6em;
+    padding: 0.6em;
     border-style: solid;
 }
 
@@ -233,7 +233,7 @@ td.flags div.flags {
     background-color: silver;
     color: black;
     border-color: var(--TableBorders);
-    border-width: 0.6em;
+    padding: 0.6em;
     border-style: solid;
 }
 
@@ -249,7 +249,7 @@ td.flags div.flags {
     background-color: #CD7F32;
     color: black;
     border-color: var(--TableBorders);
-    border-width: 0.6em;
+    padding: 0.6em;
     border-style: solid;
 }
 /* grid layout */
