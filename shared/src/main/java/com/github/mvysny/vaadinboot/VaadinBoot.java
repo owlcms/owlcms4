@@ -220,7 +220,8 @@ public class VaadinBoot {
 		System.out.println("Press CTRL+C to shutdown");
 
 		if (openBrowserInDevMode && !Env.isVaadinProductionMode) {
-			Open.open(getServerURL());
+			// Open.open is not supposed to block if no wait option is given, but it does on some OS
+			new Thread(() -> Open.open(getServerURL())).start();
 		}
 
 		// Await for Enter.
