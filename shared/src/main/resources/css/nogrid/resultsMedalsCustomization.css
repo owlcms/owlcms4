@@ -252,6 +252,7 @@ td.flags div.flags {
     padding: 0.6em;
     border-style: solid;
 }
+
 /* grid layout */
 table.medals {
     /* do not use all available vertical space */

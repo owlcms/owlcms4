@@ -114,12 +114,12 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 			Category ceremonyCategory = e.getCeremonyCategory();
 			setCategory(ceremonyCategory);
 			// logger.debug("ceremony event = {} {} {} {}", e, ceremonyGroup, ceremonyCategory, LoggerUtils.stackTrace());
-			
-//			medalsInit();
+
+			// medalsInit();
 			checkVideo(this);
 			this.teamFlags = URLUtils.checkFlags();
 			doMedals(this.getFop());
-			
+
 			if (!Competition.getCurrent().isSnatchCJTotalMedals()) {
 				getElement().setProperty("noLiftRanks", "noranks");
 			}
@@ -178,7 +178,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 
 	@Subscribe
 	public void slaveAllEvents(UIEvent e) {
-		//uiLog(e);
+		// uiLog(e);
 	}
 
 	@Override
@@ -260,7 +260,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		uiLog(e);
 		this.getUi().access(() -> {
 			setDisplay();
-			// this is suspicious.  when used behind main scoreboard
+			// this is suspicious. when used behind main scoreboard
 			// we probably need a toggle to ignore updates.
 		});
 	}
@@ -323,17 +323,30 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		Participation mainRankings = a.getMainRankings();
 		if (mainRankings != null) {
 			int snatchRank = mainRankings.getSnatchRank();
-			ja.put("snatchRank", formatRank(snatchRank));
-			ja.put("snatchMedal", snatchRank <= 3 ? "medal" + snatchRank : "");
+			if (a.getComputedScoringSystem() == Ranking.TOTAL) {
+				ja.put("snatchRank", formatRank(snatchRank));
+				ja.put("snatchMedal", snatchRank <= 3 ? "medal" + snatchRank : "");
+			} else {
+				ja.put("snatchRank", "");
+				ja.put("snatchMedal", "");
+			}
 
 			int cleanJerkRank = mainRankings.getCleanJerkRank();
-			ja.put("cleanJerkRank", formatRank(cleanJerkRank));
-			ja.put("cleanJerkMedal", cleanJerkRank <= 3 ? "medal" + cleanJerkRank : "");
+			if (a.getComputedScoringSystem() == Ranking.TOTAL) {
+				ja.put("cleanJerkRank", formatRank(cleanJerkRank));
+				ja.put("cleanJerkMedal", cleanJerkRank <= 3 ? "medal" + cleanJerkRank : "");
+			} else {
+				ja.put("cleanJerkRank", "");
+				ja.put("cleanJerkMedal", "");
+			}
 
 			int totalRank = mainRankings.getTotalRank();
-			ja.put("totalRank", formatRank(totalRank));
 			if (a.getComputedScoringSystem() == Ranking.TOTAL) {
+				ja.put("totalRank", formatRank(totalRank));
 				ja.put("totalMedal", totalRank <= 3 ? "medal" + totalRank : "");
+			} else {
+				ja.put("totalRank", "");
+				ja.put("totalMedal", "");
 			}
 		} else {
 			this.logger.error("main rankings null for {}", a);
@@ -741,9 +754,9 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 
 	@Override
 	protected void uiLog(UIEvent e) {
-//		this.logger./**/warn(">>>>> {} {} {} {}",
-//		        this.getClass().getSimpleName(), e.getClass().getSimpleName(), e.getOrigin(),
-//		        LoggerUtils.whereFrom());
+		// this.logger./**/warn(">>>>> {} {} {} {}",
+		// this.getClass().getSimpleName(), e.getClass().getSimpleName(), e.getOrigin(),
+		// LoggerUtils.whereFrom());
 	}
 
 	private TreeMap<String, List<Athlete>> getMedals() {

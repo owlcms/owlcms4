@@ -107,7 +107,7 @@ class ResultsMedals extends LitElement {
                             <td class="${"club " + (leader.flagClass ?? "")}">
                               <div class="${leader.flagClass}" .innerHTML="${leader.flagURL}"></div>
                               <div class="clubName">
-                                <div class="ellipsis" style="${"width: " + (leader?.teamLength ?? "")}">${leader?.teamName}</div>
+                                <div class="ellipsis" style="${leader.teamLength !== undefined ? "width: "+leader.teamLength : ""}">${leader?.teamName}</div>
                               </div>
                             </td>
                             <td class="vspacer"></td>

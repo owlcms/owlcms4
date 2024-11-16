@@ -154,10 +154,10 @@ table.results.nosinclair {
 }
 
 table.results.sinclair {
-    --rankWidth: 0;
+/*     --rankWidth: 0;
     --rankVisibility: hidden;
     --totalRankWidth: 0;
-    --totalRankVisibility: hidden;
+    --totalRankVisibility: hidden; */
     --sinclairWidth: 8ch;
     --sinclairVisibility: visible;
 }
