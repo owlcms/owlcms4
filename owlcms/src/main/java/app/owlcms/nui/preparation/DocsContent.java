@@ -523,8 +523,6 @@ public class DocsContent extends RegistrationContent implements HasDynamicTitle,
 		this.getPlatformFilter().setPlaceholder(Translator.translate("Platform"));
 		List<Platform> agItems1 = PlatformRepository.findAll();
 		this.getPlatformFilter().setItems(agItems1);
-		// platformFilter.setItemLabelGenerator((ad) -> Translator.translate("Division."
-		// + ad.name()));
 		this.getPlatformFilter().setClearButtonVisible(true);
 		this.getPlatformFilter().setWidth("8em");
 		this.getPlatformFilter().getStyle().set("margin-left", "1em");
