@@ -502,15 +502,18 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 
 				jMC.put("categoryName", cat.getDisplayName());
 				Ranking scoringSystem = cat.getAgeGroup().getScoringSystem();
+				String rankingTitle = Translator.translate("Rank");
 				if (scoringSystem != null && scoringSystem != Ranking.TOTAL) {
-					String scoringTitle = Translator.translate("Score");
-					scoringTitle = Ranking.getScoringTitle(scoringSystem);
-					String rankingTitle = Translator.translate("Rank");
-					jMC.put("scoringTitle", scoringTitle);
-					jMC.put("rankingTitle", rankingTitle);
-				} else {
-					jMC.put("scoringTitle", "");
+					String scoreScoringTitle = Translator.translate("Score");
+					scoreScoringTitle = Ranking.getScoringTitle(scoringSystem);
 					jMC.put("rankingTitle", "");
+					jMC.put("scoreScoringTitle", scoreScoringTitle);
+					jMC.put("scoreRankingTitle", rankingTitle);
+				} else {
+					jMC.put("rankingTitle", rankingTitle);
+					jMC.put("scoreScoringTitle", "");
+					jMC.put("scoreRankingTitle", "");
+
 				}
 				jMC.put("leaders", getAthletesJson(new ArrayList<>(medalists), null));
 				if (mcX == 0) {

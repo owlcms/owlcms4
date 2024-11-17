@@ -71,16 +71,16 @@ class ResultsMedals extends LitElement {
                         <th class="vspacer"></th>
                         <th style="grid-column: span 3;" .innerHTML="${this.t?.Snatch}"></th>
                         <th class="best" .innerHTML="${this.t?.Best}"></th>
-                        <th class="rank" .innerHTML="${this.t?.Rank}"></th>
+                        <th class="rank" .innerHTML="${mc.rankingTitle}"></th>
                         <th class="vspacer"></th>
                         <th style="grid-column: span 3;" .innerHTML="${this.t?.Clean_and_Jerk}"></th>
                         <th class="best" .innerHTML="${this.t?.Best}"></th>
-                        <th class="rank" .innerHTML="${this.t?.Rank}"></th>
+                        <th class="rank" .innerHTML="${mc.rankingTitle}"></th>
                         <th class="vspacer"></th>
                         <th class="total" .innerHTML="${this.t?.Total}"></th>
-                        <th class="totalRank" .innerHTML="${this.t?.Rank}"></th>
-                        <th class="sinclair"  .innerHTML="${mc.scoringTitle}"></th>
-                        <th class="sinclairRank" .innerHTML="${mc.rankingTitle}"></th>
+                        <th class="totalRank" .innerHTML="${mc.rankingTitle}"></th>
+                        <th class="sinclair" .innerHTML="${mc.scoreScoringTitle}"></th>
+                        <th class="sinclairRank" .innerHTML="${mc.scoreRankingTitle}"></th>
                       </tr>
 
                       ${(mc.leaders ?? []).map(
