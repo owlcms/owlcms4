@@ -492,6 +492,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 				}
 			}
 		}
+		logger.warn("----------------- scoreneeded : {}", scoreNeeded);
 
 		for (Entry<String, List<Athlete>> medalCat : medals2.entrySet()) {
 			JsonObject jMC = Json.createObject();
@@ -523,10 +524,8 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 				}
 
 				// logger.debug("computeGroupMedalsJson cat={} scoreNeeded: {}\n{}", cat, scoreNeeded, LoggerUtils.stackTrace());
-				if (scoreNeeded) {
-					this.getElement().setProperty("showSinclair", scoreNeeded);
-					this.getElement().setProperty("showSinclairRank", scoreNeeded);
-				}
+				this.getElement().setProperty("showSinclair", scoreNeeded);
+				this.getElement().setProperty("showSinclairRank", scoreNeeded);
 				// logger.debug("medalCategory: {}", jMC.toJson());
 				jsonMCArray.set(mcX, jMC);
 				mcX++;
