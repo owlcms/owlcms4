@@ -4,6 +4,10 @@
 > - Beta releases are **not** normally used in actual competitions, except when a new feature is required. Use extreme care in testing if you intend to do so.
 
 - Maintenance log:
+  - 54.0.3-beta03: On Raspberry Pi, the server would not start until the initial browser window was killed. The browser window was waiting for the server (deadlock)
+  - 54.0.3-beta03: Removed obsolete attempt at translating the default championship types in the dropdowns
+  - 54.0.3-beta03: Fixed missing translation for the "load results from a session that took place in another building" feature.
+  - 54.0.3-beta03: Further adjustments to medals displays.
   - 54.0.0-beta03: Fixed colors on the light-themed medals scoreboards, and adjusted the columns on the video "green transparency" medal display.
   - 54.0.0-beta03: Athlete cards were missing the session information on the top line.
   - 54.0.0-beta02: Changing the medals category shown on the video-specific medals page no longer interferes with the normal medals page and the public main room scoreboard (if the "public" main room scoreboard, the medals page is shown during medal ceremonies)
@@ -13,6 +17,7 @@
   - 54.0.0-alpha02: reworked the category ranking code for performance when athletes are registered in many eligibility categories.
   - 54.0.0-alpha01: initial release of scoreboard cleanup
 - Scoreboards now correctly display ranks and leaders for categories where medals are given based on a score (see documentation for [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions))
+- Medals scoreboards and medals reports have now been fixed to handle score-based medals
 - Results
   - During a competition with both score-based and total-based rankings, from the Competition Results page, using the Eligibility Categories report with the Score template will produce correct interim or final results.   Each category will be ranked according to it's scoring system.
 - Templates:

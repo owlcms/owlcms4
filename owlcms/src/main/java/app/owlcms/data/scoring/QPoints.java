@@ -202,7 +202,7 @@ public class QPoints {
 		try {
 			InputStream stream = ResourceWalker.getResourceAsStream(name);
 			this.props.load(stream);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			this.logger.error("could not load {} because {}\n{}", name, e, LoggerUtils.stackTrace(e));
 		}
 	}
