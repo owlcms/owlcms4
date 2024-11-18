@@ -38,6 +38,7 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 	final private static Logger jexlLogger = (Logger) LoggerFactory.getLogger("org.apache.commons.jexl2.JexlEngine");
 	final private static Logger logger = (Logger) LoggerFactory.getLogger(JXLSWinningSheet.class);
 	final private static Logger tagLogger = (Logger) LoggerFactory.getLogger("net.sf.jxls.tag.ForEachTag");
+	private static final boolean ORDER_BY_CATEGORIES = false;
 	static {
 		logger.setLevel(Level.INFO);
 		jexlLogger.setLevel(Level.ERROR);
@@ -69,7 +70,8 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 //						rankingOrder = Ranking.TOTAL;
 //					}
 //				}
-				AthleteSorter.resultsOrder(this.sortedAthletes, rankingOrder, true);
+				
+				AthleteSorter.resultsOrder(this.sortedAthletes, rankingOrder, ORDER_BY_CATEGORIES);
 				return this.sortedAthletes;
 			} else {
 				// logger.debug("YYYYYYYYYYYY unique athletes");
@@ -102,7 +104,7 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 
 				// re-sort the athletes
 				this.sortedAthletes = new ArrayList<>(uniqueAthletes);
-				AthleteSorter.resultsOrder(this.sortedAthletes, rankingOrder(), false);
+				AthleteSorter.resultsOrder(this.sortedAthletes, rankingOrder(), ORDER_BY_CATEGORIES);
 				logger.debug("registration getSortedAthletes {}", this.sortedAthletes.size());
 				return this.sortedAthletes;
 			}

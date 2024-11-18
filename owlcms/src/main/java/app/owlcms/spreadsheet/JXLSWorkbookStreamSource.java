@@ -544,6 +544,7 @@ public abstract class JXLSWorkbookStreamSource implements StreamResourceWriter, 
 		List<Athlete> athletes = getSortedAthletes();
 		if (athletes != null) {
 			getReportingBeans().put("athletes", athletes);
+			logger.warn("*** Athletes : {}",athletes.stream().map(a-> a.getCategory()).toList());
 			getReportingBeans().put("lifters", athletes); // legacy
 		}
 		Competition competition = Competition.getCurrent();
