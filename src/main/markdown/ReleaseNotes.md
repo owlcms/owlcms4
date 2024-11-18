@@ -4,11 +4,12 @@
 > - Beta releases are **not** normally used in actual competitions, except when a new feature is required. Use extreme care in testing if you intend to do so.
 
 - Maintenance log:
-  - 53.0.3-beta04: Updated the competition results and the protocol sheets to use the faster jxls3 template processing. The categories are now listed in alphabetical order.
-  - 54.0.3-beta03: On Raspberry Pi, the server would not start until the initial browser window was killed. The browser window was waiting for the server (deadlock)
-  - 54.0.3-beta03: Removed obsolete attempt at translating the default championship types in the dropdowns
-  - 54.0.3-beta03: Fixed missing translation for the "load results from a session that took place in another building" feature.
-  - 54.0.3-beta03: Further adjustments to medals displays.
+  - 54.0.0-beta05: Small fixes to templates.  This is hoped to be the last beta before release candidate.
+  - 54.0.0-beta04: Updated the competition results and the protocol sheets to use the faster jxls3 template processing. The categories are now listed in alphabetical order.
+  - 54.0.0-beta03: On Raspberry Pi, the server would not start until the initial browser window was killed. The browser window was waiting for the server (deadlock)
+  - 54.0.0-beta03: Removed obsolete attempt at translating the default championship types in the dropdowns
+  - 54.0.0-beta03: Fixed missing translation for the "load results from a session that took place in another building" feature.
+  - 54.0.0-beta03: Further adjustments to medals displays.
   - 54.0.0-beta03: Fixed colors on the light-themed medals scoreboards, and adjusted the columns on the video "green transparency" medal display.
   - 54.0.0-beta03: Athlete cards were missing the session information on the top line.
   - 54.0.0-beta02: Changing the medals category shown on the video-specific medals page no longer interferes with the normal medals page and the public main room scoreboard (if the "public" main room scoreboard, the medals page is shown during medal ceremonies)
