@@ -257,6 +257,37 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 			return String.valueOf((int) (Math.round(this.maximumWeight)));
 		}
 	}
+	
+	@Transient
+	@JsonIgnore
+	public String getSortCodeLimitString() {
+		if (this.id == null || this.maximumWeight == null
+		        || this.maximumWeight - Math.round(this.maximumWeight) > 0.1) {
+			String val = "temp_" + this.minimumWeight + "_" + this.maximumWeight;
+			return val;
+		}
+		if (this.maximumWeight > 130) {
+			return "999";
+		} else {
+			return String.format("%03d",(int) (Math.round(this.maximumWeight)));
+		}
+	}
+	
+	@JsonIgnore
+	@Transient
+	public String getSortCode() {
+		String agName = (this.ageGroup != null ? this.ageGroup.getName() : "");
+
+		String result;
+		if (agName == null || agName.isEmpty()) {
+			String catName = getGender() + getSortCodeLimitString();
+			result = catName;
+		} else {
+			result = this.ageGroup.getCode() + "_" + getGender() + getSortCodeLimitString();
+		}
+		// logger.debug("Category {} sort code {}", this, result);
+		return result;
+	}
 
 	@JsonIgnore
 	@Transient

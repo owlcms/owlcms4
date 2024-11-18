@@ -190,7 +190,7 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 			                && (allCategories || !unfinishedCategories.contains(a.getCategory().getCode()));
 			        return catOk;
 		        })
-		        /* logger.warn( */.peek(r -> logger./**/warn("including {} {} *** {}", r.getAbbreviatedName(), r.getCategory().getCode(), r.getParticipations().get(0)))
+		        // /* logger.debug( */.peek(r -> logger./**/warn("including {} {} *** {}", r.getAbbreviatedName(), r.getCategory().getCode(), r.getParticipations().get(0)))
 		        ;
 		List<Athlete> found = stream.collect(Collectors.toList());
 		logger.debug("{} PackageContent findAll", found.size());
@@ -634,7 +634,6 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 			        // group may have been edited since the page was loaded
 			        rs.setGroup(this.currentGroup != null ? GroupRepository.getById(this.currentGroup.getId()) : null);
 			        List<Athlete> all = (List<Athlete>) findAll();
-			        logger.warn("**** all = {}",all.stream().map(a-> a.getCategoryCode()).toList());
 					rs.setSortedAthletes(all);
 			        return rs;
 		        },

@@ -1159,6 +1159,20 @@ public class Athlete {
 
 	@Transient
 	@JsonIgnore
+	public String getCategorySortCode() {
+		// TODO: something that reflects age boundaries then weight, considering no-age and no-weight score based.
+		// maybe championship age-low age-high body-low body-high
+		Category sortCategory = getMainRankings().getCategory();
+		String sortCode = sortCategory != null ? sortCategory.getSortCode() : "-";
+		// logger.debug("a {} category {} sortCode {}", getAbbreviatedName(), getCategory(), sortCategory.getSortCode());
+		return sortCode;
+	}
+
+	public void setCategoryScoreCode(String unused) {
+	}
+
+	@Transient
+	@JsonIgnore
 	public Boolean getCategoryFinished() {
 		var allUnfinished = AthleteRepository.getAllUnfinishedCategories();
 		String code = this.getCategory() != null ? this.getCategory().getCode() : null;

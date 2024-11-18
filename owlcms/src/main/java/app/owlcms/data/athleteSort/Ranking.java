@@ -163,6 +163,7 @@ public enum Ranking {
 			case QPOINTS:
 			case AGEFACTORS:
 			case QAGE:
+			case TOTAL:
 				return Translator.translate("Ranking." + rankingType);
 			default:
 				throw new UnsupportedOperationException("not a score ranking " + rankingType);
@@ -183,6 +184,7 @@ public enum Ranking {
 			case QPOINTS:
 			case AGEFACTORS:
 			case QAGE:
+			case TOTAL:
 				return Translator.translate("RankingExplanation." + rankingType);
 			default:
 				throw new UnsupportedOperationException("not a score ranking " + rankingType);

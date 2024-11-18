@@ -446,11 +446,20 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 		return championshipName;
 	}
 
+	@Transient
+	@JsonIgnore
 	public Ranking getComputedScoringSystem() {
 		if (scoringSystem == null) {
 			return Ranking.TOTAL;
 		}
 		return scoringSystem;
+	}
+	
+	@Transient
+	@JsonIgnore
+	public String getScoringTitle() {
+		var scoringSystem = getComputedScoringSystem();
+		return Ranking.getScoringTitle(scoringSystem);
 	}
 	
 	public Ranking getScoringSystem() {

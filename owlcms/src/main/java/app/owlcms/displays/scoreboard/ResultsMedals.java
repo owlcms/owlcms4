@@ -492,7 +492,6 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 				}
 			}
 		}
-		logger.warn("----------------- scoreneeded : {}", scoreNeeded);
 
 		for (Entry<String, List<Athlete>> medalCat : medals2.entrySet()) {
 			JsonObject jMC = Json.createObject();
