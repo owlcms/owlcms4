@@ -106,7 +106,8 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 	 * 
 	 */
 	private String ageDivision;
-	private String championshipName; // foreign key: PanAm, SouthAm, etc. Same the type if not specified explicitly.
+	private String championshipName; // foreign key; also shown to users.
+	
 	@OneToMany(mappedBy = "ageGroup", cascade = { CascadeType.ALL }, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<Category> categories = new ArrayList<>();
 	@Enumerated(EnumType.STRING)
@@ -387,7 +388,8 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 	}
 
 	public void setChampionship(Championship championship) {
-		this.ageDivision = championship.getType().name();
+		logger.warn("setting championship to {}",championship.getName());
+		this.setChampionshipName(championship.getName());
 	}
 
 	public void setChampionshipName(String championshipName) {
