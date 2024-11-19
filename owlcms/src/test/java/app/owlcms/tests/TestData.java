@@ -63,7 +63,7 @@ public class TestData {
      */
     public static void insertInitialData(int nbAthletes, boolean testMode) {
         JPAService.runInTransaction(em -> {
-        	EnumSet<ChampionshipType> divisions = EnumSet.of(ChampionshipType.IWF);
+        	EnumSet<ChampionshipType> divisions = EnumSet.of(ChampionshipType.DEFAULT);
             Competition competition = createDefaultCompetition(divisions);
             CompetitionRepository.save(competition);
             AgeGroupRepository.insertAgeGroups(em, divisions, "/agegroups/AgeGroups_Tests.xlsx");
@@ -104,7 +104,8 @@ public class TestData {
     protected static void createAthlete(EntityManager em, Random r, Athlete p, double nextDouble, int catLimit) {
         p.setBodyWeight(81 - nextDouble);
         p.setGender(Gender.M);
-        Category cat = CategoryRepository.findByCode("SR_M81");
+        List<Category> categories = CategoryRepository.findAll();
+        Category cat = CategoryRepository.findByCode("Open_M81");
         p.setCategory(cat);
         // logger.debug("athlete {} category {} participations{} group {}", p, p.getCategory(), p.getParticipations(), p.getGroup());
     }
