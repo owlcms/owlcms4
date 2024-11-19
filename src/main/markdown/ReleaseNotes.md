@@ -1,9 +1,11 @@
 > [!WARNING]
 >
-> - This is a **beta release**, used for testing and translation. ***Some features could be non-functional***.
-> - Beta releases are **not** normally used in actual competitions, except when a new feature is required. Use extreme care in testing if you intend to do so.
+> - This is a **release candidate** [(see definition)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Release_candidate), used for final public testing and translation. *This is still a preliminary release*
+> - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
+  - 54.0.0-rc01: Changing the championship for an age group was not making the change.
+  - 54.0.0-rc01: On the Age Group definition page, added a button to rename/add/remove championships
   - 54.0.0-beta05: Small fixes to templates.  This is hoped to be the last beta before release candidate.
   - 54.0.0-beta04: Updated the competition results and the protocol sheets to use the faster jxls3 template processing. The categories are now listed in alphabetical order.
   - 54.0.0-beta03: On Raspberry Pi, the server would not start until the initial browser window was killed. The browser window was waiting for the server (deadlock)
