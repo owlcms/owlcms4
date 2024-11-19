@@ -94,9 +94,9 @@ public class AgeGroupContent extends BaseContent implements CrudListener<AgeGrou
 		OwlcmsFactory.waitDBInitialized();
 		OwlcmsCrudFormFactory<AgeGroup> editingFormFactory = new AgeGroupEditingFormFactory(AgeGroup.class, this);
 		setAgeGroupEditingFormFactory(editingFormFactory);
-		this.crud = createGrid(getAgeGroupEditingFormFactory());
-		defineFilters(this.crud);
-		fillHW(this.crud, this);
+		this.setCrud(createGrid(getAgeGroupEditingFormFactory()));
+		defineFilters(this.getCrud());
+		fillHW(this.getCrud(), this);
 	}
 
 	@Override
@@ -169,12 +169,19 @@ public class AgeGroupContent extends BaseContent implements CrudListener<AgeGrou
 		        Translator.translate("AgeGroups.ExportDefinitions"), new XLSXAgeGroupsExport());
 		exportAgeGroups.getStyle().set("margin-left", "1em");
 
+		Button editChampionships = new Button(
+		        Translator.translate("EditChampionships.Title"),
+		        VaadinIcon.PENCIL.create(),
+		        e -> {
+			        new EditChampionshipsDialog(this).open();
+		        });
+
 		FlexLayout buttons = new FlexLayout(
 		        new NativeLabel(Translator.translate("AgeGroups.Predefined")),
 		        reloadDefinition,
 		        hr(),
 		        new NativeLabel(Translator.translate("AgeGroups.Custom")),
-		        exportAgeGroups, uploadCustom,
+		        exportAgeGroups, uploadCustom, editChampionships,
 		        hr(),
 		        new NativeLabel(Translator.translate("AgeGroups.Reassign")),
 		        resetButton);
@@ -316,11 +323,11 @@ public class AgeGroupContent extends BaseContent implements CrudListener<AgeGrou
 		grid.addColumn(AgeGroup::getCategoriesAsString).setAutoWidth(true)
 		        .setHeader(Translator.translate("BodyWeightCategories"));
 
-		this.crud = new OwlcmsCrudGrid<>(AgeGroup.class, new OwlcmsGridLayout(AgeGroup.class),
-		        crudFormFactory, grid);
-		this.crud.setCrudListener(this);
-		this.crud.setClickRowToUpdate(true);
-		return this.crud;
+		this.setCrud(new OwlcmsCrudGrid<>(AgeGroup.class, new OwlcmsGridLayout(AgeGroup.class),
+		        crudFormFactory, grid));
+		this.getCrud().setCrudListener(this);
+		this.getCrud().setClickRowToUpdate(true);
+		return this.getCrud();
 	}
 
 	/**
@@ -373,8 +380,8 @@ public class AgeGroupContent extends BaseContent implements CrudListener<AgeGrou
 	}
 
 	void closeDialog() {
-		this.crud.getCrudLayout().hideForm();
-		this.crud.getGrid().asSingleSelect().clear();
+		this.getCrud().getCrudLayout().hideForm();
+		this.getCrud().getGrid().asSingleSelect().clear();
 	}
 
 	private OwlcmsCrudFormFactory<AgeGroup> getAgeGroupEditingFormFactory() {
@@ -391,7 +398,7 @@ public class AgeGroupContent extends BaseContent implements CrudListener<AgeGrou
 
 	private void resetCategories() {
 		AthleteRepository.resetParticipations();
-		this.crud.refreshGrid();
+		this.getCrud().refreshGrid();
 		unHighlightResetButton();
 	}
 
@@ -424,6 +431,14 @@ public class AgeGroupContent extends BaseContent implements CrudListener<AgeGrou
 
 	private void unHighlightResetButton() {
 		this.resetCats.setThemeName("");
+	}
+
+	public GridCrud<AgeGroup> getCrud() {
+		return crud;
+	}
+
+	public void setCrud(GridCrud<AgeGroup> crud) {
+		this.crud = crud;
 	}
 
 }

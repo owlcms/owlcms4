@@ -388,7 +388,7 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 	}
 
 	public void setChampionship(Championship championship) {
-		logger.warn("setting championship to {}",championship.getName());
+		logger.debug("setting {} championship to {}", this, championship.getName());
 		this.setChampionshipName(championship.getName());
 	}
 

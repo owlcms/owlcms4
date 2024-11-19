@@ -29,16 +29,16 @@ public class Championship implements Comparable<Championship> {
 	public static final String MASTERS = ChampionshipType.MASTERS.name();
 	public static final String U = ChampionshipType.U.name();
 	public static final String IWF = ChampionshipType.IWF.name();
-	public static final String OLY = ChampionshipType.OLY.name();
 	public static final String DEFAULT = ChampionshipType.DEFAULT.name();
-	public static final String ADAPTIVE = ChampionshipType.ADAPTIVE.name();
 	@SuppressWarnings("unused")
 	final private static Logger logger = (Logger) LoggerFactory.getLogger(Championship.class);
 	private static Map<String, Championship> allChampionshipsMap;
-	private static List<Championship> allChampionshipsList;
-	
+	// private static List<Championship> allChampionshipsList;
 	static Comparator<Championship> ct = (a, b) -> {
 		int compare = 0;
+		if (a == null || b == null) {
+			return ObjectUtils.compare(a, b, true);
+		}
 		compare = ObjectUtils.compare(a.getType(), b.getType(), true);
 		if (compare != 0) {
 			return compare;
@@ -59,16 +59,22 @@ public class Championship implements Comparable<Championship> {
 	 * @return the collection
 	 */
 	public static List<Championship> findAll() {
+		ArrayList<Championship> allChampionshipsList = new ArrayList<>();
 		if (allChampionshipsMap == null || allChampionshipsMap.isEmpty()) {
 			allChampionshipsMap = new HashMap<>();
 
 			// default championships, always present.
-			allChampionshipsMap.put(U, new Championship(ChampionshipType.U));
-			allChampionshipsMap.put(MASTERS, new Championship(ChampionshipType.MASTERS));
-			allChampionshipsMap.put(OLY, new Championship(ChampionshipType.OLY));
-			allChampionshipsMap.put(IWF, new Championship(ChampionshipType.IWF));
-			allChampionshipsMap.put(DEFAULT, new Championship(ChampionshipType.DEFAULT));
-			allChampionshipsMap.put(ADAPTIVE, new Championship(ChampionshipType.ADAPTIVE));
+			// allChampionshipsMap.put(U, new Championship(ChampionshipType.U));
+			// allChampionshipsMap.put(MASTERS, new Championship(ChampionshipType.MASTERS));
+			// allChampionshipsMap.put(OLY, new Championship(ChampionshipType.OLY));
+			// allChampionshipsMap.put(IWF, new Championship(ChampionshipType.IWF));
+			String name = null;
+			name = Translator.translate("Division." + ChampionshipType.DEFAULT.name());
+			allChampionshipsMap.put(name.toLowerCase(), new Championship(name, ChampionshipType.DEFAULT));
+			name = Translator.translate("Division." + ChampionshipType.MASTERS.name());
+			allChampionshipsMap.put(name.toLowerCase(), new Championship(name, ChampionshipType.MASTERS));
+
+			// allChampionshipsMap.put(ADAPTIVE, new Championship(ChampionshipType.ADAPTIVE));
 
 			// additional championships.
 			List<String> allChampionships = AgeGroupRepository.allChampionshipsForAllAgeGroups();
@@ -84,15 +90,28 @@ public class Championship implements Comparable<Championship> {
 					typeString = s;
 					nameString = s;
 				}
-				if (allChampionshipsMap.get(nameString) == null) {
-					allChampionshipsMap.put(nameString,
-					        new Championship(nameString, ChampionshipType.valueOf(typeString)));
+				ChampionshipType cType = ChampionshipType.U;
+				try {
+					cType = ChampionshipType.valueOf(typeString);
+				} catch (Exception e) {
 				}
+				addChampionship(nameString, cType);
 			}
 			allChampionshipsList = new ArrayList<>(allChampionshipsMap.values());
 			allChampionshipsList.sort(Championship::compareTo);
 		}
 		return allChampionshipsList;
+	}
+
+	public static Championship addChampionship(String nameString, ChampionshipType u2) {
+		Championship championship = allChampionshipsMap.get(nameString.toLowerCase());
+		if (championship == null) {
+			Championship newChampionship = new Championship(nameString, u2);
+			allChampionshipsMap.put(nameString.toLowerCase(),
+			        newChampionship);
+			return newChampionship;
+		}
+		return championship;
 	}
 
 	public static List<Championship> findAllUsed(boolean activeOnly) {
@@ -125,17 +144,12 @@ public class Championship implements Comparable<Championship> {
 		if (allChampionshipsMap == null) {
 			findAll();
 		}
-		return allChampionshipsMap.get(championshipName);
+		return allChampionshipsMap.get(championshipName.toLowerCase());
 	}
 
 	public static void reset() {
 		allChampionshipsMap = null;
-		allChampionshipsList = null;
 		findAll();
-	}
-
-	public static Championship[] values() {
-		return findAll().toArray(new Championship[0]);
 	}
 
 	private String name;
@@ -159,10 +173,6 @@ public class Championship implements Comparable<Championship> {
 	public String getName() {
 		return this.name;
 	}
-
-//	public int getNameLength() {
-//		return this.name.length();
-//	}
 
 	public ChampionshipType getType() {
 		return this.type;
@@ -189,6 +199,23 @@ public class Championship implements Comparable<Championship> {
 	@Override
 	public String toString() {
 		return "Championship [name=" + name + ", type=" + type + "]";
+	}
+
+	public static Map<String, Championship> getMap() {
+		return allChampionshipsMap;
+	}
+
+	public static void update(Championship c) {
+	}
+
+	public void setName(String name) {
+		allChampionshipsMap.remove(this.name.toLowerCase());
+		this.name = name;
+		allChampionshipsMap.put(this.name.toLowerCase(), this);
+	}
+
+	public static void remove(Championship c) {
+		allChampionshipsMap.remove(c.name.toLowerCase());
 	}
 
 }

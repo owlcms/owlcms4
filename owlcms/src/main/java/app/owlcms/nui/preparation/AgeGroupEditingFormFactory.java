@@ -6,7 +6,6 @@
  *******************************************************************************/
 package app.owlcms.nui.preparation;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.slf4j.LoggerFactory;
@@ -114,11 +113,11 @@ public class AgeGroupEditingFormFactory
 		                new StringLengthValidator(Translator.translate("CodeMustBeShort", maxLength), 0, maxLength))
 		        .bind(AgeGroup::getCode, AgeGroup::setCode);
 
-		ComboBox<Championship> ageDivisionField = new ComboBox<>();
-		ageDivisionField.setItems(new ListDataProvider<>(Arrays.asList(Championship.values())));
-		ageDivisionField.setItemLabelGenerator((ad) -> ad.getName());
-		this.binder.forField(ageDivisionField).bind(AgeGroup::getChampionship, AgeGroup::setChampionship);
-		formLayout.addFormItem(ageDivisionField, Translator.translate("Championship"));
+		ComboBox<Championship> championshipField = new ComboBox<>();
+		championshipField.setItems(new ListDataProvider<Championship>(Championship.getMap().values()));
+		championshipField.setItemLabelGenerator((ad) -> ad.getName());
+		this.binder.forField(championshipField).bind(AgeGroup::getChampionship, AgeGroup::setChampionship);
+		formLayout.addFormItem(championshipField, Translator.translate("Championship"));
 
 		TextField minAgeField = new TextField();
 		formLayout.addFormItem(minAgeField, Translator.translate("MinimumAge"));
@@ -183,8 +182,8 @@ public class AgeGroupEditingFormFactory
 		if (genderField.getValue() == null) {
 			genderField.setValue(Gender.F);
 		}
-		if (ageDivisionField.getValue() == null) {
-			ageDivisionField.setValue(Championship.of(Championship.U));
+		if (championshipField.getValue() == null) {
+			championshipField.setValue(Championship.of(Championship.U));
 		}
 
 		Component footerLayout = this.buildFooter(operation, aFromDb, cancelButtonClickListener,
