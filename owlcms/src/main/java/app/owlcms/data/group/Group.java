@@ -556,7 +556,7 @@ public class Group implements Comparable<Group> {
 
 	// @Override
 
-	public void doDone(boolean b) {
+	public void doDone() {
 		boolean previousDone = this.isDone();
 		boolean groupDone = true;
 		for (Athlete a: this.getAthletes()) {
