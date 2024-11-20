@@ -15,22 +15,22 @@ import ch.qos.logback.classic.Logger;
  */
 public enum Ranking {
     // category values
-	SNATCH("Sn"),
-	CLEANJERK("CJ"),
-	TOTAL("Tot"),
-	CUSTOM("Cus"), // modified total / custom score (e.g. technical merit for kids competition)
-	SNATCH_CJ_TOTAL("Combined"), // sum of all three point scores
-	CATEGORY_SCORE("SCORE"), // copy of TOTAL, CUSTOM or any of the global scoring systems if used to award category medals
+	SNATCH("Sn",false),
+	CLEANJERK("CJ",false),
+	TOTAL("Tot",false),
+	CUSTOM("Cus",false), // modified total / custom score (e.g. technical merit for kids competition)
+	SNATCH_CJ_TOTAL("Combined",false), // sum of all three point scores
+	CATEGORY_SCORE("SCORE",false), // copy of TOTAL, CUSTOM or any of the global scoring systems if used to award category medals
 
     // global scoring systems
-	BW_SINCLAIR("Sinclair"), // normal Sinclair
-	CAT_SINCLAIR("CatSinclair"), // legacy Quebec federation, Sinclair computed at category boundary
-	SMM("Smm"), // Legacy name, kept for import/export backward compatibility Sinclair Meltzer Huebner Faber
-	ROBI("Robi"), // IWF ROBI
-	QPOINTS("QPoints"), // Huebner QPoints.
-	GAMX("GAMX"), // Global Adjusted Mixed (Huebner)
-	AGEFACTORS("QYouth"),
-	QAGE("QAge"), // QPoints * SMHF age factors
+	BW_SINCLAIR("Sinclair",true), // normal Sinclair
+	CAT_SINCLAIR("CatSinclair",true), // legacy Quebec federation, Sinclair computed at category boundary
+	SMM("Smm",true), // Legacy name, kept for import/export backward compatibility Sinclair Meltzer Huebner Faber
+	ROBI("Robi",true), // IWF ROBI
+	QPOINTS("QPoints",true), // Huebner QPoints.
+	GAMX("GAMX",true), // Global Adjusted Mixed (Huebner)
+	AGEFACTORS("QYouth",true),
+	QAGE("QAge",true), // QPoints * SMHF age factors
 	;
 
 	static Logger logger = (Logger) LoggerFactory.getLogger(Ranking.class);
@@ -197,12 +197,15 @@ public enum Ranking {
 	}
 
 	private String reportingName;
+	private boolean medalScore;
 
 	/**
+	 * @param medalScore 
 	 * @param reportingInfoName the name of the beans used for Excel reporting
 	 */
-	Ranking(String reportingName) {
+	Ranking(String reportingName, boolean medalScore) {
 		this.reportingName = reportingName;
+		this.medalScore = medalScore;
 	}
 
 	public String getMReportingName() {
@@ -226,6 +229,14 @@ public enum Ranking {
 		} else {
 			return total.toString();
 		}
+	}
+
+	public boolean isMedalScore() {
+		return medalScore;
+	}
+
+	public void setMedalScore(boolean medalScore) {
+		this.medalScore = medalScore;
 	}
 
 }

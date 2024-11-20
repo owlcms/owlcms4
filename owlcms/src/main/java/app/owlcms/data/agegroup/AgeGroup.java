@@ -467,6 +467,12 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 	public Ranking getScoringSystem() {
 		return scoringSystem;
 	}
+	
+	@Transient
+	@JsonIgnore
+	public Ranking getMedalScoringSystem() {
+		return scoringSystem.isMedalScore() ? scoringSystem : null;
+	}
 
 	public void setScoringSystem(Ranking setScoringSystem) {
 		this.scoringSystem = setScoringSystem;

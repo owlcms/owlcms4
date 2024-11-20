@@ -6,7 +6,9 @@
  *******************************************************************************/
 package app.owlcms.nui.preparation;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.vaadin.crudui.crud.CrudOperation;
@@ -21,6 +23,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep.LabelsPosition;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -37,13 +40,14 @@ import app.owlcms.data.agegroup.AgeGroupRepository;
 import app.owlcms.data.agegroup.Championship;
 import app.owlcms.data.agegroup.ChampionshipType;
 import app.owlcms.data.athlete.Gender;
+import app.owlcms.data.athleteSort.Ranking;
 import app.owlcms.data.competition.Competition;
 import app.owlcms.i18n.Translator;
 import app.owlcms.nui.crudui.OwlcmsCrudFormFactory;
 import app.owlcms.nui.shared.CustomFormFactory;
 import ch.qos.logback.classic.Logger;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "removal" })
 public class AgeGroupEditingFormFactory
         extends OwlcmsCrudFormFactory<AgeGroup>
         implements CustomFormFactory<AgeGroup> {
@@ -98,13 +102,14 @@ public class AgeGroupEditingFormFactory
 
 		FormLayout formLayout = new FormLayout();
 		formLayout.setResponsiveSteps(new ResponsiveStep("0", 1, LabelsPosition.ASIDE));
+		formLayout.getStyle().set("--vaadin-form-item-label-width", "15em");
 		formLayout.setWidth("50em");
 
 		this.binder = buildBinder(null, aFromDb);
 		String message = Translator.translate("AgeFormat");
 
 		TextField codeField = new TextField();
-		formLayout.addFormItem(codeField, Translator.translate("AgeGroupCode"));
+		formLayout.addFormItem(codeField, createLabel(Translator.translate("AgeGroupCode")));
 		int maxLength = 5;
 		codeField.setRequired(true);
 		codeField.setMaxLength(maxLength);
@@ -116,13 +121,23 @@ public class AgeGroupEditingFormFactory
 		        .bind(AgeGroup::getCode, AgeGroup::setCode);
 
 		ComboBox<Championship> championshipField = new ComboBox<>();
-		championshipField.setItems(new ListDataProvider<Championship>(Championship.getMap().values().stream().sorted().toList()));
+		List<Championship> list = Championship.getMap().values().stream().sorted().toList();
+		championshipField.setItems(new ListDataProvider<Championship>(list));
 		championshipField.setItemLabelGenerator((ad) -> ad.getName());
 		this.binder.forField(championshipField).bind(AgeGroup::getChampionship, AgeGroup::setChampionship);
-		formLayout.addFormItem(championshipField, Translator.translate("Championship"));
+		formLayout.addFormItem(championshipField, createLabel(Translator.translate("Championship")));
+		
+		ComboBox<Ranking> medalScoreSystemField = new ComboBox<>();
+		medalScoreSystemField.setClearButtonVisible(true);
+		List<Ranking> rankings = Arrays.asList(Ranking.values());
+		List<Ranking> medalScoreRankings = rankings.stream().filter(r -> r.isMedalScore()).toList();
+		medalScoreSystemField.setItems(new ListDataProvider<Ranking>(medalScoreRankings));
+		medalScoreSystemField.setItemLabelGenerator((ad) -> Translator.translate("Ranking."+ad.name()));
+		this.binder.forField(medalScoreSystemField).bind(AgeGroup::getMedalScoringSystem, AgeGroup::setScoringSystem);
+		formLayout.addFormItem(medalScoreSystemField, createLabel(Translator.translate("MedalScoringSystem")));
 
 		TextField minAgeField = new TextField();
-		formLayout.addFormItem(minAgeField, Translator.translate("MinimumAge"));
+		formLayout.addFormItem(minAgeField, createLabel(Translator.translate("MinimumAge")));
 		this.binder.forField(minAgeField)
 		        .withNullRepresentation("")
 		        .withConverter(new StringToIntegerConverter(message))
@@ -130,7 +145,7 @@ public class AgeGroupEditingFormFactory
 		        .bind(AgeGroup::getMinAge, AgeGroup::setMinAge);
 
 		TextField maxAgeField = new TextField();
-		formLayout.addFormItem(maxAgeField, Translator.translate("MaximumAge"));
+		formLayout.addFormItem(maxAgeField, createLabel(Translator.translate("MaximumAge")));
 		this.binder.forField(maxAgeField)
 		        .withNullRepresentation("")
 		        .withConverter(new StringToIntegerConverter(message))
@@ -167,12 +182,12 @@ public class AgeGroupEditingFormFactory
 			});
 		}
 		this.binder.forField(genderField).bind(AgeGroup::getGender, AgeGroup::setGender);
-		formLayout.addFormItem(genderField, Translator.translate("Gender"));
+		formLayout.addFormItem(genderField, createLabel(Translator.translate("Gender")));
 
 		this.catField = new CategoryGridField(aFromDb);
 		this.catField.setWidthFull();
 		this.binder.forField(this.catField).bind(AgeGroup::getCategories, AgeGroup::setCategories);
-		formLayout.addFormItem(this.catField, Translator.translate("BodyWeightCategories"));
+		formLayout.addFormItem(this.catField, createLabel(Translator.translate("BodyWeightCategories")));
 
 		this.binder.readBean(aFromDb);
 		if (minAgeField.getValue().isEmpty()) {
@@ -196,6 +211,11 @@ public class AgeGroupEditingFormFactory
 		mainLayout.setMargin(false);
 		mainLayout.setPadding(false);
 		return mainLayout;
+	}
+
+	private Component createLabel(String translate) {
+		Div label = new Div(translate);
+		return label;
 	}
 
 	@Override
