@@ -713,6 +713,9 @@ public class FieldOfPlay implements IUnregister {
 		} else if (e instanceof SwitchGroup) {
 			this.logger.debug("{}*** switching group", FieldOfPlay.getLoggingName(this));
 			Group oldGroup = this.getGroup();
+			if (oldGroup != null) {
+				oldGroup.doDone();
+			}
 			SwitchGroup switchGroup = (SwitchGroup) e;
 			Group newGroup = switchGroup.getGroup();
 
@@ -1170,7 +1173,7 @@ public class FieldOfPlay implements IUnregister {
 			// will take
 			// place and subscribers will revert to current athlete display.
 			boolean done = attemptsDone >= 6;
-			getGroup().doDone(done);
+			getGroup().doDone();
 			return done;
 		}
 	}
@@ -1690,7 +1693,7 @@ public class FieldOfPlay implements IUnregister {
 			Athlete a = getCurAthlete();
 			if (getGroup() != null) {
 				boolean lastLiftDone = a == null || a.getAttemptsDone() >= 6;
-				getGroup().doDone(lastLiftDone);
+				getGroup().doDone();
 				// special case for 0 on last lift, there willl be no decision, group is really
 				// done
 				if (lastLiftDone && a != null && a.getActualLift(6) == 0) {
@@ -1699,7 +1702,7 @@ public class FieldOfPlay implements IUnregister {
 				}
 			}
 		} else if (state == BREAK && getGroup() != null) {
-			getGroup().doDone(this.breakType == BreakType.GROUP_DONE);
+			getGroup().doDone();
 		}
 		this.state = state;
 	}
