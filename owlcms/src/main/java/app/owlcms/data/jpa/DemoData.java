@@ -272,22 +272,22 @@ public class DemoData {
 		Random r2 = new Random(0);
 
 		if (forcedInsertion != null && forcedInsertion.contains(ChampionshipType.MASTERS)) {
-			createGroup(em, groupM1, mNames, lnames, r, 81, 73, liftersToLoad, Championship.of(Championship.MASTERS), 35, 45, M);
-			createGroup(em, groupM2, mNames, lnames, r, 73, 67, liftersToLoad, Championship.of(Championship.MASTERS), 35, 50, M);
-			createGroup(em, groupF1, fNames, lnames, r2, 59, 59, (int) Math.round(liftersToLoad / 1.6), Championship.of(Championship.MASTERS), 35, 45,
+			createGroup(em, groupM1, mNames, lnames, r, 81, 73, liftersToLoad, Championship.ofType(ChampionshipType.MASTERS), 35, 45, M);
+			createGroup(em, groupM2, mNames, lnames, r, 73, 67, liftersToLoad, Championship.ofType(ChampionshipType.MASTERS), 35, 50, M);
+			createGroup(em, groupF1, fNames, lnames, r2, 59, 59, (int) Math.round(liftersToLoad / 1.6), Championship.ofType(ChampionshipType.MASTERS), 35, 45,
 			        F);
-			createGroup(em, groupY1, mNames, lnames, r2, 55, 61, (int) Math.round(liftersToLoad / 2.5), Championship.of(Championship.U), 13, 17,
+			createGroup(em, groupY1, mNames, lnames, r2, 55, 61, (int) Math.round(liftersToLoad / 2.5), Championship.ofType(ChampionshipType.U), 13, 17,
 			        Gender.M);
-			createGroup(em, groupY1, fNames, lnames, r2, 45, 49, (int) Math.round(liftersToLoad / 2.5), Championship.of(Championship.U), 13, 17, F);
+			createGroup(em, groupY1, fNames, lnames, r2, 45, 49, (int) Math.round(liftersToLoad / 2.5), Championship.ofType(ChampionshipType.U), 13, 17, F);
 		} else {
-			createGroup(em, groupM1, mNames, lnames, r, 81, 73, liftersToLoad, Championship.of(Championship.DEFAULT), 18, 32, M);
-			createGroup(em, groupM2, mNames, lnames, r, 73, 67, liftersToLoad > 10 ? 20 : liftersToLoad, Championship.of(Championship.DEFAULT), 18,
+			createGroup(em, groupM1, mNames, lnames, r, 81, 73, liftersToLoad, Championship.ofType(ChampionshipType.DEFAULT), 18, 32, M);
+			createGroup(em, groupM2, mNames, lnames, r, 73, 67, liftersToLoad > 10 ? 20 : liftersToLoad, Championship.ofType(ChampionshipType.DEFAULT), 18,
 			        32, M);
-			createGroup(em, groupF1, fNames, lnames, r2, 59, 59, (int) Math.round(liftersToLoad / 1.6), Championship.of(Championship.DEFAULT), 18, 32,
+			createGroup(em, groupF1, fNames, lnames, r2, 59, 59, (int) Math.round(liftersToLoad / 1.6), Championship.ofType(ChampionshipType.DEFAULT), 18, 32,
 			        F);
-			createGroup(em, groupY1, mNames, lnames, r2, 55, 61, (int) Math.round(liftersToLoad / 2.5), Championship.of(Championship.DEFAULT), 13, 17,
+			createGroup(em, groupY1, mNames, lnames, r2, 55, 61, (int) Math.round(liftersToLoad / 2.5), Championship.ofType(ChampionshipType.DEFAULT), 13, 17,
 			        M);
-			createGroup(em, groupY1, fNames, lnames, r2, 45, 49, (int) Math.round(liftersToLoad / 2.5), Championship.of(Championship.DEFAULT), 13, 17,
+			createGroup(em, groupY1, fNames, lnames, r2, 45, 49, (int) Math.round(liftersToLoad / 2.5), Championship.ofType(ChampionshipType.DEFAULT), 13, 17,
 			        F);
 
 		}

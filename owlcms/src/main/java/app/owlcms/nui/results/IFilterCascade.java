@@ -13,6 +13,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 
 import app.owlcms.data.agegroup.AgeGroupRepository;
 import app.owlcms.data.agegroup.Championship;
+import app.owlcms.data.agegroup.ChampionshipType;
 import app.owlcms.data.athlete.Athlete;
 import app.owlcms.data.athlete.Gender;
 import app.owlcms.data.category.Category;
@@ -208,7 +209,7 @@ public interface IFilterCascade {
 			boolean notEmpty = championshipAgeGroupPrefixes.size() > 0;
 			//this.getAgeGroupFilter().setEnabled(notEmpty);
 			this.getAgeGroupFilter().setVisible(championshipAgeGroupPrefixes.size() > 1);
-			String first = (notEmpty && championshipValue == Championship.of(Championship.IWF))
+			String first = (notEmpty && championshipValue.getType() == ChampionshipType.IWF)
 			        || (championshipAgeGroupPrefixes.size() == 1)
 			                ? championshipAgeGroupPrefixes.get(0)
 			                : null;

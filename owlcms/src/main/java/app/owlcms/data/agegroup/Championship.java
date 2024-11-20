@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,11 @@ import ch.qos.logback.classic.Logger;
  */
 public class Championship implements Comparable<Championship> {
 
-	public static final String MASTERS = ChampionshipType.MASTERS.name();
-	public static final String U = ChampionshipType.U.name();
-	public static final String IWF = ChampionshipType.IWF.name();
-	public static final String DEFAULT = ChampionshipType.DEFAULT.name();
+	// public static final String MASTERS = ChampionshipType.MASTERS.name();
+	// public static final String U = ChampionshipType.U.name();
+	// public static final String IWF = ChampionshipType.IWF.name();
+	// public static final String DEFAULT = ChampionshipType.DEFAULT.name();
+
 	@SuppressWarnings("unused")
 	final private static Logger logger = (Logger) LoggerFactory.getLogger(Championship.class);
 	private static Map<String, Championship> allChampionshipsMap;
@@ -137,7 +139,8 @@ public class Championship implements Comparable<Championship> {
 			return null;
 		}
 		Championship value = of(name);
-		return value != null ? value : of(Championship.DEFAULT);
+		// return value != null ? value : of(Championship.DEFAULT);
+		return value;
 	}
 
 	public static Championship of(String championshipName) {
@@ -216,6 +219,13 @@ public class Championship implements Comparable<Championship> {
 
 	public static void remove(Championship c) {
 		allChampionshipsMap.remove(c.name.toLowerCase());
+	}
+
+	public static Championship ofType(ChampionshipType t) {
+		// return first championship of the type
+		// we use reverse order to get Open and Senior and U20 first.
+		Optional<Championship> found = allChampionshipsMap.values().stream().sorted(Comparator.reverseOrder()).filter(v -> v.getType() == t).findFirst();
+		return found.isPresent() ? found.get() : null;
 	}
 
 }

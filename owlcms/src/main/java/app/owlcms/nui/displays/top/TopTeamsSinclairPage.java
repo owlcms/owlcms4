@@ -23,6 +23,7 @@ import app.owlcms.apputils.queryparameters.TopParametersReader;
 import app.owlcms.data.agegroup.AgeGroup;
 import app.owlcms.data.agegroup.AgeGroupRepository;
 import app.owlcms.data.agegroup.Championship;
+import app.owlcms.data.agegroup.ChampionshipType;
 import app.owlcms.data.athleteSort.Ranking;
 import app.owlcms.data.category.Category;
 import app.owlcms.data.competition.Competition;
@@ -56,25 +57,25 @@ public class TopTeamsSinclairPage extends AbstractResultsDisplayPage implements 
 	 */
 	@Override
 	public void addDialogContent(Component target, VerticalLayout vl) {
-		// logger.debug("addDialogContent ad={} ag={} darkMode={}", getAgeDivision(),
+		// logger.debug("addDialogContent ad={} ag={} darkMode={}", getchampionship(),
 		// getAgeGroupPrefix(),
 		// isDarkMode());
 
 		DisplayOptions.addLightingEntries(vl, target, this);
-		ComboBox<Championship> ageDivisionComboBox = new ComboBox<>();
+		ComboBox<Championship> championshipComboBox = new ComboBox<>();
 		ComboBox<String> ageGroupPrefixComboBox = new ComboBox<>();
-		List<Championship> ageDivisions = Championship.findAll();
-		ageDivisionComboBox.setItems(ageDivisions);
-		ageDivisionComboBox.setPlaceholder(Translator.translate("Championship"));
-		ageDivisionComboBox.setClearButtonVisible(true);
-		ageDivisionComboBox.addValueChangeListener(e -> {
-			Championship ageDivision = e.getValue();
-			setChampionship(ageDivision);
+		List<Championship> championships = Championship.findAll();
+		championshipComboBox.setItems(championships);
+		championshipComboBox.setPlaceholder(Translator.translate("Championship"));
+		championshipComboBox.setClearButtonVisible(true);
+		championshipComboBox.addValueChangeListener(e -> {
+			Championship championship = e.getValue();
+			setChampionship(championship);
 			String existingAgeGroupPrefix = getAgeGroupPrefix();
-			List<String> activeAgeGroups = setAgeGroupPrefixItems(ageGroupPrefixComboBox, ageDivision);
+			List<String> activeAgeGroups = setAgeGroupPrefixItems(ageGroupPrefixComboBox, championship);
 			if (existingAgeGroupPrefix != null) {
 				ageGroupPrefixComboBox.setValue(existingAgeGroupPrefix);
-			} else if (activeAgeGroups != null && !activeAgeGroups.isEmpty() && ageDivision != Championship.of(Championship.MASTERS)) {
+			} else if (activeAgeGroups != null && !activeAgeGroups.isEmpty() && championship.getType() != ChampionshipType.MASTERS) {
 				ageGroupPrefixComboBox.setValue(activeAgeGroups.get(0));
 			}
 		});
@@ -86,10 +87,10 @@ public class TopTeamsSinclairPage extends AbstractResultsDisplayPage implements 
 		});
 		setAgeGroupPrefixItems(ageGroupPrefixComboBox, getChampionship());
 		ageGroupPrefixComboBox.setValue(getAgeGroupPrefix());
-		ageDivisionComboBox.setValue(getChampionship());
+		championshipComboBox.setValue(getChampionship());
 
 		vl.add(new NativeLabel(Translator.translate("SelectAgeGroup")),
-		        new HorizontalLayout(ageDivisionComboBox, ageGroupPrefixComboBox));
+		        new HorizontalLayout(championshipComboBox, ageGroupPrefixComboBox));
 	}
 
 	@Override

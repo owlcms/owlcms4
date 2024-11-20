@@ -35,6 +35,7 @@ import app.owlcms.components.fields.CategoryGridField;
 import app.owlcms.data.agegroup.AgeGroup;
 import app.owlcms.data.agegroup.AgeGroupRepository;
 import app.owlcms.data.agegroup.Championship;
+import app.owlcms.data.agegroup.ChampionshipType;
 import app.owlcms.data.athlete.Gender;
 import app.owlcms.data.competition.Competition;
 import app.owlcms.i18n.Translator;
@@ -88,6 +89,7 @@ public class AgeGroupEditingFormFactory
 		        deleteButtonClickListener, false, buttons);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Component buildNewForm(CrudOperation operation, AgeGroup aFromDb, boolean readOnly,
 	        ComponentEventListener<ClickEvent<Button>> cancelButtonClickListener,
@@ -114,7 +116,7 @@ public class AgeGroupEditingFormFactory
 		        .bind(AgeGroup::getCode, AgeGroup::setCode);
 
 		ComboBox<Championship> championshipField = new ComboBox<>();
-		championshipField.setItems(new ListDataProvider<Championship>(Championship.getMap().values()));
+		championshipField.setItems(new ListDataProvider<Championship>(Championship.getMap().values().stream().sorted().toList()));
 		championshipField.setItemLabelGenerator((ad) -> ad.getName());
 		this.binder.forField(championshipField).bind(AgeGroup::getChampionship, AgeGroup::setChampionship);
 		formLayout.addFormItem(championshipField, Translator.translate("Championship"));
@@ -183,7 +185,7 @@ public class AgeGroupEditingFormFactory
 			genderField.setValue(Gender.F);
 		}
 		if (championshipField.getValue() == null) {
-			championshipField.setValue(Championship.of(Championship.U));
+			championshipField.setValue(Championship.ofType(ChampionshipType.U));
 		}
 
 		Component footerLayout = this.buildFooter(operation, aFromDb, cancelButtonClickListener,
