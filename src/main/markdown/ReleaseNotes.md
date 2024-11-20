@@ -4,7 +4,7 @@
 > - Beta releases are **not** normally used in actual competitions, except when a new feature is required. Use extreme care in testing if you intend to do so.
 
 - Maintenance log:
-  - 54.0.0-beta07: improved robustness of the verification that a group is done.
+  - 54.0.0-beta07: improved robustness of the verification that a session is done.
   - 54.0.0-beta06: Changing the championship for an age group was not doing anything. Fixed.
   - 54.0.0-beta06: On the Age Group definition page, added a button to rename/add/remove championships.
   - 54.0.0-beta06: It is now possible to select a scoring system for assigning medals on the age group editing form.  By default, no scoring system is selected, meaning that the traditional way  using the total and optionally the snatch/clean-and-jerk is used)
