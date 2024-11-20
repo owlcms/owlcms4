@@ -139,7 +139,6 @@ public class Championship implements Comparable<Championship> {
 			return null;
 		}
 		Championship value = of(name);
-		// return value != null ? value : of(Championship.DEFAULT);
 		return value;
 	}
 
