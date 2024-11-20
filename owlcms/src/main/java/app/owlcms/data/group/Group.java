@@ -557,11 +557,18 @@ public class Group implements Comparable<Group> {
 	// @Override
 
 	public void doDone(boolean b) {
-		Group.logger.debug("done? {} previous={} done={} {} [{}]", getName(), this.done, b,
-		        System.identityHashCode(this),
-		        LoggerUtils.whereFrom());
-		if (this.done != b) {
-			this.setDone(b);
+		boolean previousDone = this.isDone();
+		boolean groupDone = true;
+		for (Athlete a: this.getAthletes()) {
+			boolean weighedIn = a.getBodyWeight() != null && a.getBodyWeight() > 0.1;
+			if (weighedIn && !a.isDone()) {
+				groupDone = false;
+				break;
+			}
+		}
+		//logger.debug("done? {} before={} after={} {}", getName(), this.done, groupDone, LoggerUtils.whereFrom());
+		this.setDone(groupDone);
+		if (this.isDone() != previousDone) {
 			GroupRepository.save(this);
 		}
 	}

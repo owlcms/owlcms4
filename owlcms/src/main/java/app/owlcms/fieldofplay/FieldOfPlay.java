@@ -713,6 +713,9 @@ public class FieldOfPlay implements IUnregister {
 		} else if (e instanceof SwitchGroup) {
 			this.logger.debug("{}*** switching group", FieldOfPlay.getLoggingName(this));
 			Group oldGroup = this.getGroup();
+			if (oldGroup != null) {
+				oldGroup.doDone(true);
+			}
 			SwitchGroup switchGroup = (SwitchGroup) e;
 			Group newGroup = switchGroup.getGroup();
 
