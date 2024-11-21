@@ -19,12 +19,14 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep.LabelsPosition;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -109,7 +111,6 @@ public class AgeGroupEditingFormFactory
 		String message = Translator.translate("AgeFormat");
 
 		TextField codeField = new TextField();
-		formLayout.addFormItem(codeField, createLabel(Translator.translate("AgeGroupCode")));
 		int maxLength = 5;
 		codeField.setRequired(true);
 		codeField.setMaxLength(maxLength);
@@ -119,11 +120,20 @@ public class AgeGroupEditingFormFactory
 		        .withValidator(
 		                new StringLengthValidator(Translator.translate("CodeMustBeShort", maxLength), 0, maxLength))
 		        .bind(AgeGroup::getCode, AgeGroup::setCode);
+		
+		Checkbox gendered = new Checkbox(Translator.translate("CodeIncludesGender"));
+		this.binder.forField(gendered).bind(AgeGroup::isAlreadyGendered, AgeGroup::setAlreadyGendered);
+		
+		HorizontalLayout codeInfo = new HorizontalLayout(codeField,gendered);
+		codeInfo.setAlignItems(Alignment.CENTER);
+		formLayout.addFormItem(codeInfo, createLabel(Translator.translate("AgeGroupCode")));
 
 		ComboBox<Championship> championshipField = new ComboBox<>();
 		List<Championship> list = Championship.getMap().values().stream().sorted().toList();
 		championshipField.setItems(new ListDataProvider<Championship>(list));
 		championshipField.setItemLabelGenerator((ad) -> ad.getName());
+		championshipField.setRequired(true);
+		championshipField.setRequiredIndicatorVisible(true);
 		this.binder.forField(championshipField).bind(AgeGroup::getChampionship, AgeGroup::setChampionship);
 		formLayout.addFormItem(championshipField, createLabel(Translator.translate("Championship")));
 		
@@ -133,6 +143,7 @@ public class AgeGroupEditingFormFactory
 		List<Ranking> medalScoreRankings = rankings.stream().filter(r -> r.isMedalScore()).toList();
 		medalScoreSystemField.setItems(new ListDataProvider<Ranking>(medalScoreRankings));
 		medalScoreSystemField.setItemLabelGenerator((ad) -> Translator.translate("Ranking."+ad.name()));
+		//logger.debug("***** scoring system {}", aFromDb.getMedalScoringSystem());
 		this.binder.forField(medalScoreSystemField).bind(AgeGroup::getMedalScoringSystem, AgeGroup::setScoringSystem);
 		formLayout.addFormItem(medalScoreSystemField, createLabel(Translator.translate("MedalScoringSystem")));
 

@@ -48,7 +48,7 @@ public class XLSXAgeGroupsExport extends XLSXWorkbookStreamSource {
 			int rowNum = 1;
 			for (AgeGroup ag : ageGroups) {
 				Row curRow = sheet.createRow(rowNum);
-				curRow.createCell(0).setCellValue(ag.getCode());
+				curRow.createCell(0).setCellValue((ag.isAlreadyGendered() ? "!" : "") + ag.getCode());
 				curRow.createCell(1).setCellValue(ag.getChampionship().getName());
 				curRow.createCell(2).setCellValue(ag.getChampionshipType().name());
 				curRow.createCell(3).setCellValue(ag.getGender().name());

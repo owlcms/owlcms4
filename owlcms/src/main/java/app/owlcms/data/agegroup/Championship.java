@@ -146,6 +146,9 @@ public class Championship implements Comparable<Championship> {
 		if (allChampionshipsMap == null) {
 			findAll();
 		}
+		if (championshipName == null) {
+			return new Championship("",ChampionshipType.U);
+		}
 		return allChampionshipsMap.get(championshipName.toLowerCase());
 	}
 
