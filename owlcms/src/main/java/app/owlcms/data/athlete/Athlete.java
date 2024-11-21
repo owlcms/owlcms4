@@ -3152,6 +3152,15 @@ public class Athlete {
 	public boolean isDone() {
 		boolean notFinishedLifting = this.getCleanJerk3ActualLift() == null || this.getCleanJerk3ActualLift().isBlank()
 		        || this.getCleanJerk3AsInteger() == null;
+		if (notFinishedLifting) {
+			Group g = getGroup();
+			if (g.isDone()) {
+				// if their session is considered done, athletes that did not weigh in
+				// should not prevent the category from being considered finished.
+				boolean didNotWeighIn = getBodyWeight() == null || getBodyWeight() < 0.1;
+				return didNotWeighIn;
+			}
+		}
 		return !notFinishedLifting;
 	}
 
@@ -3165,7 +3174,7 @@ public class Athlete {
 			return true;
 		}
 		if (medalingSession != null && athleteGroup.equals(medalingSession) && (getBodyWeight() == null || getBodyWeight() < 0.01)) {
-			// athletes in the current group that have not weighed in are considered done.
+			// athletes in a done session that have not weighed in are considered done.
 			return true;
 		}
 		boolean notFinishedLifting = this.getCleanJerk3ActualLift() == null || this.getCleanJerk3ActualLift().isBlank()
