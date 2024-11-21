@@ -43,6 +43,7 @@ import app.owlcms.data.agegroup.AgeGroupRepository;
 import app.owlcms.data.agegroup.Championship;
 import app.owlcms.data.athlete.AthleteRepository;
 import app.owlcms.data.athlete.Gender;
+import app.owlcms.data.athleteSort.Ranking;
 import app.owlcms.data.category.CategoryRepository;
 import app.owlcms.data.competition.Competition;
 import app.owlcms.data.competition.CompetitionRepository;
@@ -313,6 +314,13 @@ public class AgeGroupContent extends BaseContent implements CrudListener<AgeGrou
 			        return tr;
 		        }))
 		        .setHeader(Translator.translate("Championship"));
+		grid.addColumn(new TextRenderer<>(
+		        item -> {
+			        Ranking ss = item.getScoringSystem();
+			        String tr = (ss != null ? Translator.translate("Ranking."+ss) : "");
+			        return tr;
+		        }))
+		        .setHeader(Translator.translate("CeremonyType.MEDALS"));
 		grid.addColumn(new TextRenderer<>(
 		        item -> {
 			        return item.getGender().asGenderName();
