@@ -456,16 +456,20 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 
 	private void computeCategoryMedalsJson(TreeMap<String, List<Athlete>> medals2) {
 		OwlcmsSession.withFop(fop -> {
-			List<Athlete> medalists = medals2.get(getCategory().getCode());
-			// logger.debug("medalists {}", medalists);
+			String catCode = getCategory().getCode();
+			List<Athlete> medalists = medals2.get(catCode);
+			Category cat = CategoryRepository.findByCode(catCode);
+			boolean scoreNeeded = (medalists != null && !medalists.isEmpty()) &&
+					 (medalists.get(0).getComputedScoringSystem() != Ranking.TOTAL);
+			setScoreRanks(scoreNeeded);
 
 			JsonArray jsonMCArray = Json.createArray();
 			JsonObject jMC = Json.createObject();
 			int mcX = 0;
 			if (medalists != null && !medalists.isEmpty()) {
 				jMC.put("categoryName", getCategory().getDisplayName());
+				setTitles(jMC, cat);
 				jMC.put("leaders", getAthletesJson(new ArrayList<>(medalists), fop));
-				// logger.debug("medalCategory: {}", jMC.toJson());
 				jsonMCArray.set(mcX, jMC);
 				mcX++;
 			}
@@ -500,21 +504,8 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 				String key = medalCat.getKey();
 				Category cat = CategoryRepository.findByCode(key);
 
-				jMC.put("categoryName", cat.getDisplayName());
-				Ranking scoringSystem = cat.getAgeGroup().getScoringSystem();
-				String rankingTitle = Translator.translate("Rank");
-				if (scoringSystem != null && scoringSystem != Ranking.TOTAL) {
-					String scoreScoringTitle = Translator.translate("Score");
-					scoreScoringTitle = Ranking.getScoringTitle(scoringSystem);
-					jMC.put("rankingTitle", "");
-					jMC.put("scoreScoringTitle", scoreScoringTitle);
-					jMC.put("scoreRankingTitle", rankingTitle);
-				} else {
-					jMC.put("rankingTitle", rankingTitle);
-					jMC.put("scoreScoringTitle", "");
-					jMC.put("scoreRankingTitle", "");
-
-				}
+				setTitles(jMC, cat);
+				
 				jMC.put("leaders", getAthletesJson(new ArrayList<>(medalists), null));
 				if (mcX == 0) {
 					jMC.put("showCatHeader", "");
@@ -522,18 +513,36 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 					jMC.put("showCatHeader", "display:none;");
 				}
 
-				// logger.debug("computeGroupMedalsJson cat={} scoreNeeded: {}\n{}", cat, scoreNeeded, LoggerUtils.stackTrace());
-				this.getElement().setProperty("showSinclair", scoreNeeded);
-				this.getElement().setProperty("showSinclairRank", scoreNeeded);
-				// logger.debug("medalCategory: {}", jMC.toJson());
+				setScoreRanks(scoreNeeded);
 				jsonMCArray.set(mcX, jMC);
 				mcX++;
 			}
 		}
-		// logger.debug("setting element \n{}", LoggerUtils.stackTrace());
 		this.getElement().setPropertyJson("medalCategories", jsonMCArray);
 		if (mcX == 0) {
 			this.getElement().setProperty("noCategories", true);
+		}
+	}
+
+	public void setScoreRanks(boolean scoreNeeded) {
+		this.getElement().setProperty("showSinclair", scoreNeeded);
+		this.getElement().setProperty("showSinclairRank", scoreNeeded);
+	}
+
+	public void setTitles(JsonObject jMC, Category cat) {
+		jMC.put("categoryName", cat.getDisplayName());
+		Ranking scoringSystem = cat.getAgeGroup().getScoringSystem();
+		String rankingTitle = Translator.translate("Rank");
+		if (scoringSystem != null && scoringSystem != Ranking.TOTAL) {
+			String scoreScoringTitle = Translator.translate("Score");
+			scoreScoringTitle = Ranking.getScoringTitle(scoringSystem);
+			jMC.put("rankingTitle", "");
+			jMC.put("scoreScoringTitle", scoreScoringTitle);
+			jMC.put("scoreRankingTitle", rankingTitle);
+		} else {
+			jMC.put("rankingTitle", rankingTitle);
+			jMC.put("scoreScoringTitle", "");
+			jMC.put("scoreRankingTitle", "");
 		}
 	}
 
