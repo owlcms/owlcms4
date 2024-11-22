@@ -422,7 +422,6 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 	protected AthleteCrudGrid createCrudGrid(OwlcmsCrudFormFactory<Athlete> crudFormFactory) {
 		Ranking scoringSystem = computeScoringSystem();
 		this.setScoringSystem(scoringSystem);
-		logger.warn("createCrudGrid {}",scoringSystem);
 		Grid<Athlete> grid = SessionResultsContent.createResultGrid(this.getScoringSystem());
 
 		OwlcmsGridLayout gridLayout = new OwlcmsGridLayout(Athlete.class);
@@ -487,7 +486,7 @@ public class PackageContent extends AthleteGridContent implements HasDynamicTitl
 
 	@Override
 	protected void defineFilters(GridCrud<Athlete> crud) {
-		logger.warn("defineFilters");
+		//logger.debug("defineFilters");
 		
 		defineFilterCascade(crud);
 		this.includeUnfinishedCategories = new Checkbox(Translator.translate("Video.includeNotCompleted"));

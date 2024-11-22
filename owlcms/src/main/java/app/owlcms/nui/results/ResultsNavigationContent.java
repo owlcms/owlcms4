@@ -55,7 +55,7 @@ public class ResultsNavigationContent extends BaseNavigationContent implements N
 	 * Instantiates a new wrapup navigation content.
 	 */
 	public ResultsNavigationContent() {
-		Button groupResults = openInNewTab(ResultsContent.class, Translator.translate("GroupResults"));
+		Button groupResults = openInNewTab(SessionResultsContent.class, Translator.translate("GroupResults"));
 		highlight(groupResults);
 		// Button medals = openInNewTab(ResultsContent.class,
 		// Translator.translate("Results.Medals"));

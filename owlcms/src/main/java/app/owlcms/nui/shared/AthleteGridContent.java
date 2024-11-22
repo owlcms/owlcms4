@@ -1440,6 +1440,7 @@ public abstract class AthleteGridContent extends BaseContent
 		this.setCrudGrid(createCrudGrid(crudFormFactory));
 		this.crudLayout = (OwlcmsGridLayout) this.getCrudGrid().getCrudLayout();
 		defineFilters(this.getCrudGrid());
+		this.getGroupFilter().setValue(getGroup());
 		fillHW(this.getCrudGrid(), this);
 		setDownSilenced(true);
 	}
