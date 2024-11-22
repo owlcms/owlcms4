@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.LoggerFactory;
 import org.vaadin.crudui.crud.impl.GridCrud;
+import org.vaadin.crudui.layout.CrudLayout;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
@@ -27,6 +28,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -38,6 +40,7 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
+import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasDynamicTitle;
@@ -69,7 +72,6 @@ import app.owlcms.nui.shared.OwlcmsLayout;
 import app.owlcms.spreadsheet.JXLSMedalsSheet;
 import app.owlcms.spreadsheet.JXLSResultSheet;
 import app.owlcms.spreadsheet.JXLSWinningSheet;
-import app.owlcms.utils.LoggerUtils;
 import app.owlcms.utils.NaturalOrderComparator;
 import app.owlcms.utils.URLUtils;
 import ch.qos.logback.classic.Level;
@@ -82,10 +84,10 @@ import ch.qos.logback.classic.Logger;
  */
 @SuppressWarnings("serial")
 @Route(value = "results/results", layout = OwlcmsLayout.class)
-public class ResultsContent extends AthleteGridContent implements HasDynamicTitle {
+public class SessionResultsContent extends AthleteGridContent implements HasDynamicTitle {
 
 	final private static Logger jexlLogger = (Logger) LoggerFactory.getLogger("org.apache.commons.jexl2.JexlEngine");
-	final private static Logger logger = (Logger) LoggerFactory.getLogger(ResultsContent.class);
+	final private static Logger logger = (Logger) LoggerFactory.getLogger(SessionResultsContent.class);
 	static {
 		logger.setLevel(Level.INFO);
 		jexlLogger.setLevel(Level.ERROR);
@@ -119,54 +121,67 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 		        .setComparator(new WinningOrderComparator(Ranking.CLEANJERK, false))
 		        .setRenderer(new TextRenderer<>((a) -> Ranking.formatScoreboardRank(a.getCleanJerkRank())));
 
-		String protocolFileName = Competition.getCurrent().getProtocolTemplateFileName();
-		if (protocolFileName != null && (protocolFileName.toLowerCase().contains("fhq"))) {
-			// historical
-			grid.addColumn(new NumberRenderer<>(Athlete::getCategorySinclair, "%.3f", OwlcmsSession.getLocale(), "-"))
-			        .setSortProperty("categorySinclair")
-			        .setHeader("Cat. Sinclair")
-			        .setComparator(new WinningOrderComparator(Ranking.CAT_SINCLAIR, true));
-		}
-
 		grid.addColumn(new NumberRenderer<>(a -> Ranking.getRankingValue(a, scoringSystem), "%.2f",
 		        OwlcmsSession.getLocale(), "0.00"))
 		        .setSortProperty("score").setHeader(Translator.translate("Ranking." + scoringSystem))
 		        .setComparator(new WinningOrderComparator(scoringSystem, true));
 
-		if (scoringSystem != Ranking.BW_SINCLAIR) {
-			grid.addColumn(
-			        new NumberRenderer<>(Athlete::getSinclairForDelta, "%.3f", OwlcmsSession.getLocale(), "0.000"))
-			        .setSortProperty("sinclair").setHeader(Translator.translate("sinclair"))
-			        .setComparator(new WinningOrderComparator(Ranking.BW_SINCLAIR, true));
-		}
-
-		if (scoringSystem != Ranking.SMM) {
-			grid.addColumn(new NumberRenderer<>(Athlete::getSmhfForDelta, "%.3f", OwlcmsSession.getLocale(), "-"))
-			        .setHeader(Translator.translate("smhf"))
-			        .setSortProperty("smm")
-			        .setComparator(new WinningOrderComparator(Ranking.SMM, true));
-		}
-
-		if (scoringSystem != Ranking.ROBI) {
-			grid.addColumn(new NumberRenderer<>(Athlete::getRobi, "%.3f", OwlcmsSession.getLocale(), "-"))
-			        .setSortProperty("robi")
-			        .setHeader(Translator.translate("robi"))
-			        .setComparator(new WinningOrderComparator(Ranking.ROBI, true));
-		}
+		// if (scoringSystem != Ranking.BW_SINCLAIR) {
+		// grid.addColumn(
+		// new NumberRenderer<>(Athlete::getSinclairForDelta, "%.3f", OwlcmsSession.getLocale(), "0.000"))
+		// .setSortProperty("sinclair").setHeader(Translator.translate("sinclair"))
+		// .setComparator(new WinningOrderComparator(Ranking.BW_SINCLAIR, true));
+		// }
+		//
+		// if (scoringSystem != Ranking.SMM) {
+		// grid.addColumn(new NumberRenderer<>(Athlete::getSmhfForDelta, "%.3f", OwlcmsSession.getLocale(), "-"))
+		// .setHeader(Translator.translate("smhf"))
+		// .setSortProperty("smm")
+		// .setComparator(new WinningOrderComparator(Ranking.SMM, true));
+		// }
+		//
+		// if (scoringSystem != Ranking.ROBI) {
+		// grid.addColumn(new NumberRenderer<>(Athlete::getRobi, "%.3f", OwlcmsSession.getLocale(), "-"))
+		// .setSortProperty("robi")
+		// .setHeader(Translator.translate("robi"))
+		// .setComparator(new WinningOrderComparator(Ranking.ROBI, true));
+		// }
 		return grid;
 	}
 
+	public static String formatBlankRank(Integer total) {
+		if (total == null || total == 0) {
+			return "&nbsp;";
+		} else if (total == -1) {
+			// invited lifter, not eligible.
+			return Translator.translate("Results.Extra/Invited");
+		} else {
+			return total.toString();
+		}
+	}
+
+	public static String formatScoreboardRank(Integer total) {
+		if (total == null || total == 0) {
+			return "-";
+		} else if (total == -1) {
+			// invited lifter, not eligible.
+			return Translator.translate("Results.Extra/Invited");
+		} else {
+			return total.toString();
+		}
+	}
+
+	Map<String, List<String>> urlParameterMap = new HashMap<>();
 	private Group currentGroup;
 	private JXLSDownloader downloadDialog;
 	private Checkbox medalsOnly;
-	Map<String, List<String>> urlParameterMap = new HashMap<>();
+	private ComboBox<Ranking> rankingSelector;
+	private Ranking scoringSystem;
 
 	/**
-	 * Instantiates a new announcer content. Does nothing. Content is created in
-	 * {@link #setParameter(BeforeEvent, String)} after URL parameters are parsed.
+	 * Instantiates a new announcer content. Does nothing. Content is created in {@link #setParameter(BeforeEvent, String)} after URL parameters are parsed.
 	 */
-	public ResultsContent() {
-		defineFilters(this.getCrudGrid());
+	public SessionResultsContent() {
 	}
 
 	/**
@@ -178,7 +193,8 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 	 */
 	@Override
 	public AthleteCrudGrid createCrudGrid(OwlcmsCrudFormFactory<Athlete> crudFormFactory) {
-		Grid<Athlete> grid = createResultGrid(Competition.getCurrent().getScoringSystem());
+		Ranking scoringSystem = computeScoringSystem();
+		Grid<Athlete> grid = SessionResultsContent.createResultGrid(scoringSystem);
 
 		OwlcmsGridLayout gridLayout = new OwlcmsGridLayout(Athlete.class);
 		AthleteCrudGrid crudGrid = new AthleteCrudGrid(Athlete.class, gridLayout, crudFormFactory, grid) {
@@ -188,6 +204,8 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 				Component reset = createReset();
 				if (reset != null) {
 					this.crudLayout.addToolbarComponent(reset);
+					Element toolbar = reset.getParent().get().getElement();
+					toolbar.getStyle().set("flex-wrap", "wrap").set("align-content", "center");
 				}
 			}
 
@@ -203,8 +221,6 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 			protected void updateButtons() {
 			}
 		};
-
-		defineFilters(crudGrid);
 
 		crudGrid.setCrudListener(this);
 		crudGrid.setClickRowToUpdate(true);
@@ -255,51 +271,48 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 	 */
 	@Override
 	public Collection<Athlete> findAll() {
-		Group currentGroup = getGroupFilter().getValue();
 		Gender currentGender = this.getGenderFilter().getValue();
 
-		List<Athlete> rankedAthletes = AthleteSorter.assignCategoryRanks(currentGroup);
+		List<Athlete> rankedAthletes = AthleteSorter.assignCategoryRanks(getCurrentGroup());
 
 		// unfinished categories need to be computed using all relevant athletes, including not weighed-in yet
 		@SuppressWarnings("unchecked")
 		Set<String> unfinishedCategories = AthleteRepository.allUnfinishedCategories();
-		//logger.debug("ResultsContent unfinished categories {}", unfinishedCategories);
+		// logger.debug("ResultsContent unfinished categories {}", unfinishedCategories);
 
-		if (currentGroup != null) {
+		if (getCurrentGroup() != null) {
 			rankedAthletes = AthleteSorter.displayOrderCopy(rankedAthletes).stream()
-			        .filter(a -> a.getGroup() != null ? a.getGroup().equals(currentGroup) : false)
+			        .filter(a -> a.getGroup() != null ? a.getGroup().equals(getCurrentGroup()) : false)
 			        .filter(a -> a.getGender() != null
 			                ? (currentGender != null ? currentGender.equals(a.getGender()) : true)
 			                : false)
-					.map(a -> {
-						if (a.getCategory() != null && unfinishedCategories.contains(a.getCategory().getCode())) {
-							a.setCategoryFinished(false);
-						} else {
-							a.setCategoryFinished(true);
-						}
-						return a;
-					})
+			        .map(a -> {
+				        if (a.getCategory() != null && unfinishedCategories.contains(a.getCategory().getCode())) {
+					        a.setCategoryFinished(false);
+				        } else {
+					        a.setCategoryFinished(true);
+				        }
+				        return a;
+			        })
 			        .collect(Collectors.toList());
 		} else {
 			rankedAthletes = AthleteSorter.displayOrderCopy(rankedAthletes).stream()
 			        .filter(a -> a.getGender() != null
 			                ? (currentGender != null ? currentGender.equals(a.getGender()) : true)
 			                : false)
-					.map(a -> {
-						if (a.getCategory() != null && unfinishedCategories.contains(a.getCategory().getCode())) {
-							a.setCategoryFinished(false);
-						} else {
-							a.setCategoryFinished(true);
-						}
-						return a;
-					})
-					.peek(a -> {
-						logger.debug("{}, {}", a.isCategoryFinished(), a.getFullName());
-					})
+			        .map(a -> {
+				        if (a.getCategory() != null && unfinishedCategories.contains(a.getCategory().getCode())) {
+					        a.setCategoryFinished(false);
+				        } else {
+					        a.setCategoryFinished(true);
+				        }
+				        return a;
+			        })
+			        .peek(a -> {
+				        logger.debug("{}, {}", a.isCategoryFinished(), a.getFullName());
+			        })
 			        .collect(Collectors.toList());
 		}
-
-
 
 		Boolean medals = this.medalsOnly.getValue();
 		if (medals != null && medals) {
@@ -328,6 +341,10 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 		return Translator.translate("GroupResults");
 	}
 
+	public Ranking getScoringSystem() {
+		return this.scoringSystem; // not reliable.
+	}
+
 	@Override
 	public boolean isIgnoreGroupFromURL() {
 		return false;
@@ -350,11 +367,9 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 	 * Note: because we have the @Route, the parameters are parsed *before* our parent layout is created.
 	 *
 	 * @param event     Vaadin navigation event
-	 * @param parameter null in this case -- we don't want a vaadin "/" parameter. This allows us to add query
-	 *                  parameters instead.
+	 * @param parameter null in this case -- we don't want a vaadin "/" parameter. This allows us to add query parameters instead.
 	 *
-	 * @see app.owlcms.apputils.queryparameters.FOPParameters#setParameter(com.vaadin.flow.router.BeforeEvent,
-	 *      java.lang.String)
+	 * @see app.owlcms.apputils.queryparameters.FOPParameters#setParameter(com.vaadin.flow.router.BeforeEvent, java.lang.String)
 	 */
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
@@ -370,12 +385,12 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 			String groupName = groupNames.get(0);
 			if (groupName == "*") {
 				// special group to show all athletes
-				this.currentGroup = null;
+				this.setCurrentGroup(null);
 			} else {
 				if (groupName.contains("%") || groupName.contains("+")) {
 					groupName = URLDecoder.decode(groupName, StandardCharsets.UTF_8);
 				}
-				this.currentGroup = GroupRepository.findByName(groupName);
+				this.setCurrentGroup(GroupRepository.findByName(groupName));
 			}
 		} else {
 			// if no group, we pick the first alphabetical group as a filter
@@ -383,21 +398,25 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 			// (which has a noticeable impact on slower machines)
 			List<Group> groups = GroupRepository.findAll();
 			groups.sort(new NaturalOrderComparator<>());
-			this.currentGroup = (groups.size() > 0 ? groups.get(0) : null);
+			this.setCurrentGroup((groups.size() > 0 ? groups.get(0) : null));
 		}
-		if (this.currentGroup != null) {
-			params.put("group", Arrays.asList(URLUtils.urlEncode(this.currentGroup.getName())));
+		if (this.getCurrentGroup() != null) {
+			params.put("group", Arrays.asList(URLUtils.urlEncode(this.getCurrentGroup().getName())));
 		} else {
 			// params.remove("group");
 			params.put("group", Arrays.asList(URLUtils.urlEncode("*")));
 		}
-		doSwitchGroup(this.currentGroup);
+		doSwitchGroup(this.getCurrentGroup());
 		params.remove("fop");
 		logger.debug("params {}", params);
 
 		// change the URL to reflect group
 		event.getUI().getPage().getHistory().replaceState(null,
 		        new Location(getLocation().getPath(), new QueryParameters(URLUtils.cleanParams(params))));
+	}
+
+	public void setRankingSelector(ComboBox<Ranking> rankingSelector) {
+		this.rankingSelector = rankingSelector;
 	}
 
 	@Override
@@ -445,10 +464,10 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 		groups.sort(Group.groupSelectionComparator.reversed());
 
 		OwlcmsSession.withFop(fop -> {
-			logger.trace("initial setting group to {} {}", this.currentGroup, LoggerUtils.whereFrom());
-			getGroupFilter().setValue(this.currentGroup);
+			//logger.debug("top bar setting group to {} {}", this.getCurrentGroup(), LoggerUtils.whereFrom());
+			getGroupFilter().setValue(this.getCurrentGroup());
 			// switching to group "*" is understood to mean all groups
-			this.topBarMenu = new GroupSelectionMenu(groups, this.currentGroup,
+			this.topBarMenu = new GroupSelectionMenu(groups, this.getCurrentGroup(),
 			        fop,
 			        (g1) -> doSwitchGroup(g1),
 			        (g1) -> doSwitchGroup(new Group("*")),
@@ -464,26 +483,25 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 	 */
 	@Override
 	protected void defineFilters(GridCrud<Athlete> crud) {
-		if (this.medalsOnly != null) {
-			return;
-		}
+		//logger.debug("defineFilters {} -  {}\n{}", getGroup(), currentGroup,LoggerUtils.stackTrace());
 
 		getGroupFilter().setPlaceholder(Translator.translate("Group"));
 		List<Group> groups = GroupRepository.findAll();
 		groups.sort(new NaturalOrderComparator<>());
 		getGroupFilter().setItems(groups);
+		getGroupFilter().setValue(currentGroup);
+		createTopBarGroupSelect();
 		getGroupFilter().setItemLabelGenerator(Group::getName);
 		// hide because the top bar has it
 		getGroupFilter().getStyle().set("display", "none");
 		getGroupFilter().addValueChangeListener(e -> {
-			logger.debug("updating filters: group={}", e.getValue());
-			this.currentGroup = e.getValue();
-			updateURLLocation(getLocationUI(), getLocation(), this.currentGroup);
-			// subscribeIfLifting(e.getValue());
+			updateURLLocation(getLocationUI(), getLocation(), this.getCurrentGroup());
 		});
 		crud.getCrudLayout().addFilterComponent(getGroupFilter());
 
-		this.medalsOnly = new Checkbox();
+		if (this.medalsOnly == null) {
+			this.medalsOnly = new Checkbox();
+		}
 		this.medalsOnly.setLabel(Translator.translate("MedalsOnly"));
 		this.medalsOnly.setValue(false);
 		this.medalsOnly.addValueChangeListener(e -> {
@@ -492,6 +510,9 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 		});
 		crud.getCrudLayout().addFilterComponent(this.medalsOnly);
 
+		if (this.getGenderFilter() == null) {
+			this.setGenderFilter(new ComboBox<>());
+		}
 		this.getGenderFilter().setPlaceholder(Translator.translate("Gender"));
 		this.getGenderFilter().setItems(Gender.M, Gender.F);
 		this.getGenderFilter().setItemLabelGenerator((i) -> {
@@ -503,6 +524,24 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 		});
 		this.getGenderFilter().setWidth("10em");
 		crud.getCrudLayout().addFilterComponent(this.getGenderFilter());
+
+		if (this.getRankingSelector() == null) {
+			ComboBox<Ranking> scoringCombo = new ComboBox<>(Translator.translate("Ranking.BestAthlete"));
+			scoringCombo.setItems(Ranking.scoringSystems());
+			scoringCombo.setItemLabelGenerator(r -> Ranking.getScoringExplanation(r));
+			scoringCombo.getElement().getStyle().set("--vaadin-combo-box-overlay-width", "30ch");
+			scoringCombo.setWidth("30ch");
+			this.setRankingSelector(scoringCombo);
+			getCrudLayout(crud).addFilterComponent(scoringCombo);
+			scoringCombo.setValue(computeScoringSystem());
+			scoringCombo.addValueChangeListener(event -> {
+				if (!event.isFromClient()) {
+					return;
+				}
+				setScoringSystem(event.getValue());
+				resetGrid();
+			});
+		}
 	}
 
 	/**
@@ -521,7 +560,7 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 		Collection<FieldOfPlay> fops = OwlcmsFactory.getFOPs();
 		FieldOfPlay liftingFop = null;
 		search: for (FieldOfPlay fop : fops) {
-			if (fop.getGroup() != null && fop.getGroup().equals(this.currentGroup)) {
+			if (fop.getGroup() != null && fop.getGroup().equals(this.getCurrentGroup())) {
 				liftingFop = fop;
 				break search;
 			}
@@ -531,20 +570,31 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 			        Translator.translate("Warning_GroupLifting") + liftingFop.getName()
 			                + Translator.translate("CannotEditResults"),
 			        3000, Position.MIDDLE);
-			logger.debug(Translator.translate("CannotEditResults_logging"), this.currentGroup, liftingFop);
+			logger.debug(Translator.translate("CannotEditResults_logging"), this.getCurrentGroup(), liftingFop);
 			// subscribeIfLifting(currentGroup);
 		} else {
-			logger.debug(Translator.translate("EditingResults_logging"), this.currentGroup, liftingFop);
+			logger.debug(Translator.translate("EditingResults_logging"), this.getCurrentGroup(), liftingFop);
 		}
 		return liftingFop != null;
+	}
+
+	private Ranking computeScoringSystem() {
+		Ranking ranking;
+		if (getRankingSelector() != null && getRankingSelector().getValue() != null) {
+			ranking = getRankingSelector().getValue();
+		} else {
+			ranking = getScoringSystem() != null ? getScoringSystem() : Competition.getCurrent().getScoringSystem();
+		}
+		logger.debug("computeScoringSystem {}", ranking);
+		return ranking;
 	}
 
 	private Button createEligibilityResultsDownloadButton() {
 		this.downloadDialog = new JXLSDownloader(
 		        () -> {
-		        	JXLSWinningSheet rs = new JXLSWinningSheet();
+			        JXLSWinningSheet rs = new JXLSWinningSheet();
 			        // group may have been edited since the page was loaded
-			        rs.setGroup(this.currentGroup != null ? GroupRepository.getById(this.currentGroup.getId()) : null);
+			        rs.setGroup(this.getCurrentGroup() != null ? GroupRepository.getById(this.getCurrentGroup().getId()) : null);
 			        return rs;
 		        },
 		        "/templates/competitionResults",
@@ -561,7 +611,7 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 		        () -> {
 			        JXLSMedalsSheet rs = new JXLSMedalsSheet();
 			        // group may have been edited since the page was loaded
-			        rs.setGroup(this.currentGroup != null ? GroupRepository.getById(this.currentGroup.getId()) : null);
+			        rs.setGroup(this.getCurrentGroup() != null ? GroupRepository.getById(this.getCurrentGroup().getId()) : null);
 			        return rs;
 		        },
 		        "/templates/medals",
@@ -578,7 +628,7 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 		        () -> {
 			        JXLSResultSheet rs = new JXLSResultSheet(false);
 			        // group may have been edited since the page was loaded
-			        rs.setGroup(this.currentGroup != null ? GroupRepository.getById(this.currentGroup.getId()) : null);
+			        rs.setGroup(this.getCurrentGroup() != null ? GroupRepository.getById(this.getCurrentGroup().getId()) : null);
 			        return rs;
 		        },
 		        "/templates/protocol",
@@ -592,11 +642,11 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 
 	private void doSwitchGroup(Group newCurrentGroup) {
 		if (newCurrentGroup != null && newCurrentGroup.getName() == "*") {
-			this.currentGroup = null;
+			this.setCurrentGroup(null);
 		} else {
-			this.currentGroup = newCurrentGroup;
+			this.setCurrentGroup(newCurrentGroup);
 		}
-		setGridGroup(this.currentGroup);
+		setGridGroup(this.getCurrentGroup());
 		if (this.downloadDialog != null) {
 			this.downloadDialog.createDownloadButton();
 		}
@@ -607,30 +657,41 @@ public class ResultsContent extends AthleteGridContent implements HasDynamicTitl
 		}
 	}
 
+	private CrudLayout getCrudLayout(GridCrud<Athlete> crud) {
+		return crud.getCrudLayout();
+	}
+
+	private ComboBox<Ranking> getRankingSelector() {
+		return this.rankingSelector;
+	}
+
 	private void highlight(Button button) {
 		button.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
 	}
 
-	public static String formatBlankRank(Integer total) {
-		if (total == null || total == 0) {
-			return "&nbsp;";
-		} else if (total == -1) {
-			// invited lifter, not eligible.
-			return Translator.translate("Results.Extra/Invited");
-		} else {
-			return total.toString();
-		}
+	private void resetGrid() {
+		// we cannot just reset the data provider because we are changing columns.
+		// brute-force way to recompute the grid layout without reloading the page.
+		var g = this.getCrudGrid().getCrudLayout();
+		var parent = ((Component) g).getParent().get();
+		parent.getChildren().forEach(c -> c.removeFromParent());
+		parent.removeFromParent();
+		this.setRankingSelector(null);
+		this.setGenderFilter(null);
+		init();
 	}
 
-	public static String formatScoreboardRank(Integer total) {
-		if (total == null || total == 0) {
-			return "-";
-		} else if (total == -1) {
-			// invited lifter, not eligible.
-			return Translator.translate("Results.Extra/Invited");
-		} else {
-			return total.toString();
-		}
+	private void setScoringSystem(Ranking value) {
+		this.scoringSystem = value;
+	}
+
+	private Group getCurrentGroup() {
+		return currentGroup;
+	}
+
+	private void setCurrentGroup(Group currentGroup) {
+		//logger.debug("setCurrentGroup {} {}",currentGroup, LoggerUtils.whereFrom());
+		this.currentGroup = currentGroup;
 	}
 
 }
