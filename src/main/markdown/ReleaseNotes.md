@@ -4,32 +4,28 @@
 > - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
+  - 54.0.0-rc02: Protocol, results and final package spreadsheets
+    - In all results spreadsheets, a single best athlete score is shown to avoid controversies when the newer scoring systems give different results than the older ones.  
+    - The best athlete system can be selected when producing the results (the default is set in the overall competition rules.) on all three types of documents.
+    - Removed the LEGAL paper size from the list.
   - 54.0.0-rc01: Added documentation for interactive editing of championships and age groups
-  - 54.0.0-beta08: Fixed issues with interactive addition and editing of age groups; it is now possible to set whether the code includes the gender (as it does for Masters).  This is also preserved when exporting and reading back the configuration file.
-  - 54.0.0-beta07: improved robustness of the verification that a session is done.
-  - 54.0.0-beta06: Changing the championship for an age group was not doing anything. Fixed.
-  - 54.0.0-beta06: On the Age Group definition page, added a button to rename/add/remove championships.
-  - 54.0.0-beta06: It is now possible to select a scoring system for assigning medals on the age group editing form.  By default, no scoring system is selected, meaning that the traditional way  using the total and optionally the snatch/clean-and-jerk is used)
-  - 54.0.0-beta05: Small fixes to templates. 
-  - 54.0.0-beta04: Updated the competition results and the protocol sheets to use the faster jxls3 template processing. The categories are now listed in alphabetical order.
-  - 54.0.0-beta03: On Raspberry Pi, the server would not start until the initial browser window was killed. The browser window was waiting for the server (deadlock)
-  - 54.0.0-beta03: Removed obsolete attempt at translating the default championship types in the dropdowns
-  - 54.0.0-beta03: Fixed missing translation for the "load results from a session that took place in another building" feature.
-  - 54.0.0-beta03: Further adjustments to medals displays.
-  - 54.0.0-beta03: Fixed colors on the light-themed medals scoreboards, and adjusted the columns on the video "green transparency" medal display.
-  - 54.0.0-beta03: Athlete cards were missing the session information on the top line.
-  - 54.0.0-beta02: Changing the medals category shown on the video-specific medals page no longer interferes with the normal medals page and the public main room scoreboard (if the "public" main room scoreboard, the medals page is shown during medal ceremonies)
-  - 54.0.0-beta01: The medals scoreboard now correctly reacts to group switches. Also reacts correctly to medal category switches during medal ceremonies and end of medal ceremonies.
-  - 54.0.0-beta01: The public scoreboard was not switching to medals during ceremonies, now fixed.
-  - 54.0.0-alpha03: the rank recalculation on the competition results page was not recomputing all categories, now fixed.
-  - 54.0.0-alpha02: reworked the category ranking code for performance when athletes are registered in many eligibility categories.
-  - 54.0.0-alpha01: initial release of scoreboard cleanup
-- Scoreboards now correctly display ranks and leaders for categories where medals are given based on a score (see documentation for [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions))
-- Medals scoreboards and medals reports have now been fixed to handle score-based medals
+- Age Groups and Championships
+  - It is now possible to edit interactively the age group settings to define the championship in which the age groups belongs
+  - It is not possible to define Championships interactively
+  - It is now possible to define that an Age Group awards medals using a scoring system.
+  - See the documentation for [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions)
+
+- Scoreboards:
+  - now correctly display ranks and leaders for categories where medals are given based on a score 
+  - Medals scoreboards and medals reports have now been fixed to handle score-based medals and sessions where both traditional and score-based medals are awarded.
+  - Changing the medals display shown used for the video stream no longer changes the main screen
+  - The "public" scoreboard meant to be used in the main room correctly switches during medal ceremonies
+
 - Results
   - During a competition with both score-based and total-based rankings, from the Competition Results page, using the Eligibility Categories report with the Score template will produce correct interim or final results.   Each category will be ranked according to it's scoring system.
   - Updated the competition results and the protocol sheets to use the faster jxls3 template processing. The categories are now listed in alphabetical order.
-- Templates:
+  - Athletes that did not weigh-in for their session no longer interfere with the determination that their categories are done and ready to receive medals.
+-  Templates:
   - the athlete's score and ranks in the current category are now obtained by using `${l.categoryScore}` `${l.categoryScoreRank}` (where l is the loop variable giving the current athlete).  
   - If the current category is not score-based, this is the same as `${l.total}`and the `${l.totalRank}`, so it is always possible to use the `Score` templates for a total-based competition.
 - Bar Loading:
