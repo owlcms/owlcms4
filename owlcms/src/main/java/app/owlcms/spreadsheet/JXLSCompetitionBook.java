@@ -136,6 +136,11 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
 		reportingBeans.put("records", records);
 
 		Ranking overallScoringSystem = this.getBestLifterScoringSystem();
+		// make available to the Athlete class in this Thread (and subThreads).
+		JXLSWorkbookStreamSource.setBestLifterRankingThreadLocal(overallScoringSystem);	
+		logger.warn("* setBestLifterRankingThreadLocal {} {}",overallScoringSystem, overallScoringSystem.getMReportingName(),Ranking.getScoringTitle(overallScoringSystem));
+		reportingBeans.put("bestRankingTitle",Ranking.getScoringTitle(overallScoringSystem));
+		
 		reportingBeans.put("mBest", reportingBeans.get(overallScoringSystem.getMReportingName()));
 		reportingBeans.put("wBest", reportingBeans.get(overallScoringSystem.getWReportingName()));
 		setReportingBeans(reportingBeans);
@@ -154,7 +159,11 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
 			String sheetName = curSheet.getSheetName();
 			String translatedSheetName = Translator.translateOrElseNull("CompetitionBook." + sheetName,
 			        OwlcmsSession.getLocale());
-			workbook.setSheetName(sheetIndex, translatedSheetName != null ? translatedSheetName : sheetName);
+			try {
+				workbook.setSheetName(sheetIndex, translatedSheetName != null ? translatedSheetName : sheetName);
+			} catch (Exception e) {
+				workbook.setSheetName(sheetIndex, (translatedSheetName != null ? translatedSheetName : sheetName)+".");
+			}
 
 			String leftHeader = Translator.translateOrElseNull("CompetitionBook." + sheetName + "_LeftHeader",
 			        OwlcmsSession.getLocale());
