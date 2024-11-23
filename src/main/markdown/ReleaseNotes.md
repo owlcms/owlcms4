@@ -4,6 +4,7 @@
 > - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
+  - 54.0.0-rc05: The document download dialog would show its warnings in the default language even if the language had been changed for the current session using the top-right language selection dropdown.
   - 54.0.0-rc04: Translations: Romanian, Hungarian. Added "ie" language for temporary validation of Faroese translation
   - 54.0.0-rc03: Fixed error preventing some reports (such as the start list) from being produced.
   - 54.0.0-rc02: Protocol, results and final package spreadsheets
