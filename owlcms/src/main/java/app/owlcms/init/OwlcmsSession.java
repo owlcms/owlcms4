@@ -176,7 +176,7 @@ public class OwlcmsSession {
 		}
 		locale = Translator.getForcedLocale();
 		if (locale != null) {
-			logger.debug("forced locale {}",locale);
+			//logger.debug("forced locale {}",locale);
 		}
 		
 		UI currentUi = UI.getCurrent();

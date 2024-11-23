@@ -83,6 +83,7 @@ import app.owlcms.data.group.Group;
 import app.owlcms.data.group.GroupRepository;
 import app.owlcms.data.platform.Platform;
 import app.owlcms.i18n.Translator;
+import app.owlcms.init.OwlcmsSession;
 import app.owlcms.nui.crudui.OwlcmsCrudFormFactory;
 import app.owlcms.nui.crudui.OwlcmsGridLayout;
 import app.owlcms.nui.shared.DownloadButtonFactory;
@@ -456,6 +457,7 @@ public class DocumentsContent extends BaseContent implements CrudListener<Group>
 	private Div createDoItButton(PreCompetitionTemplates template, Supplier<List<KitElement>> elementSupplier, Consumer<String> doneCallback, Dialog dialog) {
 		Div localDirZipDiv = null;
 		UI ui = UI.getCurrent();
+		ui.setLocale(OwlcmsSession.getLocale());
 		localDirZipDiv = DownloadButtonFactory.createDynamicDownloadButton(
 		        () -> stripSuffix(template.templateFileNameSupplier.get()),
 		        Translator.translate(template.name()),
@@ -1031,7 +1033,8 @@ public class DocumentsContent extends BaseContent implements CrudListener<Group>
 
 	private void feedback(Dialog dialog, UI ui) {
 		boolean zipping = getSortedSelection().size() > 1;
-		Paragraph processing = new Paragraph(Translator.translate(zipping ? "LongProcessing" : "Processing"));
+		// we set the locale in the ui before calling, since there is no session available in the thread at this point.
+		Paragraph processing = new Paragraph(Translator.translateExplicitLocale(zipping ? "LongProcessing" : "Processing", ui.getLocale()));
 		processing.getStyle().set("text-align", "center");
 		processing.getStyle().set("font-size", "large");
 		processing.getStyle().set("font-weight", "bold");
