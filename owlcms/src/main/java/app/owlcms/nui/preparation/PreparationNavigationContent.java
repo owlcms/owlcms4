@@ -120,7 +120,7 @@ public class PreparationNavigationContent extends BaseNavigationContent implemen
 		
 		Notification notification2 = new Notification(Translator.translate("LongProcessing"));
 		notification2.setPosition(Position.TOP_END);
-		notification2.addThemeVariants(NotificationVariant.LUMO_WARNING);
+		//notification2.addThemeVariants(NotificationVariant.LUMO_WARNING);
 		Div exportJsonDiv = DownloadButtonFactory.createDynamicJsonDownloadButton("owlcmsDatabase",
 		        Translator.translate("ExportDatabase.DownloadJson"), notification2);
 		Optional<Component> exportJsonButton = exportJsonDiv.getChildren().findFirst();
