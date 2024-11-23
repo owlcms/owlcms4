@@ -572,9 +572,11 @@ public abstract class JXLSWorkbookStreamSource implements StreamResourceWriter, 
 		        .collect(Collectors.toList());
 		
 		Ranking overallScoringSystem = this.getBestLifterScoringSystem();
+		overallScoringSystem = overallScoringSystem != null ? overallScoringSystem : Competition.getCurrent().getScoringSystem();
+		
 		// make available to the Athlete class in this Thread (and subThreads).
 		JXLSWorkbookStreamSource.setBestLifterRankingThreadLocal(overallScoringSystem);	
-		logger.warn("setBestLifterRankingThreadLocal {} {}",overallScoringSystem, overallScoringSystem.getMReportingName(),Ranking.getScoringTitle(overallScoringSystem));
+
 		reportingBeans.put("bestRankingTitle",Ranking.getScoringTitle(overallScoringSystem));
 		
 		getReportingBeans().put("groups", sessions);

@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -172,6 +173,15 @@ public class JXLSExportRecords extends JXLSWorkbookStreamSource {
 		        .thenComparing((r) -> r.getRecordLift().ordinal()) // SNATCH, CJ, TOTAL
 		        .thenComparing(RecordEvent::getRecordValue) // increasing records
 		;
+	}
+	
+	public Map<String, RecordEvent> keepNewest() {
+	return records.stream()
+	        .collect(Collectors.groupingBy(
+	                RecordEvent::getKey,
+	                Collectors.collectingAndThen(
+	                        Collectors.maxBy((r1, r2) -> r1.getRecordLift().compareTo(r2.getRecordLift())),
+	                        record -> record.orElseThrow(() -> new IllegalStateException("No record found")))));
 	}
 
 }
