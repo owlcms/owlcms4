@@ -4,7 +4,8 @@
 > - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
-  - 54.0.0-rc05: The document download dialog would show its warnings in the default language even if the language had been changed for the current session using the top-right language selection dropdown.
+  - 54.0.0-rc05: added new properties ageGroup.sortCode and category.sortCodeWithAgeGroup for templates.
+  - 54.0.0-rc05: The document download dialog would show the long processing warning in the database-specified language even if the language had been overridden for the current session.
   - 54.0.0-rc05: Translations: Faroese added as new language. Danish translation updated.
   - 54.0.0-rc04: Translations: Romanian, Hungarian. Added "ie" language for temporary validation of Faroese translation
   - 54.0.0-rc03: Fixed error preventing some reports (such as the start list) from being produced.
@@ -32,6 +33,7 @@
 -  Templates:
   - the athlete's score and ranks in the current category are now obtained by using `${l.categoryScore}` `${l.categoryScoreRank}` (where l is the loop variable giving the current athlete).  
   - If the current category is not score-based, this is the same as `${l.total}`and the `${l.totalRank}`, so it is always possible to use the `Score` templates for a total-based competition.
+  - added new properties ageGroup.sortCode and category.sortCodeWithAgeGroup for templates.  ageGroup.sortCode uses the code, max and min ages.  category.sortCodeWithAgeGroup adds the age group to the sort order - this is used when there are several open championships happening together.
 - Bar Loading:
   - The weight under which collars are not used is now configurable.  Default is 40kg.
   - The normal grey bar color is used when 15kg bar is used for women or 20kg is used for men, even if the non-standard bar or children loading rules are in effect.

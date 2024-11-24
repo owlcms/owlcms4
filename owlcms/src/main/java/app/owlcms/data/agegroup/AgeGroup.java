@@ -456,6 +456,7 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 		return scoringSystem;
 	}
 	
+	
 	@Transient
 	@JsonIgnore
 	public String getScoringTitle() {

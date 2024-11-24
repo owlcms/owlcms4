@@ -279,7 +279,7 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 
 		String result;
 		if (agName == null || agName.isEmpty()) {
-			String catName = getGender() + getSortCodeLimitString();
+			String catName = "zzzz"+"_"+getGender() + getSortCodeLimitString();
 			result = catName;
 		} else {
 			result = this.ageGroup.getCode() + "_" + getGender() + getSortCodeLimitString();
