@@ -301,6 +301,7 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		}
 	}
 
+	
 	@JsonIgnore
 	@Transient
 	public String getDisplayName() {

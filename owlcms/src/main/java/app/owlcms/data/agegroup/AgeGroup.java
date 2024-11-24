@@ -43,7 +43,6 @@ import ch.qos.logback.classic.Logger;
  * An AgeGroup designates an age range and the associated bodyweight categories, for a given gender.
  *
  * @author Jean-François Lamy
- *
  */
 
 // must be listed in app.owlcms.data.jpa.JPAService.entityClassNames()
