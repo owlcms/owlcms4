@@ -3154,7 +3154,7 @@ public class Athlete {
 		        || this.getCleanJerk3AsInteger() == null;
 		if (notFinishedLifting) {
 			Group g = getGroup();
-			if (g.isDone()) {
+			if (g != null && g.isDone()) {
 				// if their session is considered done, athletes that did not weigh in
 				// should not prevent the category from being considered finished.
 				boolean didNotWeighIn = getBodyWeight() == null || getBodyWeight() < 0.1;
