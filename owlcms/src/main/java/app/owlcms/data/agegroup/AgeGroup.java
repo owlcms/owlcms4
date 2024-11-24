@@ -56,8 +56,8 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 	private static final long serialVersionUID = 8154757158144876816L;
 
 	/**
-	 * don't deep compare the categories inside age group to avoid circularities. This method is used when comparing
-	 * categories (rely on code and other top-level properties only)
+	 * don't deep compare the categories inside age group to avoid circularities. This method is used when comparing categories (rely on code and other
+	 * top-level properties only)
 	 *
 	 * @param firstAgeGroup
 	 * @param otherAgeGroup
@@ -73,9 +73,8 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 		} else if (otherAgeGroup == null) {
 			ageGroupEquals = false;
 		} else {
-			ageGroupEquals = 
-					Objects.equals(firstAgeGroup.computeChampionshipName(), otherAgeGroup.computeChampionshipName())
-					&& Objects.equals(firstAgeGroup.getCode(), otherAgeGroup.getCode())
+			ageGroupEquals = Objects.equals(firstAgeGroup.computeChampionshipName(), otherAgeGroup.computeChampionshipName())
+			        && Objects.equals(firstAgeGroup.getCode(), otherAgeGroup.getCode())
 			        && Objects.equals(firstAgeGroup.getGender(), otherAgeGroup.getGender())
 			        && Objects.equals(firstAgeGroup.getMinAge(), otherAgeGroup.getMinAge())
 			        && Objects.equals(firstAgeGroup.getMaxAge(), otherAgeGroup.getMaxAge());
@@ -96,18 +95,15 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 	Integer minAge;
 
 	/*
-	 * ageDivision is the legacy name for a championship type. MASTERS, U, DEFAULT. The only value that has special
-	 * meaning is MASTERS.
+	 * ageDivision is the legacy name for a championship type. MASTERS, U, DEFAULT. The only value that has special meaning is MASTERS.
 	 * 
-	 * A championship is a set of age groups. Most championships group only one age group (a U15 championship at the
-	 * same time as a U17 and a U20). Masters are the exception where multiple age groups are combined to create a
-	 * single team competition. But there might be other situations -- like a SCHOOL championship where there are two
-	 * age groups, but still only one school team wins by combining the two, or any combination.
+	 * A championship is a set of age groups. Most championships group only one age group (a U15 championship at the same time as a U17 and a U20). Masters are
+	 * the exception where multiple age groups are combined to create a single team competition. But there might be other situations -- like a SCHOOL
+	 * championship where there are two age groups, but still only one school team wins by combining the two, or any combination.
 	 * 
 	 */
 	private String ageDivision;
 	private String championshipName; // foreign key; also shown to users.
-	
 	@OneToMany(mappedBy = "ageGroup", cascade = { CascadeType.ALL }, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<Category> categories = new ArrayList<>();
 	@Enumerated(EnumType.STRING)
@@ -149,69 +145,75 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 			return 1; // we are bigger.
 		}
 		int compare = 0;
-		
+
 		String championshipName1 = this.computeChampionshipName();
 		String championshipName2 = o.computeChampionshipName();
-		
-//		int length1 = championshipName1 != null ? championshipName1.length() : 0;
-//		int length2 = championshipName2 != null ? championshipName2.length() : 0;	
-//		compare = ObjectUtils.compare(length1, length2);
-//		if (compare != 0) {
-//			//logger.trace("(agegroup championshipName length) {} {} {}", -compare, championshipName1, championshipName2);
-//			return compare; // shorter first
-//		}
+
+		// int length1 = championshipName1 != null ? championshipName1.length() : 0;
+		// int length2 = championshipName2 != null ? championshipName2.length() : 0;
+		// compare = ObjectUtils.compare(length1, length2);
+		// if (compare != 0) {
+		// //logger.trace("(agegroup championshipName length) {} {} {}", -compare, championshipName1, championshipName2);
+		// return compare; // shorter first
+		// }
 		compare = ObjectUtils.compare(championshipName1, championshipName2);
 		if (compare != 0) {
-			//logger.trace("(agegroup championshipName) {} {} {}", compare, championshipName1, championshipName2);
+			// logger.trace("(agegroup championshipName) {} {} {}", compare, championshipName1, championshipName2);
 			return compare;
 		}
 
 		compare = ObjectUtils.compare(this.gender, o.getGender());
 		if (compare != 0) {
-			//logger.trace("(agegroup gender) {} {} {}", compare, this.gender, o.getGender());
+			// logger.trace("(agegroup gender) {} {} {}", compare, this.gender, o.getGender());
 			return compare;
 		}
-		
+
 		compare = ObjectUtils.compare(this.maxAge, o.getMaxAge());
 		if (compare != 0) {
-			//logger.trace("(agegroup maxage) {} {} {}", compare, this.maxAge, o.getMaxAge());
+			// logger.trace("(agegroup maxage) {} {} {}", compare, this.maxAge, o.getMaxAge());
 			return compare;
 		}
-		
+
 		compare = ObjectUtils.compare(this.minAge, o.getMinAge());
 		if (compare != 0) {
-			//logger.trace("(agegroup minage) {} {} {}", compare, this.minAge, o.getMinAge());
+			// logger.trace("(agegroup minage) {} {} {}", compare, this.minAge, o.getMinAge());
 			return compare;
 		}
 
 		return compare;
 	}
-	
-	public static Comparator<AgeGroup> registrationComparator = (a,b) -> {
+
+	public static Comparator<AgeGroup> registrationComparator = (a, b) -> {
 		if (a == null || b == null) {
 			return ObjectUtils.compare(a, b, true);
 		}
 
 		int compare = ObjectUtils.compare(a.getGender(), b.getGender());
 		if (compare != 0) {
-			//logger.debug("agegroup gender {} {} {} ", a.getGender(), compare > 0 ? ">" : "<",  b.getGender());
+			// logger.debug("agegroup gender {} {} {} ", a.getGender(), compare > 0 ? ">" : "<", b.getGender());
 			return compare;
 		}
-		
+
 		compare = ObjectUtils.compare(a.getMaxAge(), b.getMaxAge());
 		if (compare != 0) {
-			//logger.debug("maxage {} {} {} ", a.getMaxAge(), compare > 0 ? ">" : "<",  b.getMaxAge());
+			// logger.debug("maxage {} {} {} ", a.getMaxAge(), compare > 0 ? ">" : "<", b.getMaxAge());
 			return compare;
 		}
-		
+
 		compare = ObjectUtils.compare(a.getMinAge(), b.getMinAge());
 		if (compare != 0) {
-			//logger.debug("agegroup minage {} {} {} ", a.getMinAge(), compare > 0 ? ">" : "<",  b.getMinAge());
+			// logger.debug("agegroup minage {} {} {} ", a.getMinAge(), compare > 0 ? ">" : "<", b.getMinAge());
 			return compare;
 		}
-		
+
 		return compare;
 	};
+
+	@JsonIgnore
+	@Transient
+	public String getSortCode() {
+		return code+"_"+gender+"_"+String.format("%03d",maxAge)+"_"+String.format("%03d",minAge);
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -225,9 +227,9 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 		if (other.getId() == this.getId()) {
 			return true;
 		}
-		return this.active == other.active 
-				&& this.ageDivision.contentEquals(other.ageDivision)
-				&& Objects.equals(this.getChampionshipName(), other.getChampionshipName())
+		return this.active == other.active
+		        && this.ageDivision.contentEquals(other.ageDivision)
+		        && Objects.equals(this.getChampionshipName(), other.getChampionshipName())
 		        && Objects.equals(this.categories, other.categories)
 		        && Objects.equals(this.code, other.code)
 		        && this.gender == other.gender && Objects.equals(this.id, other.id)
@@ -429,10 +431,10 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 	}
 
 	private String getTranslatedCode(String code2) {
-//		String translatedCode = Translator.translateOrElseNull(
-//		        "AgeGroup." + code2,
-//		        OwlcmsSession.getLocale());
-//		return translatedCode != null ? translatedCode : code2;
+		// String translatedCode = Translator.translateOrElseNull(
+		// "AgeGroup." + code2,
+		// OwlcmsSession.getLocale());
+		// return translatedCode != null ? translatedCode : code2;
 		return code2;
 	}
 
@@ -456,18 +458,18 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 		}
 		return scoringSystem;
 	}
-	
+
 	@Transient
 	@JsonIgnore
 	public String getScoringTitle() {
 		var scoringSystem = getComputedScoringSystem();
 		return Ranking.getScoringTitle(scoringSystem);
 	}
-	
+
 	public Ranking getScoringSystem() {
 		return scoringSystem;
 	}
-	
+
 	@Transient
 	@JsonIgnore
 	public Ranking getMedalScoringSystem() {
