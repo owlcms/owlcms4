@@ -33,6 +33,7 @@ These features are not commonly used, and will not be promoted to the interface
 | blackStopButton               | if present, the stop button on the Announcer and Timekeeper page will be black instead of red.  This is to accommodate announcer keypads where red/white buttons are used to enter good/bad lifts signaled with flags, and green/black buttons are used to start/stop the clock. | Only available as a feature switch. |
 | noForwarderKeepAlive          | publicresults and video information is sent every 15 seconds.  Set this option to prevent this during troubleshooting. | Only available as a feature switch. |
 | enableTimeKeeperSessionSwitch | The time keeper can switch sessions                          | Only available as a feature switch. |
+| usawSessionBlock              | In USAW meets, session names have two parts: the session block and the platform (23 Red 23 White and 23 Blue are 3 sessions in the same session block, taking place concurrently).<br />This switch enables an an additional property on sessions, such that s.getSessionBlock returns the first part of the session name (23 in the example), so that grouping by session block can be done. | Only available as a feature switch. |
 
 ### Current Features
 
