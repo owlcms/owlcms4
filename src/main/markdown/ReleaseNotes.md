@@ -4,6 +4,7 @@
 > - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
+  - 54.0.0-rc05: saving an AgeGroup no longer resets the categories of athletes in the age group if the only changes are to the medaling system or the championship name.
   - 54.0.0-rc05: added new properties ageGroup.sortCode and category.sortCodeWithAgeGroup for templates.
   - 54.0.0-rc05: The document download dialog would show the long processing warning in the database-specified language even if the language had been overridden for the current session.
   - 54.0.0-rc05: Translations: Faroese added as new language. Danish translation updated.
