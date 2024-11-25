@@ -40,6 +40,7 @@ import app.owlcms.apputils.queryparameters.BaseContent;
 import app.owlcms.components.ConfirmationDialog;
 import app.owlcms.data.agegroup.AgeGroup;
 import app.owlcms.data.agegroup.AgeGroupRepository;
+import app.owlcms.data.agegroup.AssignedAthletesException;
 import app.owlcms.data.agegroup.Championship;
 import app.owlcms.data.athlete.AthleteRepository;
 import app.owlcms.data.athlete.Gender;
@@ -289,16 +290,20 @@ public class AgeGroupContent extends BaseContent implements CrudListener<AgeGrou
 	protected GridCrud<AgeGroup> createGrid(OwlcmsCrudFormFactory<AgeGroup> crudFormFactory) {
 		Grid<AgeGroup> grid = new Grid<>(AgeGroup.class, false);
 		grid.getThemeNames().add("row-stripes");
-		grid.addColumn(new ComponentRenderer<>(cat -> {
+		grid.addColumn(new ComponentRenderer<>(ag -> {
 			Checkbox activeBox = new Checkbox("Name");
 			activeBox.setLabel(null);
 			activeBox.getElement().getThemeList().set("secondary", true);
-			activeBox.setValue(cat.isActive());
+			activeBox.setValue(ag.isActive());
 			activeBox.addValueChangeListener(click -> {
 				activeBox.setValue(click.getValue());
-				cat.setActive(click.getValue());
-				AgeGroupRepository.save(cat);
-				grid.getDataProvider().refreshItem(cat);
+				ag.setActive(click.getValue());
+				try {
+					AgeGroupRepository.save(ag);
+				} catch (AssignedAthletesException e) {
+					// ignore -- saving the active flag cannot trigger this exception
+				}
+				grid.getDataProvider().refreshItem(ag);
 			});
 			// prevent getting the row selection involved.
 			activeBox.getElement().addEventListener("click", ignore -> {

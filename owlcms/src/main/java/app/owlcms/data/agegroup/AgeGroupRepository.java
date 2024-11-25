@@ -458,8 +458,9 @@ public class AgeGroupRepository {
 	 *
 	 * @param AgeGroup the group
 	 * @return the group
+	 * @throws AssignedAthletesException 
 	 */
-	public static AgeGroup save(AgeGroup ageGroup) {
+	public static AgeGroup save(AgeGroup ageGroup) throws AssignedAthletesException {
 		AgeGroup existing = JPAService.runInTransaction(em -> {
 			AgeGroup ag = null;
 			try {
@@ -470,15 +471,31 @@ public class AgeGroupRepository {
 			return ag;
 		});
 
-		boolean needCleanUp = ageGroup.getCode().equals(existing.getCode())
+		boolean needCleanUp = 
+				!ageGroup.getCode().equals(existing.getCode())
 				|| !ageGroup.getMinAge().equals(existing.getMinAge())
 		        || !ageGroup.getMaxAge().equals(existing.getMaxAge())
 		        || ageGroup.getGender() != existing.getGender()
 		        || existing.getCategories().hashCode() != ageGroup.getCategories().hashCode();
 		        ;
-
+	    List<Athlete> assignedAthletes = AthleteRepository.findAthletesForAgeGroup(ageGroup);
+	    
 		if (needCleanUp) {
+		    boolean empty = assignedAthletes.isEmpty();
+			Boolean forceSave = ageGroup.getForceSave();
+			//logger.debug("empty {} needCleanup {} isForcedSave {}", empty, needCleanUp, forceSave);
+			if (!empty && forceSave == null) {
+		    	logger.info("athletes present in age group {} need confirmation", ageGroup);
+		    	throw new AssignedAthletesException();
+		    }
+			
+			if (forceSave != null && !forceSave) {
+				logger.info("not saving age group {}", ageGroup);
+				return ageGroup;
+			}
+
 			// categories are obsolete and will need to be reassigned.
+			logger.info("cleaning up categories for age group {}", ageGroup);
 			AgeGroup nAgeGroup = JPAService.runInTransaction(em -> {
 				try {
 					return cleanUp(ageGroup, em);

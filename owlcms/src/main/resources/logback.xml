@@ -44,7 +44,7 @@
     <logger name="com.github.mvysny.vaadinboot" level="INFO" />
     <logger name="io.netty.util.ResourceLeakDetector" level="OFF" />
     <logger name="org.atmosphere.websocket.DefaultWebSocketProcessor" level="ERROR" />
-
+    <logger name="com.vaadin.flow.internal.nodefeature.ElementListenerMap" level="WARN" />
 
     <!-- log all info to file; warnings and above unless logger specifies another level -->
     <root level="WARN">

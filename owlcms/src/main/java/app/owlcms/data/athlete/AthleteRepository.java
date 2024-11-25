@@ -563,5 +563,15 @@ public class AthleteRepository {
 	public static void setAllUnfinishedCategories(Set<String> allUnfinishedCategories) {
 		AthleteRepository.allUnfinishedCategories = allUnfinishedCategories;
 	}
+
+	public static List<Athlete> findAthletesForAgeGroup(AgeGroup ag) {
+		return JPAService.runInTransaction((em) -> {
+			TypedQuery<Athlete> q = em.createQuery(
+			        "select distinct a from Athlete a join a.participations p join p.category c join c.ageGroup ag where ag.id = :agId",
+			        Athlete.class);
+			q.setParameter("agId", ag.getId());
+			return q.getResultList();
+		});
+	}
 	
 }

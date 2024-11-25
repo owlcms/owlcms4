@@ -36,9 +36,11 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.IntegerRangeValidator;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 
+import app.owlcms.components.ConfirmationDialog;
 import app.owlcms.components.fields.CategoryGridField;
 import app.owlcms.data.agegroup.AgeGroup;
 import app.owlcms.data.agegroup.AgeGroupRepository;
+import app.owlcms.data.agegroup.AssignedAthletesException;
 import app.owlcms.data.agegroup.Championship;
 import app.owlcms.data.agegroup.ChampionshipType;
 import app.owlcms.data.athlete.Gender;
@@ -120,11 +122,11 @@ public class AgeGroupEditingFormFactory
 		        .withValidator(
 		                new StringLengthValidator(Translator.translate("CodeMustBeShort", maxLength), 0, maxLength))
 		        .bind(AgeGroup::getCode, AgeGroup::setCode);
-		
+
 		Checkbox gendered = new Checkbox(Translator.translate("CodeIncludesGender"));
 		this.binder.forField(gendered).bind(AgeGroup::isAlreadyGendered, AgeGroup::setAlreadyGendered);
-		
-		HorizontalLayout codeInfo = new HorizontalLayout(codeField,gendered);
+
+		HorizontalLayout codeInfo = new HorizontalLayout(codeField, gendered);
 		codeInfo.setAlignItems(Alignment.CENTER);
 		formLayout.addFormItem(codeInfo, createLabel(Translator.translate("AgeGroupCode")));
 
@@ -133,32 +135,36 @@ public class AgeGroupEditingFormFactory
 		championshipField.setItems(new ListDataProvider<Championship>(list));
 		championshipField.setItemLabelGenerator((ad) -> ad.getName());
 		championshipField.setRequired(true);
-		championshipField.setRequiredIndicatorVisible(true);
+		championshipField.setRequiredIndicatorVisible(false);
 		this.binder.forField(championshipField).bind(AgeGroup::getChampionship, AgeGroup::setChampionship);
 		formLayout.addFormItem(championshipField, createLabel(Translator.translate("Championship")));
-		
+
 		ComboBox<Ranking> medalScoreSystemField = new ComboBox<>();
 		medalScoreSystemField.setClearButtonVisible(true);
 		List<Ranking> rankings = Arrays.asList(Ranking.values());
 		List<Ranking> medalScoreRankings = rankings.stream().filter(r -> r.isMedalScore()).toList();
 		medalScoreSystemField.setItems(new ListDataProvider<Ranking>(medalScoreRankings));
-		medalScoreSystemField.setItemLabelGenerator((ad) -> Translator.translate("Ranking."+ad.name()));
-		//logger.debug("***** scoring system {}", aFromDb.getMedalScoringSystem());
+		medalScoreSystemField.setItemLabelGenerator((ad) -> Translator.translate("Ranking." + ad.name()));
+		// logger.debug("***** scoring system {}", aFromDb.getMedalScoringSystem());
 		this.binder.forField(medalScoreSystemField).bind(AgeGroup::getMedalScoringSystem, AgeGroup::setScoringSystem);
 		formLayout.addFormItem(medalScoreSystemField, createLabel(Translator.translate("MedalScoringSystem")));
 
 		TextField minAgeField = new TextField();
 		formLayout.addFormItem(minAgeField, createLabel(Translator.translate("MinimumAge")));
+		// we don't use asRequired because of weird placement of required indicator
 		this.binder.forField(minAgeField)
-		        .withNullRepresentation("")
+		        .withValidator(
+		                new StringLengthValidator(Translator.translate("ThisFieldIsRequired"), 1, null))
 		        .withConverter(new StringToIntegerConverter(message))
 		        .withValidator(new IntegerRangeValidator(message, 0, 999))
 		        .bind(AgeGroup::getMinAge, AgeGroup::setMinAge);
 
 		TextField maxAgeField = new TextField();
 		formLayout.addFormItem(maxAgeField, createLabel(Translator.translate("MaximumAge")));
+		// we don't use asRequired because of weird placement of required indicator
 		this.binder.forField(maxAgeField)
-		        .withNullRepresentation("")
+		        .withValidator(
+		                new StringLengthValidator(Translator.translate("ThisFieldIsRequired"), 1, null))
 		        .withConverter(new StringToIntegerConverter(message))
 		        .withValidator(new IntegerRangeValidator(message, 0, 999))
 		        .bind(AgeGroup::getMaxAge, AgeGroup::setMaxAge);
@@ -262,11 +268,32 @@ public class AgeGroupEditingFormFactory
 	 */
 	@Override
 	public AgeGroup update(AgeGroup ageGroup) {
-		AgeGroup saved = AgeGroupRepository.save(ageGroup);
-		// logger.trace("saved {}", saved.getCategories().get(0).longDump());
-		this.origin.closeDialog();
-		this.origin.highlightResetButton();
-		return saved;
+		// array is used to workaround Java language restriction on setting variables in lambda
+		AgeGroup[] saved = new AgeGroup[1];
+		try {
+			saved[0] = AgeGroupRepository.save(ageGroup);
+			this.origin.closeDialog();
+			this.origin.highlightResetButton();
+			return saved[0];
+		} catch (AssignedAthletesException e) {
+			ConfirmationDialog cd = new ConfirmationDialog(
+			        Translator.translate("CategoryAssignment.Title"),
+			        Translator.translate("CategoryAssignment.Warning"),
+			        null,
+			        () -> {
+				        ageGroup.setForceSave(true);
+				        try {
+					        saved[0] = AgeGroupRepository.save(ageGroup);
+				        } catch (AssignedAthletesException e1) {
+					        saved[0] = ageGroup;
+				        }
+				        this.origin.closeDialog();
+				        this.origin.getCrud().refreshGrid();
+				        this.origin.highlightResetButton();
+			        });
+			cd.open();
+			return saved[0];
+		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -38,7 +38,9 @@ public class ConfirmationDialog extends Dialog {
 		HorizontalLayout buttons = new HorizontalLayout();
 		Button confirmButton = new Button(Translator.translate("Confirm"), event -> {
 			action.run();
-			Notification.show(confirmation);
+			if (confirmation != null) {
+				Notification.show(confirmation);
+			}
 			dialog.close();
 		});
 		confirmButton.getElement().setAttribute("theme", "primary");

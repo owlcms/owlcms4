@@ -119,6 +119,10 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 	@Column(columnDefinition = "boolean default false")
 	private Boolean alreadyGendered = false;
 	private Ranking scoringSystem;
+	
+	@Transient
+	@JsonIgnore
+	private Boolean forceSave = null;
 
 	public AgeGroup() {
 	}
@@ -476,6 +480,16 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 
 	public void setScoringSystem(Ranking setScoringSystem) {
 		this.scoringSystem = setScoringSystem;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setForceSave(boolean b) {
+		this.forceSave = true;
+	}
+
+	public Boolean getForceSave() {
+		return forceSave;
 	}
 
 }
