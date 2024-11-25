@@ -576,9 +576,8 @@ public abstract class JXLSWorkbookStreamSource implements StreamResourceWriter, 
 		
 		// make available to the Athlete class in this Thread (and subThreads).
 		JXLSWorkbookStreamSource.setBestLifterRankingThreadLocal(overallScoringSystem);	
-
 		reportingBeans.put("bestRankingTitle",Ranking.getScoringTitle(overallScoringSystem));
-		
+
 		getReportingBeans().put("groups", sessions);
 		getReportingBeans().put("sessions", sessions);
 	}
