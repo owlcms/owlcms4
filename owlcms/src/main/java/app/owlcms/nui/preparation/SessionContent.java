@@ -23,7 +23,9 @@ import org.vaadin.crudui.crud.CrudListener;
 import org.vaadin.crudui.crud.impl.GridCrud;
 
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
@@ -271,8 +273,12 @@ public class SessionContent extends BaseContent implements CrudListener<Group>, 
 		String translation = Translator.translate("EditAthletes");
 		// int tSize = translation.length();
 		grid.addColumn(new ComponentRenderer<>(p -> {
-			Button editDetails = new Button(Translator.translate("Sessions.EditDetails"));
+			ComponentEventListener<ClickEvent<Button>> clickListener = (click) -> {
+				this.crud.updateButtonClicked(p);
+			};
+			Button editDetails = new Button(Translator.translate("Sessions.EditDetails"), clickListener);
 			editDetails.addThemeVariants(ButtonVariant.LUMO_SMALL);
+			
 			Button technical = openInNewTab(RegistrationContent.class, translation, p != null ? p.getName() : "?");
 			// prevent grid row selection from triggering
 			technical.getElement().addEventListener("click", ignore -> {
@@ -371,13 +377,11 @@ public class SessionContent extends BaseContent implements CrudListener<Group>, 
 		return button;
 	}
 
-	
-
-//	private void postWeighInTemplateSelection() {
-//		Dialog dialog = new Dialog();
-//		dialog.add(new TemplateSelectionFormFactory().postWeighInTemplateSelectionForm(dialog));
-//		dialog.open();
-//	}
+	// private void postWeighInTemplateSelection() {
+	// Dialog dialog = new Dialog();
+	// dialog.add(new TemplateSelectionFormFactory().postWeighInTemplateSelectionForm(dialog));
+	// dialog.open();
+	// }
 
 	private void updateURLLocations() {
 	}

@@ -69,7 +69,7 @@ final class SessionGrid extends OwlcmsCrudGrid<Group> {
 		}
 	}
 
-	private void updateButtonClicked(Group domainObject) {
+	void updateButtonClicked(Group domainObject) {
 		showForm(CrudOperation.UPDATE, domainObject, false, savedMessage, event -> {
 			try {
 				Group updatedObject = updateOperation.perform(domainObject);
