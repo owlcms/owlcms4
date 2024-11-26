@@ -5,10 +5,11 @@
 
 - Maintenance log:
   - 54.0.0-rc05: Age group editing now requires a confirmation if the changes require reallocating categories on existing athletes.  Previously the categories would be removed silently. Changes that do not affect the category boundaries, ages or gender don't require confirmation.
+  - 54.0.0-rc05: Translations: Faroese added as new language. Danish, Finnish, Spanish updated.
   - 54.0.0-rc05: The "Edit Details" button on the session editing grid now works (same as clicking on the row.)
   - 54.0.0-rc05: Added new properties ageGroup.sortCode and category.sortCodeWithAgeGroup for jxls3 templates using groupBy.
   - 54.0.0-rc05: The document download dialog was not using the current session language for the warning about long processing.
-  - 54.0.0-rc05: Translations: Faroese added as new language. Danish translation updated.
+  - 54.0.0-rc05: Translations: 
   - 54.0.0-rc04: Translations: Romanian, Hungarian. Added "ie" language for temporary validation of Faroese translation
   - 54.0.0-rc03: Fixed error preventing some reports (such as the start list) from being produced.
   - 54.0.0-rc02: Protocol, results and final package spreadsheets
