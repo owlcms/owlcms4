@@ -94,6 +94,7 @@ public class RAthlete {
 	}
 
 	private void doLegacyParts(String s, String[] parts) throws Exception {
+		//logger.debug("legacyParts {}", Arrays.asList(parts));
 		if (parts.length >= 1) {
 			boolean teamMember = false;
 			String catName = parts[0].trim();
@@ -111,10 +112,12 @@ public class RAthlete {
 
 			Category c;
 			String catCode = Category.codeFromName(catName);
+			//logger.debug("catCode {} active {}",catCode,RCompetition.getActiveCategories().keySet());
 			if ((c = RCompetition.getActiveCategories().get(catCode)) != null) {
 				// exact match for a category. This is the athlete's registration category.
 				processEligibilityAndTeams(parts, c, teamMember);
 			} else {
+				//FIXME: if we have more than one part, we should not be looking for a short form.
 				// we have a short form category. infer from age and category limit
 				setCategoryHeuristics(s);
 				final var tm = teamMember;
@@ -133,8 +136,12 @@ public class RAthlete {
 		}
 
 		String[] allParts = s.split(",|;|\\/");
-		List<String> partsList = Arrays.asList(allParts).stream().filter(s1 -> (s1 != null && !s1.isBlank()))
+		List<String> partsList = Arrays.asList(allParts).stream()
+				.filter(s1 -> (s1 != null && !s1.isBlank()))
+				.map(s1 -> s1.trim())
 		        .toList();
+		//logger.debug("partsList {}",partsList);
+		
 		String[] parts;
 		if (partsList.size() == 1) {
 			parts = new String[1];
@@ -142,22 +149,18 @@ public class RAthlete {
 			doLegacyParts(s, parts);
 		} else if (partsList.size() >= 1) {
 			parts = new String[2];
-			parts[0] = allParts[0];
+			parts[0] = partsList.get(0);
 			// brain-dead logic to reuse existing code. Should fix old to use new instead...
 			StringBuffer sb = new StringBuffer();
 			for (int i = 1; i < partsList.size(); i++) {
-				boolean notBlank = !partsList.get(i).isBlank();
-				if (i > 1 && notBlank) {
+				if (i > 1) {
 					sb.append(";");
 				}
-				if (notBlank) {
-					sb.append(partsList.get(i).trim());
-				}
+				sb.append(partsList.get(i).trim());
 			}
 			parts[1] = sb.toString();
 			doLegacyParts(s, parts);
 		}
-
 	}
 
 	/**
@@ -449,6 +452,7 @@ public class RAthlete {
 
 		// process the other participations. They are ; separated.
 		if (parts.length > 1) {
+			//logger.debug("additional categories {}",parts[1]);
 			String[] eligibleNames = parts[1].split(";");
 			for (String eligibleName : eligibleNames) {
 				boolean teamMember = true;
@@ -461,6 +465,7 @@ public class RAthlete {
 				if ((c2 = RCompetition.getActiveCategories().get(catCode)) != null) {
 					addIfEligible(eligibleCategories, teams, athleteQTotal, athleteAge, teamMember, c2);
 				} else {
+					//logger.debug("{} {}\n{}",Translator.translate("Upload.CategoryNotFoundByName", eligibleName.trim(), LoggerUtils.stackTrace()));
 					throw new Exception(
 					        Translator.translate("Upload.CategoryNotFoundByName", eligibleName.trim()));
 				}
