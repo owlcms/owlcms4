@@ -4,6 +4,8 @@
 > - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
+  - 54.0.0-rc06: When loading a registation spreadsheet with multiple categories per athlete, the one causing lookup failure is now reported.
+  - 54.0.0-rc06: athlete.gender.translatedGenderCode now returns the translation (for example, W instead of F)
   - 54.0.0-rc05: Age group editing now requires a confirmation if the changes require reallocating categories on existing athletes.  Previously the categories would be removed silently. Changes that do not affect the category boundaries, ages or gender don't require confirmation.
   - 54.0.0-rc05: Translations: Faroese added as new language. Danish, Finnish, Spanish updated.
   - 54.0.0-rc05: The "Edit Details" button on the session editing grid now works (same as clicking on the row.)
