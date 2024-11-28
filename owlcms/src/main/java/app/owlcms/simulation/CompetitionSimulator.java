@@ -43,6 +43,7 @@ public class CompetitionSimulator {
 
 	final private static Logger logger = (Logger) LoggerFactory.getLogger(CompetitionSimulator.class);
 	private static List<FOPSimulator> registeredSimulators = new ArrayList<>();
+	private static boolean running;
 	private Random r = new Random(0);
 
 	public CompetitionSimulator() {
@@ -50,6 +51,7 @@ public class CompetitionSimulator {
 
 	public String runSimulation() throws InterruptedException {
 		Competition.getCurrent().setSimulation(true);
+		setRunning(true);
 		logger.setLevel(Level.DEBUG);
 
 		Map<Platform, List<Group>> groupsByPlatform = new TreeMap<>();
@@ -115,6 +117,10 @@ public class CompetitionSimulator {
 		return "simulation done.";
 	}
 
+	public static void setRunning(boolean b) {
+		running = true;
+	}
+
 	private void clearLifts() {
 		JPAService.runInTransaction(em -> {
 			List<Athlete> athletes = AthleteRepository.doFindAll(em);
@@ -171,6 +177,10 @@ public class CompetitionSimulator {
 			}
 		}
 		return as;
+	}
+
+	public static boolean isRunning() {
+		return running;
 	}
 
 }

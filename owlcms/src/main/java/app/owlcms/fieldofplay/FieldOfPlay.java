@@ -91,6 +91,7 @@ import app.owlcms.monitors.IUnregister;
 import app.owlcms.monitors.MQTTMonitor;
 import app.owlcms.nui.lifting.AnnouncerContent;
 import app.owlcms.nui.lifting.TimekeeperContent;
+import app.owlcms.simulation.CompetitionSimulator;
 import app.owlcms.sound.Sound;
 import app.owlcms.sound.Tone;
 import app.owlcms.uievents.BreakType;
@@ -2112,7 +2113,7 @@ public class FieldOfPlay implements IUnregister {
 		}
 
 		int millisRemaining;
-		if (Competition.getCurrent().isSimulation()) {
+		if (CompetitionSimulator.isRunning()) {
 			millisRemaining = 10 * 1000;
 		} else {
 			millisRemaining = 10 * 60 * 1000;
@@ -3135,13 +3136,13 @@ public class FieldOfPlay implements IUnregister {
 	}
 
 	private void updateRefereeDecisions(FOPEvent.DecisionFullUpdate e) {
-		getRefereeDecision()[0] = e.ref1;
-		getRefereeTime()[0] = e.ref1Time;
-		getRefereeDecision()[1] = e.ref2;
-		getRefereeTime()[1] = e.ref2Time;
-		getRefereeDecision()[2] = e.ref3;
-		getRefereeTime()[2] = e.ref3Time;
-		processRefereeDecisions(e);
+			getRefereeDecision()[0] = e.ref1;
+			getRefereeTime()[0] = e.ref1Time;
+			getRefereeDecision()[1] = e.ref2;
+			getRefereeTime()[1] = e.ref2Time;
+			getRefereeDecision()[2] = e.ref3;
+			getRefereeTime()[2] = e.ref3Time;
+			processRefereeDecisions(e);
 	}
 
 	private void updateRefereeDecisions(FOPEvent.DecisionUpdate e) {

@@ -46,7 +46,6 @@ import app.owlcms.apputils.SoundUtils;
 import app.owlcms.apputils.queryparameters.BaseContent;
 import app.owlcms.apputils.queryparameters.FOPParametersReader;
 import app.owlcms.components.elements.BeepElement;
-import app.owlcms.data.competition.Competition;
 import app.owlcms.fieldofplay.FOPEvent;
 import app.owlcms.fieldofplay.FieldOfPlay;
 import app.owlcms.i18n.Translator;
@@ -55,6 +54,7 @@ import app.owlcms.init.OwlcmsSession;
 import app.owlcms.nui.lifting.UIEventProcessor;
 import app.owlcms.nui.shared.RequireLogin;
 import app.owlcms.nui.shared.SafeEventBusRegistration;
+import app.owlcms.simulation.CompetitionSimulator;
 import app.owlcms.uievents.UIEvent;
 import app.owlcms.utils.LoggerUtils;
 import ch.qos.logback.classic.Level;
@@ -200,7 +200,7 @@ public class RefContent extends BaseContent implements FOPParametersReader, Safe
 	@Subscribe
 	public void slaveRefereeUpdate(UIEvent.RefereeUpdate e) {
 		// only used during simulations to show what the fake referees pressed.
-		if (!Competition.getCurrent().isSimulation()) {
+		if (!CompetitionSimulator.isRunning()) {
 			return;
 		}
 		UIEventProcessor.uiAccessIgnoreIfSelfOrigin(this, this.uiEventBus, e, this, () -> {

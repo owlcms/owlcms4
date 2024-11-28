@@ -971,6 +971,7 @@ public class UIEvent {
 			if (this.trace == null || this.trace.isBlank()) {
 				this.setTrace(() -> LoggerUtils.stackTrace());
 			}
+			logger.warn("ref update for jury {} {} {}",ref1, ref2, ref3);
 		}
 	}
 

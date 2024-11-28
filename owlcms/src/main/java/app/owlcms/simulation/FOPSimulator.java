@@ -191,9 +191,22 @@ public class FOPSimulator {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 		}
-		this.fop.fopEventPost(new FOPEvent.DecisionUpdate(this, 0, goodLift(r)));
-		this.fop.fopEventPost(new FOPEvent.DecisionUpdate(this, 1, goodLift(r)));
-		this.fop.fopEventPost(new FOPEvent.DecisionUpdate(this, 2, goodLift(r)));
+		
+		// stop time and get decisions
+		if (USE_MQTT_TIMER && mm != null) {
+			try {
+				mm.publishRefDecision(0, goodLift(r));
+				mm.publishRefDecision(1, goodLift(r));
+				mm.publishRefDecision(2, goodLift(r));
+			} catch (MqttException e) {
+				LoggerUtils.logError(this.logger, e);
+			}
+		} else {
+			this.fop.fopEventPost(new FOPEvent.DecisionUpdate(this, 0, goodLift(r)));
+			this.fop.fopEventPost(new FOPEvent.DecisionUpdate(this, 1, goodLift(r)));
+			this.fop.fopEventPost(new FOPEvent.DecisionUpdate(this, 2, goodLift(r)));
+		}
+
 	}
 
 	Object getOrigin() {

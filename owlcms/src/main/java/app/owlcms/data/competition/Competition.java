@@ -1137,9 +1137,9 @@ public class Competition {
 		return this.roundRobinOrder;
 	}
 
-	public boolean isSimulation() {
-		return this.simulation;
-	}
+//	public boolean isSimulation() {
+//		return this.simulation;
+//	}
 
 	public boolean isSinclair() {
 		return this.sinclairMeet || Config.getCurrent().featureSwitch("SinclairMeet");

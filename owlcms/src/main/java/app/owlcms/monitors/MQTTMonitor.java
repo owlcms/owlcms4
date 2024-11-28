@@ -332,6 +332,13 @@ public class MQTTMonitor extends Thread implements IUnregister {
 		this.client.publish("owlcms/clock/" + this.getFop().getName(),
 		        new MqttMessage("stop".getBytes(StandardCharsets.UTF_8)));
 	}
+	
+	public void publishRefDecision(int i, boolean goodLift) throws MqttPersistenceException, MqttException {
+		// 0 is the announcer decision, bump by 1.
+		String message = Integer.toString(i+1) + " " + (goodLift ? "good" : "bad");
+		this.client.publish("owlcms/refbox/decision/" + this.getFop().getName(),
+		        new MqttMessage(message.getBytes(StandardCharsets.UTF_8)));
+	}
 
 	public void setFop(FieldOfPlay fop) {
 		this.fop = fop;
@@ -881,4 +888,5 @@ public class MQTTMonitor extends Thread implements IUnregister {
 	private void setMonitoredFopName(String monitorName) {
 		this.monitoredFopName = monitorName;
 	}
+
 }
