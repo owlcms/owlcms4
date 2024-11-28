@@ -4,7 +4,7 @@
 > - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
-  - 54.0.0-rc07: The simulator now sends MQTT events for decisions to be more faithful.
+  - 54.0.0-rc07: The simulator now sends MQTT events for decisions to be more faithful.  Also, the Clean&Jerk breaks should now reliably stay at 10 seconds during a simulation.
   - 54.0.0-rc07: When using the decision display with keyboard (USB/joystick) devices, there is a *very remote* possibility that events could arrive out of order, causing a decision previously received to go back to no-decision.  This could cause the system to stay stuck on the down signal.  Now such reverting updates will be ignored.
   - 54.0.0-rc06: When loading a registration spreadsheet with multiple categories per athlete, the one causing lookup failure is now reported.
   - 54.0.0-rc06: athlete.gender.translatedGenderCode now returns the translation (for example, W instead of F)
