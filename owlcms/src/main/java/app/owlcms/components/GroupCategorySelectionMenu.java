@@ -1,12 +1,16 @@
 package app.owlcms.components;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.html.Hr;
@@ -31,15 +35,16 @@ import ch.qos.logback.classic.Logger;
 public class GroupCategorySelectionMenu extends MenuBar {
 
 	@FunctionalInterface
-	public interface TriConsumer<T, U, V> {
+	public interface TriConsumer<F, S, V> {
 
 		/**
 		 * Performs this operation on the given arguments.
 		 *
-		 * @param t the first input argument
-		 * @param u the second input argument
+		 * @param F the first input argument
+		 * @param S the second input argument
+		 * @param V the third input argument
 		 */
-		void accept(T t, U u, V v);
+		void accept(F f, S s, V v);
 	}
 
 	Logger logger = (Logger) LoggerFactory.getLogger(GroupCategorySelectionMenu.class);
@@ -57,6 +62,10 @@ public class GroupCategorySelectionMenu extends MenuBar {
 		this.fop = fop;
 		this.whenChecked = whenChecked;
 		this.whenUnselected = whenUnselected;
+	}
+
+	@Override
+	protected void onAttach(AttachEvent attachEvent) {
 		init(groups, fop, whenChecked, whenUnselected);
 	}
 
@@ -91,17 +100,44 @@ public class GroupCategorySelectionMenu extends MenuBar {
 		return finishedCategories;
 	}
 
+	boolean subMenuLoaded = false;
+	Map<Group, Set<String>> medalCategoriesPerGroup = new HashMap<>();
+
 	private void init(List<Group> groups, FieldOfPlay fop, TriConsumer<Group, Category, FieldOfPlay> whenChecked,
 	        TriConsumer<Group, Category, FieldOfPlay> whenUnselected) {
 		MenuItem item;
 		String menuTitle = Translator.translate("Group") + "/" + Translator.translate("Category") + "\u2003\u25bc";
+		this.setId("sessionDropDown");
 		item = this.addItem(menuTitle);
 		this.addThemeVariants(MenuBarVariant.LUMO_SMALL, MenuBarVariant.LUMO_PRIMARY);
+		UI ui = this.getUI().get();
+		this.setEnabled(false);
 
+		if (!subMenuLoaded) {
+			new Thread(() -> {
+				for (Group g : groups) {
+					Set<String> categories = this.includeNotCompleted ? getAllCategories(g) : getFinishedCategories(g);
+					if (!categories.isEmpty()) {
+						medalCategoriesPerGroup.put(g, categories);
+					}
+				}
+				subMenuLoaded = true;
+				ui.access(() -> {
+					fillMenu(groups, medalCategoriesPerGroup, fop, whenChecked, whenUnselected, item, menuTitle);
+					this.setEnabled(true);
+				});
+			}).start();
+		}
+
+	}
+
+	public void fillMenu(List<Group> groups, Map<Group, Set<String>> medalCategoriesPerGroup, FieldOfPlay fop,
+	        TriConsumer<Group, Category, FieldOfPlay> whenChecked,
+	        TriConsumer<Group, Category, FieldOfPlay> whenUnselected, MenuItem item, String menuTitle) {
 		SubMenu subMenu = item.getSubMenu();
 		for (Group g : groups) {
-			Set<String> categories = this.includeNotCompleted ? getAllCategories(g) : getFinishedCategories(g);
-			if (categories.size() > 0) {
+			Set<String> categories = medalCategoriesPerGroup.get(g);
+			if (categories != null && categories.size() > 0) {
 				MenuItem subItem = subMenu.addItem(
 				        g.getName(),
 				        e -> {
@@ -115,21 +151,21 @@ public class GroupCategorySelectionMenu extends MenuBar {
 					setChecked(subItem, subMenu, true);
 				}
 				subItem.getElement().setAttribute("style", "margin: 0px; padding: 0px");
-			}
 
-			logger.debug("***medal categories {}", categories);
-			for (String c : categories) {
-	
-				Category cat = CategoryRepository.findByCode(c);
-				MenuItem subItem1 = subMenu.addItem(
-				        g.getName() + " - " + cat.getNameWithAgeGroup(),
-				        e -> {
-					        whenChecked.accept(g, cat, fop);
-					        setChecked(e.getSource(), subMenu, true);
-					        item.setText(g.getName() + " - " + cat.getNameWithAgeGroup() + "\u2003\u25bd");
-				        });
-				subItem1.setCheckable(true);
-				subItem1.getElement().setAttribute("style", "margin: 0px; padding: 0px");
+				logger.debug("***medal categories {}", categories);
+				for (String c : categories) {
+
+					Category cat = CategoryRepository.findByCode(c);
+					MenuItem subItem1 = subMenu.addItem(
+					        g.getName() + " - " + cat.getNameWithAgeGroup(),
+					        e -> {
+						        whenChecked.accept(g, cat, fop);
+						        setChecked(e.getSource(), subMenu, true);
+						        item.setText(g.getName() + " - " + cat.getNameWithAgeGroup() + "\u2003\u25bd");
+					        });
+					subItem1.setCheckable(true);
+					subItem1.getElement().setAttribute("style", "margin: 0px; padding: 0px");
+				}
 			}
 		}
 		Hr ruler = new Hr();
