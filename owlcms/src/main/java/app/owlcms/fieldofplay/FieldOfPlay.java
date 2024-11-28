@@ -3136,6 +3136,12 @@ public class FieldOfPlay implements IUnregister {
 	}
 
 	private void updateRefereeDecisions(FOPEvent.DecisionFullUpdate e) {
+		// it is not possible to go from a non-null decision that was given back to null
+		// this would indicate an event out of order.
+		boolean outOfOrder = (e.ref1 == null && getRefereeDecision()[0] != null)
+		        || (e.ref2 == null && getRefereeDecision()[1] != null)
+		        || (e.ref3 == null && getRefereeDecision()[2] != null);
+		if (!outOfOrder) {
 			getRefereeDecision()[0] = e.ref1;
 			getRefereeTime()[0] = e.ref1Time;
 			getRefereeDecision()[1] = e.ref2;
@@ -3143,6 +3149,11 @@ public class FieldOfPlay implements IUnregister {
 			getRefereeDecision()[2] = e.ref3;
 			getRefereeTime()[2] = e.ref3Time;
 			processRefereeDecisions(e);
+		} else {
+			// this should never happen, but the order of JavaScript callbacks
+			// from the browser to the server is not guaranteed.
+			logger.error("ignoring out of order DecisionFullUpdate event {}", e);
+		}
 	}
 
 	private void updateRefereeDecisions(FOPEvent.DecisionUpdate e) {
