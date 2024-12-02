@@ -28,7 +28,7 @@ import ch.qos.logback.classic.Logger;
 @SuppressWarnings("serial")
 @Route("displays/publicSimple")
 
-public class PublicNoLeadersPage extends AbstractResultsDisplayPage {
+public class PublicNoLeadersPage extends PublicScoreboardPage {
 
 	Logger logger;
 	Logger uiEventLogger;
@@ -46,86 +46,8 @@ public class PublicNoLeadersPage extends AbstractResultsDisplayPage {
 		return Translator.translate("Scoreboard") + OwlcmsSession.getFopNameIfMultiple();
 	}
 
-	public final Results getResultsBoard() {
-		return this.resultsBoard;
-	}
-
-	@Subscribe
-	public void slaveCeremonyDone(UIEvent.CeremonyDone e) {
-		if (e.getCeremonyType() != CeremonyType.MEDALS) {
-			return;
-		}
-		this.ui.access(() -> {
-			getMedalsBoard().getStyle().set("display", "none");
-			getResultsBoard().getStyle().set("display", "block");
-		});
-	}
-
-	@Subscribe
-	public void slaveCeremonyStarted(UIEvent.CeremonyStarted e) {
-		if (e.getCeremonyType() != CeremonyType.MEDALS) {
-			return;
-		}
-		this.ui.access(() -> {
-			/* copy current parameters from results board to medals board */
-			this.getMedalsBoard().setDownSilenced(true);
-			this.getMedalsBoard().setDarkMode(((DisplayParameters) getBoard()).isDarkMode());
-			this.getMedalsBoard().setVideo(((DisplayParameters) getBoard()).isVideo());
-			this.getMedalsBoard().setPublicDisplay(((DisplayParameters) getBoard()).isPublicDisplay());
-			this.getMedalsBoard().setSingleReferee(((SoundParameters) getBoard()).isSingleReferee());
-			this.getMedalsBoard().setAbbreviatedName(((DisplayParameters) getBoard()).isAbbreviatedName());
-			this.getMedalsBoard().setTeamWidth(((DisplayParameters) getBoard()).getTeamWidth());
-			this.getMedalsBoard().setEmFontSize(((DisplayParameters) getBoard()).getEmFontSize());
-			checkVideo(this.getMedalsBoard());
-			getMedalsBoard().getStyle().set("display", "block");
-
-			getResultsBoard().getStyle().set("display", "none");
-		});
-	}
-
-	protected void createComponents() {
-		var board = new Results();
-		this.setMedalsBoard(new ResultsMedals());
-		this.setBoard(board);
-		this.setResultsBoard(board);
-
-		getMedalsBoard().setDownSilenced(true);
-		getMedalsBoard().setDarkMode(board.isDarkMode());
-		getMedalsBoard().setVideo(board.isVideo());
-		getMedalsBoard().setPublicDisplay(board.isPublicDisplay());
-		getMedalsBoard().setSingleReferee(board.isSingleReferee());
-		getMedalsBoard().setAbbreviatedName(board.isAbbreviatedName());
-		getMedalsBoard().setTeamWidth(board.getTeamWidth());
-		getMedalsBoard().setEmFontSize(board.getEmFontSize());
-		checkVideo(getMedalsBoard());
-
-		getMedalsBoard().getStyle().set("display", "none");
-		this.ui = UI.getCurrent();
-	}
-	
-	
-	@Override
-	protected void onAttach(AttachEvent attachEvent) {
-		DisplayParameters board = (DisplayParameters) this.getBoard();
-		board.setFop(getFop());
-		getMedalsBoard().setFop(getFop());
-		
-		this.setResultsBoard((Results) board);
-		this.setMedalsBoard(getMedalsBoard());
-		
-		this.addComponent((Component) board);
-		getMedalsBoard().setVisible(false);
-		this.addComponent(getMedalsBoard());
-	}
 
 	@Override
-	protected void init() {
-		this.logger = (Logger) LoggerFactory.getLogger(this.getClass());
-		this.uiEventLogger = (Logger) LoggerFactory.getLogger("UI" + this.logger.getName());
-		createComponents();
-		setDefaultParameters();
-	}
-
 	protected void setDefaultParameters() {
 		// when navigating to the page, Vaadin will call setParameter+readParameters
 		// these parameters will be applied.
@@ -148,17 +70,5 @@ public class PublicNoLeadersPage extends AbstractResultsDisplayPage {
 		fullMap.putAll(initialMap);
 		fullMap.putAll(additionalMap);
 		setDefaultParameters(QueryParameters.simple(fullMap));
-	}
-
-	private void setMedalsBoard(ResultsMedals medalsBoard) {
-		this.medalsBoard = medalsBoard;
-	}
-
-	protected void setResultsBoard(Results board) {
-		this.resultsBoard = board;
-	}
-
-	private final ResultsMedals getMedalsBoard() {
-		return this.medalsBoard;
 	}
 }

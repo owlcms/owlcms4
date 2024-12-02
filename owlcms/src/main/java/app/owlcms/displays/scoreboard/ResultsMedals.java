@@ -301,6 +301,9 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	}
 
 	protected void getAthleteJson(Athlete a, JsonObject ja, Category curCat, int liftOrderRank) {
+		if (a.getGroup() == null) {
+			return;
+		}
 		String category;
 		category = curCat != null ? curCat.getDisplayName() : "";
 		if (isAbbreviatedName()) {
@@ -460,7 +463,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 			List<Athlete> medalists = medals2.get(catCode);
 			Category cat = CategoryRepository.findByCode(catCode);
 			boolean scoreNeeded = (medalists != null && !medalists.isEmpty()) &&
-					 (medalists.get(0).getComputedScoringSystem() != Ranking.TOTAL);
+			        (medalists.get(0).getComputedScoringSystem() != Ranking.TOTAL);
 			setScoreRanks(scoreNeeded);
 
 			JsonArray jsonMCArray = Json.createArray();
@@ -505,7 +508,7 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 				Category cat = CategoryRepository.findByCode(key);
 
 				setTitles(jMC, cat);
-				
+
 				jMC.put("leaders", getAthletesJson(new ArrayList<>(medalists), null));
 				if (mcX == 0) {
 					jMC.put("showCatHeader", "");
@@ -673,6 +676,9 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	}
 
 	private boolean isMedalist(Athlete a) {
+		if (a.getGroup() == null) {
+			return false;
+		}
 		if (this.snatchCJTotalMedals) {
 			int snatchRank = a.getSnatchRank();
 			if (snatchRank <= 3 && snatchRank > 0) {

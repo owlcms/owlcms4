@@ -63,7 +63,6 @@ public class PublicScoreboardPage extends AbstractResultsDisplayPage {
 
 	@Subscribe
 	public void slaveCeremonyStarted(UIEvent.CeremonyStarted e) {
-		// logger.debug("public scoreboard {}",e.getCeremonyType());
 		if (e.getCeremonyType() != CeremonyType.MEDALS) {
 			return;
 		}

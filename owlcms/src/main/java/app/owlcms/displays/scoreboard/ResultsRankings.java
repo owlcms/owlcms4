@@ -42,6 +42,7 @@ public class ResultsRankings extends ResultsMedals implements ResultsParameters 
 		        : Collections.emptyList();
 
 		athletes.stream()
+				.filter(a -> a.getGroup() != null)
 		        .sorted((a, b) -> {
 			        int aTotalRank = a.getTotalRank();
 			        aTotalRank = aTotalRank == 0 ? 999 : aTotalRank;
