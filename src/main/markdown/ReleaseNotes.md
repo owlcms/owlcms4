@@ -4,6 +4,8 @@
 > - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
+  - 54.0.0-rc09: Fix: when a good lift decision was given, and the next athlete would be on the same weight, the announcer lifting order would show the athlete having just lifted at the top with their automatic progression.  This could cause the announcer to prematurely request a change of weight.  Now the update waits until the order has been recomputed and is in sync with the other notifications.
+  - 54.0.0-rc09: Added a feature switch "usawCollars" to use collars if available except for U11 and U13 age groups (threshold is ignored)
   - 54.0.0-rc08: Fix: When initially started with no leaderboard, the "main room" public scoreboard was not switching to medals during ceremonies (the full scoreboard with leaderboard was correct)
   - 54.0.0-rc08: Removed the "show incomplete categories" checkbox from the medal ceremony dialog, as this only makes sense when showing rankings.  Fixed the Rankings page to work when an athlete is removed from a session when the competition has started.
   - 54.0.0-rc07: When opening the announcer "Pause" menu, the computation of the medal ceremony dropdown is now done in the background to avoid delays in large competitions with multiple championships.
