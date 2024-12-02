@@ -2951,7 +2951,15 @@ public class FieldOfPlay implements IUnregister {
 		        && (a.getAgeGroup().getMinAge() <= 12 && a.getAgeGroup().getMaxAge() <= 20);
 		use15Bar = (a != null && a.getGender() != Gender.M) || federationRule;
 
-		if (getPlatform().isUseNonStandardBar()) {
+		Integer age = curAthlete.getAge();
+		if (Config.getCurrent().featureSwitch("usawCollars") && age != null && age > 13 ) {
+			logger.warn("usawU13");
+			this.setLightBarInUse(false);
+			Gender gender = curAthlete != null ? curAthlete.getGender() : null;
+			this.setBarWeight((gender != null && gender == Gender.M) ? 20 : 15);
+			this.setUseCollarsIfAvailable(true);
+		} 
+		else if (getPlatform().isUseNonStandardBar()) {
 			logger.trace("non standard bar: {}", getPlatform().getNonStandardBarWeight());
 			Integer nonStandardBarWeight = getPlatform().getNonStandardBarWeight();
 			this.setBarWeight(nonStandardBarWeight);
@@ -2973,17 +2981,20 @@ public class FieldOfPlay implements IUnregister {
 			this.setLightBarInUse(a.getGender() != Gender.F);
 			this.setBarWeight(15);
 			this.setUseCollarsIfAvailable(false);
-		} else if ((newWeight >= getPlatform().getCollarThreshold() && (getPlatform().getNbB_20() == 0 || use15Bar) && (getPlatform().getNbB_15() > 0))) {
-			logger.trace(">=40 15 collars");
-			this.setLightBarInUse(a.getGender() != Gender.F);
-			this.setBarWeight(15);
-			this.setUseCollarsIfAvailable(true);
 		} else {
-			logger.trace("standard");
-			this.setLightBarInUse(false);
-			Gender gender = curAthlete != null ? curAthlete.getGender() : null;
-			this.setBarWeight((gender != null && gender == Gender.M) ? 20 : 15);
-			this.setUseCollarsIfAvailable(newWeight >= getPlatform().getCollarThreshold());
+			boolean useCollars = newWeight >= getPlatform().getCollarThreshold();
+			if ((useCollars && (getPlatform().getNbB_20() == 0 || use15Bar) && (getPlatform().getNbB_15() > 0))) {
+				logger.trace(">=40 15 collars");
+				this.setLightBarInUse(a.getGender() != Gender.F);
+				this.setBarWeight(15);
+				this.setUseCollarsIfAvailable(true);
+			} else {
+				logger.trace("standard");
+				this.setLightBarInUse(false);
+				Gender gender = curAthlete != null ? curAthlete.getGender() : null;
+				this.setBarWeight((gender != null && gender == Gender.M) ? 20 : 15);
+				this.setUseCollarsIfAvailable(useCollars);
+			}
 		}
 		return;
 	}
