@@ -66,12 +66,15 @@ public class GroupCategorySelectionMenu extends MenuBar {
 
 	@Override
 	protected void onAttach(AttachEvent attachEvent) {
-		init(groups, fop, whenChecked, whenUnselected);
+		subMenuLoaded = false;
+		init(groups, fop, whenChecked, whenUnselected, this.getUI().get());
 	}
 
 	public void recompute() {
+		UI ui = this.getUI().get();
 		this.removeAll();
-		init(this.groups, this.fop, this.whenChecked, this.whenUnselected);
+		subMenuLoaded = false;
+		init(this.groups, this.fop, this.whenChecked, this.whenUnselected, ui);
 	}
 
 	public void setIncludeNotCompleted(Boolean value) {
@@ -104,16 +107,17 @@ public class GroupCategorySelectionMenu extends MenuBar {
 	Map<Group, Set<String>> medalCategoriesPerGroup = new HashMap<>();
 
 	private void init(List<Group> groups, FieldOfPlay fop, TriConsumer<Group, Category, FieldOfPlay> whenChecked,
-	        TriConsumer<Group, Category, FieldOfPlay> whenUnselected) {
+	        TriConsumer<Group, Category, FieldOfPlay> whenUnselected, UI ui) {
+
 		MenuItem item;
 		String menuTitle = Translator.translate("Group") + "/" + Translator.translate("Category") + "\u2003\u25bc";
 		this.setId("sessionDropDown");
 		item = this.addItem(menuTitle);
 		this.addThemeVariants(MenuBarVariant.LUMO_SMALL, MenuBarVariant.LUMO_PRIMARY);
-		UI ui = this.getUI().get();
 		this.setEnabled(false);
 
 		if (!subMenuLoaded) {
+			medalCategoriesPerGroup.clear();
 			new Thread(() -> {
 				for (Group g : groups) {
 					Set<String> categories = this.includeNotCompleted ? getAllCategories(g) : getFinishedCategories(g);
