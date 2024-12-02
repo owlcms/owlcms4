@@ -27,7 +27,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
@@ -493,14 +492,16 @@ public class BreakManagement extends BaseContent implements SafeEventBusRegistra
 		        (g1, c1, fop1) -> selectCeremonyCategory(g1, c1),
 		        // no group
 		        (g1, c1, fop1) -> selectCeremonyCategory(null, c1));
-		Checkbox includeNotCompleted = new Checkbox();
-		includeNotCompleted.addValueChangeListener(e -> {
-			groupCategorySelectionMenu.setIncludeNotCompleted(e.getValue());
-			groupCategorySelectionMenu.recompute();
-		});
-		includeNotCompleted.setLabel(Translator.translate("Video.includeNotCompleted"));
+//		Checkbox includeNotCompleted = new Checkbox();
+//		includeNotCompleted.addValueChangeListener(e -> {
+//			groupCategorySelectionMenu.setIncludeNotCompleted(e.getValue());
+//			groupCategorySelectionMenu.recompute();
+//		});
+//		includeNotCompleted.setLabel(Translator.translate("Video.includeNotCompleted"));
 		HorizontalLayout hl = new HorizontalLayout();
-		hl.add(groupCategorySelectionMenu, includeNotCompleted);
+		hl.add(groupCategorySelectionMenu
+//				, includeNotCompleted
+				);
 
 		this.startMedalCeremony = new Button(
 		        Translator.translate("BreakMgmt.startMedals"), (e) -> {
