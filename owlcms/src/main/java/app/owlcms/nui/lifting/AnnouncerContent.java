@@ -69,6 +69,7 @@ import app.owlcms.nui.shared.OwlcmsLayout;
 import app.owlcms.uievents.BreakType;
 import app.owlcms.uievents.JuryDeliberationEventType;
 import app.owlcms.uievents.UIEvent;
+import app.owlcms.uievents.UIEvent.Decision;
 import app.owlcms.utils.LoggerUtils;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -311,7 +312,7 @@ public class AnnouncerContent extends AthleteGridContent implements HasDynamicTi
 			if (e == null || e.decision == null) {
 				return;
 			}
-			this.slaveUpdateGrid(e);
+			// this.slaveUpdateGrid(e);
 			int d = e.decision ? 1 : 0;
 			String text = Translator.translate("NoLift_GoodLift", d, e.getAthlete().getFullName());
 
@@ -334,20 +335,26 @@ public class AnnouncerContent extends AthleteGridContent implements HasDynamicTi
 			n.setDuration(5000);
 			n.open();
 
-// This causes duplicate notifications.
-// Cannot do this in a UI lock.
-//			Athlete curAthlete = OwlcmsSession.getFop().getLiftingOrder().get(0);
-//
-//			if (curAthlete != null) {
-//				Integer newWeight = curAthlete.getNextAttemptRequestedWeight();
-//				// avoid duplicate info to officials
-//				if (newWeight != null && newWeight > 0 && Integer.compare(this.prevWeight, newWeight) != 0) {
-//					doNotification(Translator.translate("Notification.WeightToBeLoaded", newWeight), "info");
-//					this.prevWeight = newWeight;
-//				}
-//			}
+			// This causes duplicate notifications.
+			// Cannot do this in a UI lock.
+			// Athlete curAthlete = OwlcmsSession.getFop().getLiftingOrder().get(0);
+			//
+			// if (curAthlete != null) {
+			// Integer newWeight = curAthlete.getNextAttemptRequestedWeight();
+			// // avoid duplicate info to officials
+			// if (newWeight != null && newWeight > 0 && Integer.compare(this.prevWeight, newWeight) != 0) {
+			// doNotification(Translator.translate("Notification.WeightToBeLoaded", newWeight), "info");
+			// this.prevWeight = newWeight;
+			// }
+			// }
 			setDecisionLights(null);
 		});
+	}
+
+	@Override
+	@Subscribe
+	public void slaveUpdateGrid(Decision e) {
+		// do nothing, prevents premature update of lifting order grid
 	}
 
 	@Subscribe
