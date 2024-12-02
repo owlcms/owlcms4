@@ -2947,9 +2947,10 @@ public class FieldOfPlay implements IUnregister {
 			getPlatform().setNbL_2_5(1);
 			getPlatform().setNbL_5(1);
 		}
-		boolean federationRule = Config.getCurrent().featureSwitch("lightBarU13")
-		        && (a.getAgeGroup().getMinAge() <= 12 && a.getAgeGroup().getMaxAge() <= 20);
-		use15Bar = (a != null && a.getGender() != Gender.M) || federationRule;
+		AgeGroup ageGroup = a.getAgeGroup();
+		boolean boysLightBarAllowed = Config.getCurrent().featureSwitch("lightBarU13")
+		        && (ageGroup != null && ageGroup.getMinAge() <= 12 && ageGroup.getMaxAge() <= 20);
+		use15Bar = (a != null && a.getGender() != Gender.M) || boysLightBarAllowed;
 
 		Integer age = curAthlete.getAge();
 		if (Config.getCurrent().featureSwitch("usawCollars") && age != null && age > 13 ) {
