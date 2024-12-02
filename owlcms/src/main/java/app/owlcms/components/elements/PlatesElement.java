@@ -135,9 +135,9 @@ public class PlatesElement extends FlexLayout {
 				//logger.debug("barWeight = {} nonBarWeight = {}", barWeight, nonBarWeight);
 				// make sure that large 5 and large 2.5 are only used when warranted
 				// (must not require manual intervention if they are available)
-				if (platform.getNbL_2_5() > 0 && nonBarWeight < 10 || platform.getNbL_5() > 0 && nonBarWeight < 15) {
-					useCollar = false;
-				}
+//				if (platform.getNbL_2_5() > 0 && nonBarWeight < 10 || platform.getNbL_5() > 0 && nonBarWeight < 15) {
+//					useCollar = false;
+//				}
 				if (useCollar) {
 					// we take off the collar weight because we need to
 					// wait before showing the collar.
