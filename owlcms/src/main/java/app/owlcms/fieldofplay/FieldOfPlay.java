@@ -2895,7 +2895,7 @@ public class FieldOfPlay implements IUnregister {
 		Integer newWeight = getPrevWeight() != this.curWeight ? this.curWeight : null;
 
 		if (curAthlete2 != null && curAthlete2.getActuallyAttemptedLifts() == 3) {
-			// athlete has until before first CJ to comply with starting weights rule
+			// athlete has until before first CJ tSo comply with starting weights rule
 			// if the snatch was lowered.
 			warnMissingKg();
 		}
@@ -2934,8 +2934,8 @@ public class FieldOfPlay implements IUnregister {
 	}
 
 	private void changePlatformEquipment(Athlete a, Integer newWeight) {
-		// skip during unit tests.
-		if (getPlatform() == null) {
+		// skip during unit tests or results editing
+		if (getPlatform() == null || a == null) {
 			return;
 		}
 		boolean use15Bar = false;
