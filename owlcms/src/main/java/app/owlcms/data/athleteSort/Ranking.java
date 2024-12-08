@@ -122,7 +122,7 @@ public enum Ranking {
 				d = 0D; // no such thing
 				break;
 			case BW_SINCLAIR:
-				d = curLifter.getSinclairForDelta();
+				d = curLifter.getSinclair();
 				break;
 			case CAT_SINCLAIR:
 				d = curLifter.getCategorySinclair();
