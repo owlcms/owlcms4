@@ -59,6 +59,7 @@ public class MarshallContent extends AthleteGridContent implements HasDynamicTit
 	}
 	Map<String, List<String>> urlParameterMap = new HashMap<>();
 	private boolean startOrder;
+	private boolean liveLights;
 
 	public MarshallContent() {
 		// when navigating to the page, Vaadin will call setParameter+readParameters
@@ -68,7 +69,7 @@ public class MarshallContent extends AthleteGridContent implements HasDynamicTit
 		        SoundParameters.DOWNSILENT, "true",
 		        SoundParameters.IMMEDIATE, "true",
 		        SoundParameters.SINGLEREF, "false",
-		        SoundParameters.LIVE_LIGHTS, "true",
+		        SoundParameters.LIVE_LIGHTS, "false",
 		        SoundParameters.SHOW_DECLARATIONS, "false",
 		        SoundParameters.START_ORDER, "true")));
 	}
@@ -203,6 +204,17 @@ public class MarshallContent extends AthleteGridContent implements HasDynamicTit
 		        });
 		startOrder.setCheckable(true);
 		startOrder.setChecked(this.isStartOrder());
+	}
+	
+	@Override
+	public boolean isLiveLights() {
+		// logger.debug("is live lights {} -- {}",this.liveLights, LoggerUtils.whereFrom());
+		return this.liveLights;
+	}
+	
+	@Override
+	public void setLiveLights(boolean showLiveLights) {
+		this.liveLights = showLiveLights;
 	}
 
 	@Override
