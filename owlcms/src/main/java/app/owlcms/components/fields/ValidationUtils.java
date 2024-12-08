@@ -91,5 +91,14 @@ public class ValidationUtils {
 			}
 		};
 	}
-
+	
+	public static <T> Validator<T> nonNullValidator(String errorMessage) {
+		return (value, context) -> {
+			if (value != null) {
+				return ValidationResult.ok();
+			} else {
+				return ValidationResult.error(errorMessage);
+			}
+		};
+	}
 }
