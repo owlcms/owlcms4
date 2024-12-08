@@ -6,7 +6,6 @@
  *******************************************************************************/
 package app.owlcms.nui.preparation;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -42,9 +41,7 @@ import app.owlcms.data.agegroup.AgeGroup;
 import app.owlcms.data.agegroup.AgeGroupRepository;
 import app.owlcms.data.agegroup.AssignedAthletesException;
 import app.owlcms.data.agegroup.Championship;
-import app.owlcms.data.agegroup.ChampionshipType;
 import app.owlcms.data.athlete.Gender;
-import app.owlcms.data.athleteSort.Ranking;
 import app.owlcms.data.competition.Competition;
 import app.owlcms.i18n.Translator;
 import app.owlcms.nui.crudui.OwlcmsCrudFormFactory;
@@ -139,22 +136,22 @@ public class AgeGroupEditingFormFactory
 		this.binder.forField(championshipField).bind(AgeGroup::getChampionship, AgeGroup::setChampionship);
 		formLayout.addFormItem(championshipField, createLabel(Translator.translate("Championship")));
 
-		ComboBox<Ranking> medalScoreSystemField = new ComboBox<>();
-		medalScoreSystemField.setClearButtonVisible(true);
-		List<Ranking> rankings = Arrays.asList(Ranking.values());
-		List<Ranking> medalScoreRankings = rankings.stream().filter(r -> r.isMedalScore()).toList();
-		medalScoreSystemField.setItems(new ListDataProvider<Ranking>(medalScoreRankings));
-		medalScoreSystemField.setItemLabelGenerator((ad) -> Translator.translate("Ranking." + ad.name()));
-		// logger.debug("***** scoring system {}", aFromDb.getMedalScoringSystem());
-		this.binder.forField(medalScoreSystemField).bind(AgeGroup::getMedalScoringSystem, AgeGroup::setScoringSystem);
-		formLayout.addFormItem(medalScoreSystemField, createLabel(Translator.translate("MedalScoringSystem")));
+//		ComboBox<Ranking> medalScoreSystemField = new ComboBox<>();
+//		medalScoreSystemField.setClearButtonVisible(true);
+//		List<Ranking> rankings = Arrays.asList(Ranking.values());
+//		List<Ranking> medalScoreRankings = rankings.stream().filter(r -> r.isMedalScore()).toList();
+//		medalScoreSystemField.setItems(new ListDataProvider<Ranking>(medalScoreRankings));
+//		medalScoreSystemField.setItemLabelGenerator((ad) -> Translator.translate("Ranking." + ad.name()));
+//		// logger.debug("***** scoring system {}", aFromDb.getMedalScoringSystem());
+//		this.binder.forField(medalScoreSystemField).bind(AgeGroup::getMedalScoringSystem, AgeGroup::setScoringSystem);
+//		formLayout.addFormItem(medalScoreSystemField, createLabel(Translator.translate("MedalScoringSystem")));
 
 		TextField minAgeField = new TextField();
 		formLayout.addFormItem(minAgeField, createLabel(Translator.translate("MinimumAge")));
 		// we don't use asRequired because of weird placement of required indicator
 		this.binder.forField(minAgeField)
 		        .withValidator(
-		                new StringLengthValidator(Translator.translate("ThisFieldIsRequired"), 1, null))
+		                new StringLengthValidator(Translator.translate("ThisFieldIsRequired"), 1, 3))
 		        .withConverter(new StringToIntegerConverter(message))
 		        .withValidator(new IntegerRangeValidator(message, 0, 999))
 		        .bind(AgeGroup::getMinAge, AgeGroup::setMinAge);
@@ -164,7 +161,7 @@ public class AgeGroupEditingFormFactory
 		// we don't use asRequired because of weird placement of required indicator
 		this.binder.forField(maxAgeField)
 		        .withValidator(
-		                new StringLengthValidator(Translator.translate("ThisFieldIsRequired"), 1, null))
+		                new StringLengthValidator(Translator.translate("ThisFieldIsRequired"), 1, 3))
 		        .withConverter(new StringToIntegerConverter(message))
 		        .withValidator(new IntegerRangeValidator(message, 0, 999))
 		        .bind(AgeGroup::getMaxAge, AgeGroup::setMaxAge);
@@ -206,19 +203,21 @@ public class AgeGroupEditingFormFactory
 		this.binder.forField(this.catField).bind(AgeGroup::getCategories, AgeGroup::setCategories);
 		formLayout.addFormItem(this.catField, createLabel(Translator.translate("BodyWeightCategories")));
 
+
+//		if (minAgeField.getValue().isEmpty()) {
+//			minAgeField.setValue("0");
+//		}
+//		if (maxAgeField.getValue().isEmpty()) {
+//			maxAgeField.setValue("999");
+//		}
+//		if (genderField.getValue() == null) {
+//			genderField.setValue(Gender.F);
+//		}
+//		if (championshipField.getValue() == null) {
+//			championshipField.setValue(Championship.ofType(ChampionshipType.U));
+//		}
+		
 		this.binder.readBean(aFromDb);
-		if (minAgeField.getValue().isEmpty()) {
-			minAgeField.setValue("0");
-		}
-		if (maxAgeField.getValue().isEmpty()) {
-			maxAgeField.setValue("999");
-		}
-		if (genderField.getValue() == null) {
-			genderField.setValue(Gender.F);
-		}
-		if (championshipField.getValue() == null) {
-			championshipField.setValue(Championship.ofType(ChampionshipType.U));
-		}
 
 		Component footerLayout = this.buildFooter(operation, aFromDb, cancelButtonClickListener,
 		        updateButtonClickListener, deleteButtonClickListener, false);

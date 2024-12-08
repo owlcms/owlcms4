@@ -48,8 +48,7 @@ import ch.qos.logback.classic.Logger;
  *
  * A category is the combination of an age range (AgeGroup), a gender, and a bodyweight range.
  *
- * Category currently include record information for the computation of Robi points. Category links to its associated
- * records.
+ * Category currently include record information for the computation of Robi points. Category links to its associated records.
  *
  * Robi = * A x (total)^b where b = log(10)/log(2)
  *
@@ -145,15 +144,15 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		if (o == null) {
 			return -1; // we are smaller than null -- null goes to the end;
 		}
-		
+
 		int compare;
-		
+
 		compare = ObjectUtils.compare(this.getCode(), o.getCode());
 		if (compare == 0) {
-			// shortcut.  identical codes are identical
+			// shortcut. identical codes are identical
 			return compare;
 		}
-		
+
 		compare = ObjectUtils.compare(this.getGender(), o.getGender());
 		if (compare != 0) {
 			return compare;
@@ -171,14 +170,16 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		return compare;
 	}
 
-	
-	public static Comparator<Category> specificityComparator = (a,b) -> {
-		if (a == null || b == null) return ObjectUtils.compare(a,b,true);
+	public static Comparator<Category> specificityComparator = (a, b) -> {
+		if (a == null || b == null)
+			return ObjectUtils.compare(a, b, true);
 		var aAgeGroup = a.getAgeGroup();
 		var bAgeGroup = b.getAgeGroup();
-		if (aAgeGroup == null || bAgeGroup == null) return ObjectUtils.compare(aAgeGroup,bAgeGroup,true);
+		if (aAgeGroup == null || bAgeGroup == null)
+			return ObjectUtils.compare(aAgeGroup, bAgeGroup, true);
 		int compare = ObjectUtils.compare(aAgeGroup.getGender(), bAgeGroup.getGender());
-		if (compare != 0) return compare;
+		if (compare != 0)
+			return compare;
 		int aDelta = aAgeGroup.getMaxAge() - aAgeGroup.getMinAge();
 		int bDelta = bAgeGroup.getMaxAge() - bAgeGroup.getMinAge();
 		return Integer.compare(aDelta, bDelta);
@@ -256,7 +257,7 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 			return String.valueOf((int) (Math.round(this.maximumWeight)));
 		}
 	}
-	
+
 	@Transient
 	@JsonIgnore
 	public String getSortCodeLimitString() {
@@ -268,10 +269,10 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		if (this.maximumWeight > 130) {
 			return "999";
 		} else {
-			return String.format("%03d",(int) (Math.round(this.maximumWeight)));
+			return String.format("%03d", (int) (Math.round(this.maximumWeight)));
 		}
 	}
-	
+
 	@JsonIgnore
 	@Transient
 	public String getSortCode() {
@@ -279,7 +280,7 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 
 		String result;
 		if (agName == null || agName.isEmpty()) {
-			String catName = "zzzz"+"_"+getGender() + getSortCodeLimitString();
+			String catName = "zzzz" + "_" + getGender() + getSortCodeLimitString();
 			result = catName;
 		} else {
 			result = this.ageGroup.getCode() + "_" + getGender() + getSortCodeLimitString();
@@ -301,7 +302,6 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		}
 	}
 
-	
 	@JsonIgnore
 	@Transient
 	public String getDisplayName() {
@@ -515,12 +515,12 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		return this.wrYth;
 	}
 
-	// @Override
-	// public int hashCode() {
-	// return Objects.hash(active, ageGroup, code, gender, id, maximumWeight, minimumWeight, name, getWrJr(),
-	// getWrSr(),
-	// getWrYth());
-	// }
+	/**
+	 * @return a code that changes if the category was edited in a way that requires reassigning athletes
+	 */
+	public int reassignmentHashCode() {
+		return Objects.hash(code, gender, maximumWeight, minimumWeight, qualifyingTotal);
+	}
 
 	@Override
 	public int hashCode() {

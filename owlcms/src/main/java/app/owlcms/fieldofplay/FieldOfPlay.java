@@ -2954,7 +2954,6 @@ public class FieldOfPlay implements IUnregister {
 
 		Integer age = curAthlete.getAge();
 		if (Config.getCurrent().featureSwitch("usawCollars") && age != null && age > 13 ) {
-			logger.warn("usawU13");
 			this.setLightBarInUse(false);
 			Gender gender = curAthlete != null ? curAthlete.getGender() : null;
 			this.setBarWeight((gender != null && gender == Gender.M) ? 20 : 15);

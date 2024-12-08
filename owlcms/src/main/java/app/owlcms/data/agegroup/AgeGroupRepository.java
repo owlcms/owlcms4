@@ -476,7 +476,7 @@ public class AgeGroupRepository {
 				|| !ageGroup.getMinAge().equals(existing.getMinAge())
 		        || !ageGroup.getMaxAge().equals(existing.getMaxAge())
 		        || ageGroup.getGender() != existing.getGender()
-		        || existing.getCategories().hashCode() != ageGroup.getCategories().hashCode();
+		        || existing.reassignmentHashCode() != ageGroup.reassignmentHashCode();
 		        ;
 	    List<Athlete> assignedAthletes = AthleteRepository.findAthletesForAgeGroup(ageGroup);
 	    
@@ -507,6 +507,7 @@ public class AgeGroupRepository {
 			return nAgeGroup;
 		} else {
 			// no need to change the categories
+			logger.debug("categories not changing");
 			AgeGroup nAgeGroup = JPAService.runInTransaction(em -> {
 				AgeGroup nag = null;
 				try {
