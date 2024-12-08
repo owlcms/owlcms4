@@ -169,6 +169,11 @@ public class PAthlete extends Athlete implements IRankHolder {
 	}
 
 	@Override
+	public LocalDateTime getBestCleanJerkAttemptTime() {
+		return this.a.getBestCleanJerkAttemptTime();
+	}
+
+	@Override
 	public int getBestResultAttemptNumber() {
 		return this.a.getBestResultAttemptNumber();
 	}
@@ -181,6 +186,11 @@ public class PAthlete extends Athlete implements IRankHolder {
 	@Override
 	public int getBestSnatchAttemptNumber() {
 		return this.a.getBestSnatchAttemptNumber();
+	}
+
+	@Override
+	public LocalDateTime getBestSnatchAttemptTime() {
+		return this.a.getBestSnatchAttemptTime();
 	}
 
 	@Override
@@ -892,7 +902,7 @@ public class PAthlete extends Athlete implements IRankHolder {
 	public int getTotalRank() {
 		return this.p.getTotalRank();
 	}
-	
+
 	@Override
 	public int getCategoryScoreRank() {
 		return this.p.getCategoryScoreRank();
