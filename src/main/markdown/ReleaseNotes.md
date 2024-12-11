@@ -3,8 +3,11 @@
 > - This is a release candidate [(see definition)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Release_candidate), used for final public testing and translation. *It is still a preliminary release*
 > - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
+- Maintenance log:
+  - 54.0.1: The program was giving a spurious warning when a late change was made between the time the next weight was displayed and the time the clock  started running.
+
 - Speaker
-  - The updates to the lifting order grid are now synchronized with the notifications.  Previously the  progression of an a athlete could be visible for a moment, leading the speaker to believe the requested weight was going up to that amount.
+  - The updates to the lifting order grid are now synchronized with the notifications.  Previously the progression of an athlete could be visible for a moment, leading the speaker to believe the requested weight was going up to that amount.
 
 - Age Groups and Championships
   - It is now possible to edit interactively the age group settings to define the championship in which the age groups belongs
