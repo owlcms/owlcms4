@@ -4,6 +4,7 @@
 > - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
+  - 54.0.0-rc11: Spanish (EC and Latin America), Romanian, Hungarian translations  
   - 54.0.0-rc11: Very minor changes to templates and logging following North American Open Finals. 
   - 54.0.0-rc10: When editing age groups, changes to the qualifying totals were not being saved
   - 54.0.0-rc10: When using Sinclair to award medals to a group, athletes with no total were still given a (low) score and ranked.
