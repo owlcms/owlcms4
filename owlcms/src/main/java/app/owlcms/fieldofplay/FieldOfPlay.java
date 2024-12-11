@@ -3089,7 +3089,7 @@ public class FieldOfPlay implements IUnregister {
 		if (a == null) {
 			return newRecords;
 		}
-		this.logger.debug("{}updateRecords {} {} {}", FieldOfPlay.getLoggingName(this), a.getShortName(), success,
+		this.logger.info("{}decision {} good lift={} {}", FieldOfPlay.getLoggingName(this), a.getShortName(), success,
 		        LoggerUtils.whereFrom());
 		if (success) {
 			for (RecordEvent rec : challengedRecords) {
