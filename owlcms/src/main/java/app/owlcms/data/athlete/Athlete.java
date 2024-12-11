@@ -5187,9 +5187,11 @@ public class Athlete {
 			LiftOrderInfo reference = null;
 
 			Athlete clockOwner = getFop().getClockOwner();
-			if (clockOwner != null) {
-				// if clock is running, reference becomes the clock owner instead of last
-				// good/bad lift.
+			//FIXME: clock ownership should only be set when clock starts running, double-check
+			if (clockOwner != null && getFop().getState() == FOPState.TIME_RUNNING) {
+				// if clock is running, reference becomes the weight requested by the clock owner
+				// and not the last good/bad lift. 
+				// e.g. 137 is on the bar as the requested weight, and clock has been started, one cannot request 136
 				reference = clockOwner.getRunningLiftOrderInfo();
 				pastOrder.shortDump("lastLift info clock running", getLogger());
 			} else {
