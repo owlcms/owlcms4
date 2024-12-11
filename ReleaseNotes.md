@@ -1,31 +1,40 @@
-> [!IMPORTANT]
+> [!WARNING]
 >
-> This is an IMPORTANT BUG FIX RELEASE.  It should be installed by anyone running any of the release numbers starting with 53.0
->
-> - You should test all releases, with actual data, *several days* before a competition.
-> - It is always wise to export your current database before updating.
+> - This is a release candidate [(see definition)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Release_candidate), used for final public testing and translation. *It is still a preliminary release*
+> - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
-- Maintenance log:
-  - 53.1.0: Database failures could occur when switching from Snatch to CJ or when switching sessions.  This was more likely to happen when athletes were in multiple categories.
-  - 53.1.0: When producing the competition results by eligibility category, if the championship is selected, then each category will be ordered according to the scoring system of the championship. This is useful when there are Sinclair/QYouth categories for example.
-  - 53.1.0: When producing the competition results by eligibility category and without a championship filter, the athletes would appear as many times as they had eligible categories instead of once.
-- Selectable scoring systems for [Best Lifter](https://jflamy.github.io/owlcms4/#/ResultDocuments?id=competition-results) in a championship and [Score-based Medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions) (see the links for documentation),
-  - On the competition results page, it is possible to select a scoring system that will be shown in the grid.  This allows computing the best athlete for a championship using a different scoring system (for example, using Q-youth age-adjusted totals for a Youth Championship)
-  - The standard templates have been updated to use the Best Athlete scoring system selected if one is picked (the default is the competition global best athlete scoring system)
-  - The names have been aligned with what Dr. Huebner uses in her online calculators (Q-Youth, previously HP points or Age Factors, and Q-Masters, previously Q-age).
-- Jury Sheets for examinations:
-  - There are now two jury sheets in the default configuration.  One without the examination results, one with.  To print the examination version, use the `Print Entire Workbook` option (the examination results are in the second tab)
-- Children Categories Bar Rules
-  - The feature flag `lightBarU13` can be used to use a 15kg bar for boys in the U11 and U13 categories.  If an athlete needs the 20kg bar, the "Non-Standard bar" feature can be used to override. This is the same as removing the 20kg bar for younger boys age groups. 
-- Support for Q-masters results
-  - Q-masters is like SM(H)F but based on Q-points instead of Sinclair.  It is Q-points * the same age factor as SM(H)F
-  - The default templates for Masters protocols, result sheets and competition books now show the Q-masters value in addition to the SM(H)F.
-- Import of External Session Results: the following is now possible
-  - If a session needs to be run outside or in another building a) perform weigh-in normally and enter data normally in the main database. b) Export the main database and load it into the owlcms running in the other building c) Run the session, export the remote database c) Use the new feature at the bottom of the Results page to selectively read back the lifts from the remote session.
-  - Only the lift information is read back.  Note that owlcms follows the rules and will determine winners according to the lifting order that would have been followed had all sessions taken place normally.
-- jxls3 Templates
-  - In the top cell, where `jx:area` is given, it is now possible to add a directive of the form `owlcms:fixMerges(4, [1, 2, 3])`  This would merge cells vertically in columns 1, 2, 3, starting with row 4.  The cells are merged from the non-empty value down to the next non-empty cell.  This is a workaround for a limitation/bug in jxls3.  See the `templates/schedule/DaySchedule.xlsx` file for an example.
-- Locale: fixed a race condition where pages would load before it was determined that the application should switch to English because there is no translation for the local language.
-- Event Publishing: fixed issue with liftType published during event forwarding to public results and video information feeds.
+- Speaker
+  - The updates to the lifting order grid are now synchronized with the notifications.  Previously the  progression of an a athlete could be visible for a moment, leading the speaker to believe the requested weight was going up to that amount.
 
-For other recent changes, see [version 51 release notes](https://github.com/owlcms/owlcms4/releases/tag/50.0.0) and [version 52 release notes](https://github.com/owlcms/owlcms4/releases/tag/52.0.6)
+- Age Groups and Championships
+  - It is now possible to edit interactively the age group settings to define the championship in which the age groups belongs
+  - It is now possible to define Championships interactively
+  - It is now possible to define that an Age Group awards medals using a scoring system.
+  - See the documentation for [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions)
+  - When changing age boundaries, or bodyweight boundaries, a confirmation is required if there are athletes already assigned to the age group.  This is because the old categories are no longer valid and must be removed. Therefore new categories must be selected for the athletes in the age group, which justifies the need for a confirmation.
+- Down Signal and Decisions
+  - When using the decision display with keyboard (USB/joystick) devices, there was a *very remote* possibility that events could arrive out of order, causing the system to stay stuck on the down signal.  Now such reverting updates will be ignored.
+- Scoreboards:
+  - Now correctly display ranks and leaders for categories where medals are given based on a score 
+  - Medals scoreboards and medals reports have now been fixed to handle score-based medals and sessions where both traditional and score-based medals are awarded.
+  - Changing the medals display shown used for the video stream no longer changes the main screen
+  - The "public" scoreboard meant to be used in the main room correctly switches during medal ceremonies
+- Results
+  - During a competition with both score-based and total-based rankings, from the Competition Results page, using the Eligibility Categories report with the Score template will produce correct interim or final results.   Each category will be ranked according to it's scoring system.
+  - Updated the competition results and the protocol sheets to use the faster jxls3 template processing. The categories are now listed in alphabetical order.
+  - Athletes that did not weigh-in for their session no longer interfere with the determination that their categories are done and ready to receive medals.
+  - In all results spreadsheets, a single best athlete score is shown to avoid controversies when the newer scoring systems give different results than the older ones.  
+  - The best athlete system can be selected when producing the results (the default is set in the overall competition rules.) on all three types of documents.
+- Templates:
+  - the athlete's score and ranks in the current category are now obtained by using `${l.categoryScore}` `${l.categoryScoreRank}` (where l is the loop variable giving the current athlete).  
+  - If the current category is not score-based, this is the same as `${l.total}`and the `${l.totalRank}`, so it is always possible to use the `Score` templates for a total-based competition.
+  - added new properties 
+    - ageGroup.sortCode and category.sortCodeWithAgeGroup for templates.  ageGroup.sortCode uses the code, max and min ages.  category.sortCodeWithAgeGroup adds the age group to the sort order - this is used when there are several open championships happening together.
+    - athlete.gender.translatedGenderCode now returns the translation (for example, W instead of F)
+  - Removed the LEGAL paper size from the list.
+- Bar Loading:
+  - The weight under which collars are not used is now configurable.  Default is 40kg.
+  - The normal grey bar color is used when 15kg bar is used for women or 20kg is used for men, even if the non-standard bar or children loading rules are in effect.
+  -  Added a feature switch "usawCollars" to use collars if available except for U11 and U13 age groups (threshold is ignored)
+
+For other recent changes, see [version 52 release notes](https://github.com/owlcms/owlcms4/releases/tag/52.0.6) and [version 53 release notes](https://github.com/owlcms/owlcms4/releases/tag/53.1.0)
