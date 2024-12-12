@@ -6,6 +6,7 @@
  *******************************************************************************/
 package app.owlcms.nui.preparation;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -42,6 +43,7 @@ import app.owlcms.data.agegroup.AgeGroupRepository;
 import app.owlcms.data.agegroup.AssignedAthletesException;
 import app.owlcms.data.agegroup.Championship;
 import app.owlcms.data.athlete.Gender;
+import app.owlcms.data.athleteSort.Ranking;
 import app.owlcms.data.competition.Competition;
 import app.owlcms.i18n.Translator;
 import app.owlcms.nui.crudui.OwlcmsCrudFormFactory;
@@ -136,15 +138,15 @@ public class AgeGroupEditingFormFactory
 		this.binder.forField(championshipField).bind(AgeGroup::getChampionship, AgeGroup::setChampionship);
 		formLayout.addFormItem(championshipField, createLabel(Translator.translate("Championship")));
 
-//		ComboBox<Ranking> medalScoreSystemField = new ComboBox<>();
-//		medalScoreSystemField.setClearButtonVisible(true);
-//		List<Ranking> rankings = Arrays.asList(Ranking.values());
-//		List<Ranking> medalScoreRankings = rankings.stream().filter(r -> r.isMedalScore()).toList();
-//		medalScoreSystemField.setItems(new ListDataProvider<Ranking>(medalScoreRankings));
-//		medalScoreSystemField.setItemLabelGenerator((ad) -> Translator.translate("Ranking." + ad.name()));
-//		// logger.debug("***** scoring system {}", aFromDb.getMedalScoringSystem());
-//		this.binder.forField(medalScoreSystemField).bind(AgeGroup::getMedalScoringSystem, AgeGroup::setScoringSystem);
-//		formLayout.addFormItem(medalScoreSystemField, createLabel(Translator.translate("MedalScoringSystem")));
+		ComboBox<Ranking> medalScoreSystemField = new ComboBox<>();
+		medalScoreSystemField.setClearButtonVisible(true);
+		List<Ranking> rankings = Arrays.asList(Ranking.values());
+		List<Ranking> medalScoreRankings = rankings.stream().filter(r -> r.isMedalScore()).toList();
+		medalScoreSystemField.setItems(new ListDataProvider<Ranking>(medalScoreRankings));
+		medalScoreSystemField.setItemLabelGenerator((ad) -> Translator.translate("Ranking." + ad.name()));
+		// logger.debug("***** scoring system {}", aFromDb.getMedalScoringSystem());
+		this.binder.forField(medalScoreSystemField).bind(AgeGroup::getMedalScoringSystem, AgeGroup::setScoringSystem);
+		formLayout.addFormItem(medalScoreSystemField, createLabel(Translator.translate("MedalScoringSystem")));
 
 		TextField minAgeField = new TextField();
 		formLayout.addFormItem(minAgeField, createLabel(Translator.translate("MinimumAge")));
