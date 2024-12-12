@@ -1,13 +1,12 @@
 > [!WARNING]
 >
-> - This is a release candidate [(see definition)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Release_candidate), used for final public testing and translation. *It is still a preliminary release*
-> - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
+> - You should test all releases, with actual data, *several days* before a competition.
 
 - Maintenance log:
-  - 54.1.0: Removed the "sinclair meet" option, see below
+  - 54.1.0: Removed the "sinclair meet" option, see Score-based Competitions below
   - 54.1.0: The program was giving a spurious warning when a late change was made between the time the next weight was displayed and the time the clock  started running.
   
-- Score-based competitions
+- Score-based Competitions
   -  Removed the "Sinclair Meet" option from the competition options.  You can achieve the same using [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions):
     - Create SM and SF age groups with ages 0-999 and only the default weight category.  Select "Already Gendered"
   
