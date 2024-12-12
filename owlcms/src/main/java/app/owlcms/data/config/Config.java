@@ -809,9 +809,10 @@ public class Config {
 	@JsonIgnore
 	public boolean isUseCompetitionDate() {
 		if (this.useCompetitionDate == null) {
-			this.useCompetitionDate = StartupUtils.getBooleanParam("useCompetitionDate");
+			this.useCompetitionDate = StartupUtils.getBooleanParamOrElseNull("useCompetitionDate");
 		}
-		return this.useCompetitionDate;
+		// if not defined, use the competition date as stored in the database
+		return this.useCompetitionDate != null ? this.useCompetitionDate : true;
 	}
 
 	public void setClearZip(boolean clearZipRequested) {
