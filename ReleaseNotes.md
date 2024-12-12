@@ -1,10 +1,23 @@
 > [!WARNING]
 >
-> - This is a release candidate [(see definition)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Release_candidate), used for final public testing and translation. *It is still a preliminary release*
-> - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
+> - You should test all releases, with actual data, *several days* before a competition.
 
+- Maintenance log:
+  - 54.1.0: Removed the "sinclair meet" option, see Score-based Competitions below
+  - 54.1.0: The program was giving a spurious warning when a late change was made between the time the next weight was displayed and the time the clock  started running.
+  
+- Score-based Competitions
+  -  Removed the "Sinclair Meet" option from the competition options.  You can achieve the same using [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions):
+    - Create SM and SF age groups with ages 0-999 and only the default weight category.  Select "Already Gendered"
+  
+    - Select "Sinclair" or "Q-Points" or what you want as the scoring system. 
+  
+    - Unselect the traditional categories and reallocate athletes.
+  
+    - You can create separate SM and SF for ages 0-34 and MM and MF for ages 35-999 where MM and MF would have SMHF or Q-masters as scoring system.  Or additional YM and YF with Q-youth etc.
+  
 - Speaker
-  - The updates to the lifting order grid are now synchronized with the notifications.  Previously the  progression of an a athlete could be visible for a moment, leading the speaker to believe the requested weight was going up to that amount.
+  - The updates to the lifting order grid are now synchronized with the notifications.  Previously the progression of an athlete could be visible for a moment, leading the speaker to believe the requested weight was going up to that amount.
 
 - Age Groups and Championships
   - It is now possible to edit interactively the age group settings to define the championship in which the age groups belongs
