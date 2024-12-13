@@ -20,7 +20,9 @@ import app.owlcms.i18n.Translator;
 @SuppressWarnings("serial")
 public class ConfirmationDialog extends Dialog {
 
-	public ConfirmationDialog(String title, String question, String confirmation, Runnable action) {
+	Runnable action;
+
+	public ConfirmationDialog(String title, String question, String confirmation, Runnable pAction) {
 		Dialog dialog = this;
 		dialog.setCloseOnEsc(false);
 		dialog.setCloseOnOutsideClick(false);
@@ -37,7 +39,11 @@ public class ConfirmationDialog extends Dialog {
 
 		HorizontalLayout buttons = new HorizontalLayout();
 		Button confirmButton = new Button(Translator.translate("Confirm"), event -> {
-			action.run();
+			if (pAction != null) {
+				pAction.run();
+			} else if (action != null) {
+				action.run();
+			}
 			if (confirmation != null) {
 				Notification.show(confirmation);
 			}
@@ -56,6 +62,14 @@ public class ConfirmationDialog extends Dialog {
 
 		dialog.add(content);
 		dialog.add(buttons);
-
 	}
+
+	public Runnable getAction() {
+		return action;
+	}
+
+	public void setAction(Runnable action) {
+		this.action = action;
+	}
+
 }

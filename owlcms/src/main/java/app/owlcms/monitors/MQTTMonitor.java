@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -49,34 +50,55 @@ import ch.qos.logback.classic.Logger;
 /**
  * This class receives and emits MQTT events.
  *
- * Events initiated by the devices start with topics that names the device (owlcms/jurybox) Devices do not listen to
- * other devices. They listen to MQTT events that come from the field of play. These events are of the form
- * (owlcms/fop). The field of play is always the last element in the topic.
+ * Events initiated by the devices start with topics that names the device (owlcms/jurybox) Devices do not listen to other devices. They listen to MQTT events
+ * that come from the field of play. These events are of the form (owlcms/fop). The field of play is always the last element in the topic.
  *
  * @author Jean-François Lamy
  */
 public class MQTTMonitor extends Thread implements IUnregister {
-	
+
 	private static Map<String, MQTTMonitor> mqttMonitorByName = new HashMap<>();
-	
+
 	synchronized public static MQTTMonitor initMQTTMonitorByName(String monitorName, FieldOfPlay fieldOfPlay) {
 		MQTTMonitor existingMonitor = mqttMonitorByName.get(monitorName);
 		if (existingMonitor == null) {
-			logger.info("{}creating MQTT monitor",FieldOfPlay.getLoggingName(fieldOfPlay));
-			MQTTMonitor newForwarder = new MQTTMonitor(monitorName,fieldOfPlay);
-			//fieldOfPlay.setMqttMonitor(newForwarder);
+			logger.info("{}creating MQTT monitor", FieldOfPlay.getLoggingName(fieldOfPlay));
+			MQTTMonitor newForwarder = new MQTTMonitor(monitorName, fieldOfPlay);
+			// fieldOfPlay.setMqttMonitor(newForwarder);
 			mqttMonitorByName.put(monitorName, newForwarder);
 			return newForwarder;
 		} else {
-			logger.info("{}reusing MQTT monitor",FieldOfPlay.getLoggingName(fieldOfPlay));
-			//existingMonitor.getFop().setMqttMonitor(existingMonitor);
+			logger.info("{}reusing MQTT monitor", FieldOfPlay.getLoggingName(fieldOfPlay));
+			// existingMonitor.getFop().setMqttMonitor(existingMonitor);
 			existingMonitor.setFop(fieldOfPlay);
 			return existingMonitor;
 		}
 	}
-	
+
 	public static MQTTMonitor getMqttMonitorByName(String name) {
 		return mqttMonitorByName.get(name);
+	}
+	
+	public static void reset() {
+		for (Entry<String, MQTTMonitor> e : mqttMonitorByName.entrySet()) {
+			MQTTMonitor monitor = e.getValue();
+			logger.info("unregistering MQTT monitor for platform {}", monitor.getMonitoredFopName());
+			monitor.setFop(null);
+			FieldOfPlay fop2 = OwlcmsFactory.getFOPByName(monitor.getMonitoredFopName());
+			if (fop2 != null) {
+				fop2.setEventForwarder(null);
+			}
+			try {
+				monitor.client.disconnect();
+			} catch (MqttException ex) {
+				try {
+					monitor.client.disconnectForcibly();
+				} catch (MqttException e1) {
+					LoggerUtils.logError(logger, e1);
+				}
+			}
+		}
+		mqttMonitorByName.clear();
 	}
 
 	/**
@@ -332,17 +354,18 @@ public class MQTTMonitor extends Thread implements IUnregister {
 		this.client.publish("owlcms/clock/" + this.getFop().getName(),
 		        new MqttMessage("stop".getBytes(StandardCharsets.UTF_8)));
 	}
-	
+
 	public void publishRefDecision(int i, boolean goodLift) throws MqttPersistenceException, MqttException {
 		// 0 is the announcer decision, bump by 1.
-		String message = Integer.toString(i+1) + " " + (goodLift ? "good" : "bad");
+		String message = Integer.toString(i + 1) + " " + (goodLift ? "good" : "bad");
 		this.client.publish("owlcms/refbox/decision/" + this.getFop().getName(),
 		        new MqttMessage(message.getBytes(StandardCharsets.UTF_8)));
 	}
 
 	public void setFop(FieldOfPlay fop) {
 		this.fop = fop;
-		//logger.debug("MQTTMonitor setFop {} {} {}\n{}", fop.getName(), System.identityHashCode(fop), System.identityHashCode(this), LoggerUtils.stackTrace());
+		// logger.debug("MQTTMonitor setFop {} {} {}\n{}", fop.getName(), System.identityHashCode(fop), System.identityHashCode(this),
+		// LoggerUtils.stackTrace());
 	}
 
 	@Subscribe
@@ -385,8 +408,7 @@ public class MQTTMonitor extends Thread implements IUnregister {
 	}
 
 	/**
-	 * A display or console has triggered the down signal (e.g. keypad connected to a laptop) and down signal post
-	 * connected via MQTT.
+	 * A display or console has triggered the down signal (e.g. keypad connected to a laptop) and down signal post connected via MQTT.
 	 *
 	 * @param d
 	 */
@@ -499,7 +521,7 @@ public class MQTTMonitor extends Thread implements IUnregister {
 
 	@Override
 	public void start() {
-		//this.setFop(this.getFop());
+		// this.setFop(this.getFop());
 		this.getFop().getUiEventBus().register(this);
 		this.getFop().getFopEventBus().register(this);
 
@@ -519,25 +541,8 @@ public class MQTTMonitor extends Thread implements IUnregister {
 
 	@Override
 	public void unregister() {
-		// we do nothing.  We now have exactly one MQTTMonitor per platform name
+		// we do nothing. We now have exactly one MQTTMonitor per platform name
 		// and we reuse it if we ever recreate the field of play
-		
-//		logger.info("unregistering MQTT monitor for platform {}",getName());
-//		this.setFop(null);
-//		FieldOfPlay fop2 = OwlcmsFactory.getFOPByName(getMonitoredFopName());
-//		if (fop2 != null) {
-//			fop2.setEventForwarder(null);
-//		}
-//		mqttMonitorByName.remove(getMonitoredFopName());
-//		try {
-//			this.client.disconnect();
-//		} catch (MqttException e) {
-//			try {
-//				this.client.disconnectForcibly();
-//			} catch (MqttException e1) {
-//				LoggerUtils.logError(logger, e1);
-//			}
-//		}
 	}
 
 	private void connectionLoop(MqttAsyncClient mqttAsyncClient) {
@@ -546,6 +551,14 @@ public class MQTTMonitor extends Thread implements IUnregister {
 				// doConnect will generate a new client Id, and wait for completion
 				// client.reconnect() and automaticReconnection do not work as I expect.
 				doConnect();
+			} catch (MqttException me) {
+				if (me.getReasonCode() == MqttException.REASON_CODE_CLIENT_CONNECTED) {
+					try {
+						doConnect();
+					} catch (MqttException e) {
+						e.printStackTrace();
+					}
+				}
 			} catch (Exception e1) {
 				Main.getStartupLogger().error("{}MQTT refereeing device server: {}", FieldOfPlay.getLoggingName(this.getFop()),
 				        e1.getCause() != null ? e1.getCause().getMessage() : e1);
@@ -577,10 +590,10 @@ public class MQTTMonitor extends Thread implements IUnregister {
 		this.client.connect(connOpts).waitForCompletion();
 
 		publishMqttLedOnOff();
-		logger.info("{}connected to {} MQTT broker {}", 
-				FieldOfPlay.getLoggingName(fop),
-				(external ? "external" : "embedded"),
-				this.client.getCurrentServerURI());
+		logger.info("{}connected to {} MQTT broker {}",
+		        FieldOfPlay.getLoggingName(fop),
+		        (external ? "external" : "embedded"),
+		        this.client.getCurrentServerURI());
 
 		this.client.subscribe(this.callback.deprecatedDecisionTopicName, 0);
 		logger.trace("{}MQTT subscribe {} {}", FieldOfPlay.getLoggingName(this.getFop()), this.callback.deprecatedDecisionTopicName,

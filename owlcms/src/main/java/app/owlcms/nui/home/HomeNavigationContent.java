@@ -54,11 +54,17 @@ import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinRequest;
 
+import app.owlcms.Main;
 import app.owlcms.apputils.DebugUtils;
+import app.owlcms.apputils.LogbackConfigReloader;
+import app.owlcms.components.ConfirmationDialog;
+import app.owlcms.data.config.Config;
 import app.owlcms.data.jpa.JPAService;
 import app.owlcms.i18n.Translator;
 import app.owlcms.init.OwlcmsFactory;
 import app.owlcms.init.OwlcmsSession;
+import app.owlcms.jetty.EmbeddedJetty;
+import app.owlcms.monitors.MQTTMonitor;
 import app.owlcms.nui.displays.DisplayNavigationContent;
 import app.owlcms.nui.displays.VideoNavigationContent;
 import app.owlcms.nui.lifting.LiftingNavigationContent;
@@ -138,12 +144,62 @@ public class HomeNavigationContent extends BaseNavigationContent implements Navi
 		        buttonClickEvent -> UI.getCurrent().navigate(LiftingNavigationContent.class));
 		Button documents = new Button(this.RESULT_DOCUMENTS,
 		        buttonClickEvent -> UI.getCurrent().navigate(ResultsNavigationContent.class));
-		FlexibleGridLayout grid = HomeNavigationContent.navigationGrid(prepare, lifting, displays, video, documents);
 
+		FlexibleGridLayout grid = HomeNavigationContent.navigationGrid(prepare, lifting, displays, video, documents);
 		fillH(intro, this);
 		fillH(grid, this);
 
+		owlcmsManagementTwister();
+
 		DebugUtils.gc();
+	}
+
+	public void owlcmsManagementTwister() {
+		if (Config.getCurrent().featureSwitch("manageOwlcms")) {
+			ConfirmationDialog cdRestart = new ConfirmationDialog(
+			        Translator.translate("ManageOwlcms.Restart"),
+			        Translator.translate("ManageOwlcms.RestartWarning"),
+			        null,
+			        null);
+			Button restart = new Button(Translator.translate("ManageOwlcms.Restart"),
+			        buttonClickEvent -> {
+				        cdRestart.setAction(() -> {
+					        cdRestart.close();
+					        UI.getCurrent().push();
+
+					        MQTTMonitor.reset();
+					        EmbeddedJetty.stop(true);
+					        Main.stopMQTT();
+					        LogbackConfigReloader.reloadLogbackConfiguration();
+					        Main.doRun();
+				        });
+				        cdRestart.open();
+			        });
+
+			ConfirmationDialog cdStop = new ConfirmationDialog(
+			        Translator.translate("ManageOwlcms.Stop"),
+			        Translator.translate("ManageOwlcms.StopWarning"),
+			        null,
+			        null);
+			Button stop = new Button(Translator.translate("ManageOwlcms.Stop"),
+			        buttonClickEvent -> {
+				        cdStop.setAction(() -> {
+					        cdStop.close();
+					        UI.getCurrent().push();
+
+					        EmbeddedJetty.stop(false);
+					        System.exit(0);
+				        });
+				        cdStop.open();
+			        });
+			FlexibleGridLayout grid2 = HomeNavigationContent.navigationGrid(restart, stop);
+
+			Html explanation = new Html(
+			        "<div style='color: red; font-weight: bold'>" + "\uD83D\uDED1 " + Translator.translate("ManageOwlcms.Warning") + "</div>");
+			explanation.getStyle().set("width", "40em");
+			doHiddenGroup(Translator.translate("ManageOwlcms.Title"),
+			        explanation, grid2, this, true);
+		}
 	}
 
 	@Override

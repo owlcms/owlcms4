@@ -1,5 +1,6 @@
 package app.owlcms;
 
+import org.eclipse.jetty.io.EofException;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
@@ -84,7 +85,7 @@ public class AppShell implements AppShellConfigurator, VaadinServiceInitListener
 				@Override
 				public void error(ErrorEvent errorEvent) {
 					Throwable t = errorEvent.getThrowable();
-					if (!(t instanceof StopProcessingException)) {
+					if (!(t instanceof StopProcessingException) && !(t instanceof EofException)) {
 						LoggerFactory.getLogger("app.owlcms.errorHandler").warn("{}\n{}", t.toString(),
 						        LoggerUtils.shortStackTrace(t));
 					}

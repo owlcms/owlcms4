@@ -107,18 +107,21 @@ public interface NavigationPage extends ContentWrapping {
 		VerticalLayout content1 = new VerticalLayout();
 		content1.setSpacing(false);
 		content1.setPadding(true);
-		content1.add(explanation, grid1);
+		if (explanation != null) {
+			content1.add(explanation, grid1);
+			explanation.getStyle().set("margin-left", "1em");
+		}
 		content1.getStyle().set("margin-bottom", "-2ex");
 		fillH(content1, wrapper);
 		Details det = new Details(label, content1);
 		// det.getStyle().set("padding-left", "1em");
 		// det.getStyle().set("margin-top", "-1em");
-		det.getStyle().set("margin-right", "0");
+		det.getStyle().set("margin-right", "-1em");
 		det.getStyle().set("padding-right", "0");
 		grid1.getStyle().set("padding", "0");
 		grid1.getStyle().set("margin", "0");
 		grid1.getStyle().set("margin-left", "-1em");
-		explanation.getStyle().set("margin-left", "1em");
+
 		if (paired.length > 0 && paired[0]) {
 			grid1.setWidth("850px");
 		}

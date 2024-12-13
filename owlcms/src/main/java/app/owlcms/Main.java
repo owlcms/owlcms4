@@ -45,7 +45,7 @@ import app.owlcms.i18n.Translator;
 import app.owlcms.init.InitialData;
 import app.owlcms.init.OwlcmsFactory;
 import app.owlcms.init.OwlcmsSession;
-import app.owlcms.servlet.EmbeddedJetty;
+import app.owlcms.jetty.EmbeddedJetty;
 import app.owlcms.uievents.AppEvent;
 import app.owlcms.utils.LoggerUtils;
 import app.owlcms.utils.ResourceWalker;
@@ -177,18 +177,7 @@ public class Main {
 
 		// restart automatically forever if running as public demo
 		while (true) {
-			EmbeddedJetty embeddedJetty = new EmbeddedJetty(null, "owlcms")
-			        .setStartLogger(logger)
-			        .setInitConfig(Main::initConfig)
-			        .setInitData(Main::initData);
-			Thread server = new Thread(() -> {
-				try {
-					embeddedJetty.run(serverPort, "/");
-				} catch (Exception e) {
-					logger.error("cannot start server {}\\n{}", e, LoggerUtils.stackTrace(e));
-				}
-			});
-			server.start();
+			EmbeddedJetty embeddedJetty = doRun();
 			if (demoResetDelay == null) {
 				break;
 			} else {
@@ -196,6 +185,22 @@ public class Main {
 			}
 		}
 
+	}
+
+	public static EmbeddedJetty doRun() {
+		EmbeddedJetty embeddedJetty = new EmbeddedJetty(null, "owlcms")
+		        .setStartLogger(logger)
+		        .setInitConfig(Main::initConfig)
+		        .setInitData(Main::initData);
+		Thread server = new Thread(() -> {
+			try {
+				embeddedJetty.run(serverPort, "/");
+			} catch (Exception e) {
+				logger.error("cannot start server {}\\n{}", e, LoggerUtils.stackTrace(e));
+			}
+		});
+		server.start();
+		return embeddedJetty;
 	}
 
 	/**
@@ -415,9 +420,11 @@ public class Main {
 
 		masters = StartupUtils.getBooleanParam("masters");
 	}
+	
+	private static Server mqttBroker;
 
 	@SuppressWarnings("deprecation")
-	private static void startMQTT() {
+	public static void startMQTT() {
 		Config conf = Config.getCurrent();
 		Boolean mqttInternal = conf.getMqttInternal();
 		if (mqttInternal == null) {
@@ -445,7 +452,7 @@ public class Main {
 		mqttConfig.setProperty(IConfig.DATA_PATH_PROPERTY_NAME, "mqttData");
 		new File(mqttConfig.getProperty(IConfig.DATA_PATH_PROPERTY_NAME)).mkdirs();
 
-		final Server mqttBroker = new Server();
+		mqttBroker = new Server();
 		List<? extends InterceptHandler> userHandlers = Collections.singletonList(new PublisherListener());
 
 		if (Config.getCurrent().getParamMqttServer() != null && !Config.getCurrent().getParamMqttServer().isBlank()) {
@@ -476,6 +483,10 @@ public class Main {
 		} catch (Exception e) {
 			logger.error("could not start server", e.toString(), e.getCause());
 		}
+	}
+	
+	public static void stopMQTT() {
+		mqttBroker.stopServer();
 	}
 
 	private static void warnAndExit(Integer demoResetDelay, EmbeddedJetty server)
