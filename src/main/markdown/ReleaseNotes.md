@@ -1,9 +1,10 @@
 > [!WARNING]
 >
-> - This is a release candidate [(see definition)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Release_candidate), used for final public testing and translation. *It is still a preliminary release*
-> - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
+> - This is a **beta release**, used for testing and translation. ***Some features could be non-functional***.
+> - Beta releases are **not** normally used in actual competitions, except when a new feature is required. Use extreme care in testing if you intend to do so.
 
 - Maintenance log:
+  - 54.2.0: Experimental feature to stop or restart the system from the web interface.  Currently shown on the home page if the feature switch `manageOwlcms` is present.
   - 54.1.1: Ages are now always calculated relative to the competition date.
   - 54.1.0: Removed the "sinclair meet" option, see Score-based Competitions below
   - 54.1.0: The program was giving a spurious warning when a late change was made between the time the next weight was displayed and the time the clock  started running.
