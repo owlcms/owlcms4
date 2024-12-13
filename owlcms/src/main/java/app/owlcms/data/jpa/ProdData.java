@@ -57,36 +57,35 @@ public class ProdData {
 
 		Competition competition = new Competition();
 
-		competition.setCompetitionName("\u2013");
-		competition.setCompetitionCity("\u2013");
+		competition.setCompetitionName("");
+		competition.setCompetitionCity("");
 		competition.setCompetitionDate(LocalDate.now());
-		competition
-		        .setCompetitionOrganizer("\u2013");
-		competition.setCompetitionSite("\u2013");
+		competition.setCompetitionOrganizer("");
+		competition.setCompetitionSite("");
 
 		String defaultFederationKey = "Competition.defaultFederation";
 		String defaultFederation = Translator.translate(defaultFederationKey, getLocale());
 		// if string is not translated, we get its key back.
-		competition.setFederation(defaultFederation.equals(defaultFederationKey) ? "\u2013" : defaultFederation);
+		competition.setFederation(defaultFederation.equals(defaultFederationKey) ? "" : defaultFederation);
 
 		String defaultFederationAddressKey = "Competition.defaultFederationAddress";
 		String defaultFederationAddress = Translator.translate(defaultFederationAddressKey, getLocale());
 		// if string is not translated, we get its key back.
 		competition.setFederationAddress(
-		        defaultFederationAddress.equals(defaultFederationAddressKey) ? "\u2013"
+		        defaultFederationAddress.equals(defaultFederationAddressKey) ? ""
 		                : defaultFederationAddress);
 
 		String defaultFederationEMailKey = "Competition.defaultFederationEMail";
 		String defaultFederationEMail = Translator.translate(defaultFederationEMailKey, getLocale());
 		// if string is not translated, we get its key back.
-		competition.setFederationEMail(defaultFederationEMail.equals(defaultFederationEMailKey) ? "\u2013"
+		competition.setFederationEMail(defaultFederationEMail.equals(defaultFederationEMailKey) ? ""
 		        : defaultFederationEMail);
 
 		String defaultFederationWebSiteKey = "Competition.defaultFederationWebSite";
 		String defaultFederationWebSite = Translator.translate(defaultFederationWebSiteKey, getLocale());
 		// if string is not translated, we get its key back.
 		competition.setFederationWebSite(
-		        defaultFederationWebSite.equals(defaultFederationWebSiteKey) ? "\u2013"
+		        defaultFederationWebSite.equals(defaultFederationWebSiteKey) ? ""
 		                : defaultFederationWebSite);
 
 		competition.setUseBirthYear(false);
