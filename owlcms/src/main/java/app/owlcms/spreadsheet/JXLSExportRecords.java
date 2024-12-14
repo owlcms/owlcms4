@@ -99,7 +99,6 @@ public class JXLSExportRecords extends JXLSWorkbookStreamSource {
 
 	@Override
 	public List<Athlete> getSortedAthletes() {
-		logger.warn("***** getSortedAthletes {}", this.currentOnly);
 		HashMap<String, Object> reportingBeans = getReportingBeans();
 
 		// prevent irrelevant "No Athletes" error message.
@@ -107,9 +106,7 @@ public class JXLSExportRecords extends JXLSWorkbookStreamSource {
 
 		String groupName = this.group != null ? this.group.getName() : null;
 		this.records = RecordRepository.findFiltered(null, null, null, groupName, !this.isAllRecords());
-		logger.warn("***** {} records allRecords={}", records.size(), this.isAllRecords());
 		if (this.currentOnly) {
-			logger.warn("***** keeping newest");
 			var recordMap = this.keepNewest();
 			this.records = new ArrayList<RecordEvent>(recordMap.values().stream().toList());
 			this.records.sort(sortRecords());
@@ -121,7 +118,6 @@ public class JXLSExportRecords extends JXLSWorkbookStreamSource {
 		for (Entry<String, List<RecordEvent>> v : grouped.entrySet()) {
 			list.add(v);
 		}
-		logger.warn("***** {} age groups",list.size());
 		reportingBeans.put("agegroups", list);
 		reportingBeans.put("records", this.records);
 		return athletes;
@@ -188,7 +184,7 @@ public class JXLSExportRecords extends JXLSWorkbookStreamSource {
 			logger.debug("explicitly set template {}", this.inputStream);
 			return new BufferedInputStream(this.inputStream);
 		}
-		logger.warn("getTemplate {}", LoggerUtils.whereFrom());
+		logger.debug("getTemplate {}", LoggerUtils.whereFrom());
 		return getLocalizedTemplate("/templates/records/exportRecords", ".xls", locale);
 	}
 
@@ -228,7 +224,7 @@ public class JXLSExportRecords extends JXLSWorkbookStreamSource {
 	}
 
 	private void setAllRecords(boolean allRecords) {
-		logger.warn("***** allRecords = {} {}", allRecords, LoggerUtils.whereFrom());
+		//logger.debug("***** allRecords = {} {}", allRecords, LoggerUtils.whereFrom());
 		this.allRecords = allRecords;
 	}
 

@@ -84,7 +84,7 @@ public class RecordDefinitionReader {
 						try {
 							int iColumn = cell.getAddress().getColumn();
 
-							// logger.debug("[" + sheet.getSheetName() + "," + cell.getAddress() + "]");
+							logger.debug("[" + sheet.getSheetName() + "," + cell.getAddress() + "]");
 							switch (iColumn) {
 								case 0: { // A
 									String cellValue = cell.getStringCellValue();
