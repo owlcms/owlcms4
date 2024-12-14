@@ -107,7 +107,7 @@ public abstract class JXLSWorkbookStreamSource implements StreamResourceWriter, 
 	private Category category;
 	private boolean excludeNotWeighed;
 	private Group group;
-	private InputStream inputStream;
+	protected InputStream inputStream;
 	private HashMap<String, Object> reportingBeans;
 	private String templateFileName;
 	private UI ui;

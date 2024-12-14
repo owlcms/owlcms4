@@ -87,6 +87,16 @@ public class Competition {
 		        a.getTotalRank(), a.getCategory(), a.getParticipations().size());
 	}
 
+	@SuppressWarnings("unused")
+	public static void dumpAthlete(String string, Athlete a) {
+		logger./**/warn("{} {} {} S={} C={} T={}", string, a.getAbbreviatedName(), System.identityHashCode(a), a.getBestSnatch(), a.getBestCleanJerk(),
+		        a.getTotal());
+		for (Participation p : a.getParticipations()) {
+			logger./**/warn("    {} S{} C{} T{} Sc{} {}", p.getCategory(), p.getSnatchRank(), p.getCleanJerkRank(), p.getTotalRank(), p.getCategoryScoreRank(),
+			        System.identityHashCode(p));
+		}
+	}
+
 	/**
 	 * Gets the current.
 	 *
@@ -176,7 +186,6 @@ public class Competition {
 	 */
 	@Column(columnDefinition = "boolean default false")
 	private boolean genderOrder;
-
 	/* in a round-robin competition, use lot number instead of ascending weight */
 	@Column(columnDefinition = "boolean default false")
 	private boolean fixedOrder;
@@ -192,7 +201,6 @@ public class Competition {
 	private HashMap<Group, TreeMap<String, List<Athlete>>> medalsByGroup;
 	private String medalScheduleTemplateFileName;
 	private String medalsTemplateFileName;
-
 	/* this is really "keep best n results", backward compatibility with database exports */
 	@Column(name = "mensTeamSize", columnDefinition = "integer default 10")
 	@JsonProperty("mensTeamSize")
@@ -251,7 +259,6 @@ public class Competition {
 	@Column(columnDefinition = "boolean default false")
 	@Deprecated
 	private boolean useRegistrationCategory = false;
-
 	/* this is really "keep best n results", backward compatibility with database exports */
 	@Column(name = "womensTeamSize", columnDefinition = "integer default 10")
 	@JsonProperty("womensTeamSize")
@@ -328,7 +335,7 @@ public class Competition {
 	}
 
 	public TreeMap<String, List<Athlete>> computeMedalsByCategory(List<Athlete> rankedAthletes) {
-		//logger.debug("computeMedalsByCategory athletes {}\n{}", rankedAthletes.size(), LoggerUtils.stackTrace());
+		// logger.debug("computeMedalsByCategory athletes {}\n{}", rankedAthletes.size(), LoggerUtils.stackTrace());
 		var before = System.currentTimeMillis();
 
 		// extract all categories
@@ -347,14 +354,15 @@ public class Competition {
 				// fetch the participation that matches the category
 				Stream<Participation> filter = a.getParticipations().stream()
 				        .filter(p -> p.getCategory().sameAs(category))
-				        //.peek(p -> logger./**/warn("====== a {} {} {} p {}", a.getLastName(), a.getClass().getSimpleName(), a.getCategory(), p.getCategory()));
-				        ;
+				// .peek(p -> logger./**/warn("====== a {} {} {} p {}", a.getLastName(), a.getClass().getSimpleName(), a.getCategory(), p.getCategory()));
+				;
 				Optional<Participation> matchingParticipation = filter.findFirst();
 				// get a PAthlete wrapper: this wrapped athlete has a single participation, to the category under consideration
 				if (matchingParticipation.isPresent()) {
 					PAthlete e = new PAthlete(matchingParticipation.get());
 					currentCategoryPAthletes.add(e);
-					// logger.debug("*** adding {} {} {} {} -- {} {}", e.getAbbreviatedName(), e.getCategory(), e.getTotalRank(), e.getParticipations().size(), System.identityHashCode(e._getAthlete()), e._getAthlete().getParticipations().size());
+					// logger.debug("*** adding {} {} {} {} -- {} {}", e.getAbbreviatedName(), e.getCategory(), e.getTotalRank(), e.getParticipations().size(),
+					// System.identityHashCode(e._getAthlete()), e._getAthlete().getParticipations().size());
 				}
 			}
 
@@ -365,9 +373,9 @@ public class Competition {
 			 * database and updates the participation that matches the category being ranked. We want the medalists to be the PAthlete wrapper that contains
 			 * just the participation for the medal category. For sorting to work, we need to pass the PAthlete wrapper so the values for the current category
 			 * are the only ones available.
-			 * 
+			 *
 			 * All variables with a P are PAthletes with a single participation to the current category.
-			 * 
+			 *
 			 */
 			List<Athlete> snatchPLeaders = null;
 			List<Athlete> cjPLeaders = null;
@@ -398,9 +406,9 @@ public class Competition {
 				mSet.addAll(notPFinished); // for interim results
 				pMedalists = new ArrayList<>(mSet);
 
-				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(pMedalists), Ranking.TOTAL, category);
+				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<>(pMedalists), Ranking.TOTAL, category);
 				// update CATEGORY_SCORE rankings same as TOTAL.
-				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(updatedAthletes), Ranking.CATEGORY_SCORE, category);
+				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<>(updatedAthletes), Ranking.CATEGORY_SCORE, category);
 
 				// for (Athlete a : updatedAthletes) {
 				// dumpAthlete(category.getCode(), a);
@@ -422,9 +430,9 @@ public class Competition {
 				mSet.addAll(notPFinished);
 				pMedalists = new ArrayList<>(mSet);
 				pMedalists.sort(new WinningOrderComparator(Ranking.TOTAL, true));
-				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(pMedalists), Ranking.TOTAL, category);
+				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<>(pMedalists), Ranking.TOTAL, category);
 				updatedAthletes.sort(comparator);
-				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<Athlete>(updatedAthletes), Ranking.CATEGORY_SCORE, category);
+				updatedAthletes = AthleteSorter.updateEligibleCategoryRanks(new ArrayList<>(updatedAthletes), Ranking.CATEGORY_SCORE, category);
 				List<Athlete> updatedPAthletes = getPAthletes(category, updatedAthletes, false);
 
 				// for (Athlete a : updatedAthletes) {
@@ -442,56 +450,11 @@ public class Competition {
 		return medalsByCategory;
 	}
 
-	@SuppressWarnings("unused")
-	private void saveAthletes(List<Athlete> updatedAthletes) {
-		var msBefore = System.currentTimeMillis();
-		JPAService.runInTransaction(em -> {
-			for (Athlete a : updatedAthletes) {
-				Athlete oldAthlete = em.find(Athlete.class, a.getId());
-				Athlete newAthlete = em.merge(a);
-				// dumpAthlete("updated", a);
-				// dumpAthlete("old", oldAthlete);
-				// dumpAthlete("merged", newAthlete);
-			}
-			return null;
-		});
-		logger.info("*** computeMedalsByCategory saving {}ms", System.currentTimeMillis() - msBefore);
-	}
-
-	@SuppressWarnings("unused")
-	public static void dumpAthlete(String string, Athlete a) {
-		logger./**/warn("{} {} {} S={} C={} T={}", string, a.getAbbreviatedName(), System.identityHashCode(a), a.getBestSnatch(), a.getBestCleanJerk(),
-		        a.getTotal());
-		for (Participation p : a.getParticipations()) {
-			logger./**/warn("    {} S{} C{} T{} Sc{} {}", p.getCategory(), p.getSnatchRank(), p.getCleanJerkRank(), p.getTotalRank(), p.getCategoryScoreRank(),
-			        System.identityHashCode(p));
-		}
-	}
-
-	private List<Athlete> getPAthletes(Category category, List<Athlete> medalists, boolean debug) {
-		// logger.trace("getPathletes {} ({})", category, LoggerUtils.whereFrom());
-		List<Athlete> nMedalists = new ArrayList<>();
-		for (Athlete med : medalists) {
-			// need the right participation with the right category.
-			Optional<Participation> part = med.getParticipations().stream().filter(p -> p.getCategory().sameAs(category)).findFirst();
-			if (part.isPresent()) {
-				var particip = part.get();
-				if (debug) {
-					logger./**/debug("    {}\tS{} C{} T{} Sc{} {} {}", med.getAbbreviatedName(), particip.getSnatchRank(),
-					        particip.getCleanJerkRank(), particip.getTotalRank(), particip.getCategoryScoreRank(), System.identityHashCode(particip),
-					        System.identityHashCode(particip.getAthlete()));
-				}
-				nMedalists.add(new PAthlete(particip));
-			}
-		}
-		return nMedalists;
-	}
-
 	/*
 	 * Used by ResultsMedals
-	 * 
+	 *
 	 * @param category
-	 * 
+	 *
 	 * @return
 	 */
 	public List<Athlete> computeMedalsForCategory(Category category) {
@@ -575,6 +538,10 @@ public class Competition {
 
 	public String getAgeGroupsFileName() {
 		return this.ageGroupsFileName;
+	}
+
+	public String getBodyWeightListTemplateFileName() {
+		return this.bodyWeightListTemplateFileName;
 	}
 
 	/**
@@ -665,6 +632,15 @@ public class Competition {
 		return this.categoriesListTemplateFileName;
 	}
 
+	@Transient
+	@JsonIgnore
+	public String getComputedCurrentRecordsTemplateFileName() {
+		if (this.currentRecordsTemplateFileName == null) {
+			return "currentRecords.xlsx";
+		}
+		return this.currentRecordsTemplateFileName;
+	}
+
 	/**
 	 * Gets the result template file name.
 	 *
@@ -688,15 +664,6 @@ public class Competition {
 		return this.juryTemplateFileName;
 	}
 
-	@Transient
-	@JsonIgnore
-	public String getComputedCurrentRecordsTemplateFileName() {
-		if (this.currentRecordsTemplateFileName == null) {
-			return "currentRecords.xls";
-		}
-		return this.currentRecordsTemplateFileName;
-	}
-	
 	@Transient
 	@JsonIgnore
 	public String getComputedMedalScheduleTemplateFileName() {
@@ -781,8 +748,16 @@ public class Competition {
 		return this.teamsListTemplateFileName;
 	}
 
+	public String getCurrentRecordsTemplateFileName() {
+		return this.currentRecordsTemplateFileName;
+	}
+
 	public boolean getDisplayByAgeGroup() {
 		return this.isDisplayByAgeGroup();
+	}
+
+	public String getEmptyProtocolTemplateFileName() {
+		return this.emptyProtocolTemplateFileName;
 	}
 
 	/**
@@ -842,6 +817,10 @@ public class Competition {
 	 */
 	public Long getId() {
 		return this.id;
+	}
+
+	public String getIntroductionTemplateFileName() {
+		return this.introductionTemplateFileName;
 	}
 
 	/**
@@ -946,7 +925,7 @@ public class Competition {
 			medals = computeMedals(g);
 		}
 		final TreeMap<String, List<Athlete>> m = new TreeMap<>(medals);
-		//logger.debug("medals categories keyset {}", medals.keySet());
+		// logger.debug("medals categories keyset {}", medals.keySet());
 		if (onlyFinished) {
 			List<String> toRemove = medals.keySet().stream()
 			        .filter(k -> {
@@ -1007,16 +986,19 @@ public class Competition {
 		return this.reportingBeans;
 	}
 
+	public String getResultsTemplateFileName() {
+		return this.resultsTemplateFileName;
+	}
+
+	public String getScheduleTemplateFileName() {
+		return this.scheduleTemplateFileName;
+	}
+
 	public Ranking getScoringSystem() {
 		if (this.scoringSystem == null) {
 			return Ranking.BW_SINCLAIR;
 		}
 		return this.scoringSystem;
-	}
-
-	public String getTranslatedScoringSystemName() {
-		String translate = Translator.translateOrElseNull("Ranking." + getScoringSystem(), OwlcmsSession.getLocale());
-		return translate != null ? translate : Translator.translate("Score");
 	}
 
 	public Integer getShorterBreakDuration() {
@@ -1042,6 +1024,15 @@ public class Competition {
 		return this.teamsListTemplateFileName;
 	}
 
+	public String getTranslatedScoringSystemName() {
+		String translate = Translator.translateOrElseNull("Ranking." + getScoringSystem(), OwlcmsSession.getLocale());
+		return translate != null ? translate : Translator.translate("Score");
+	}
+
+	public String getWeighInFormTemplateFileName() {
+		return this.weighInFormTemplateFileName;
+	}
+
 	@Transient
 	@JsonIgnore
 	public Integer getWomenBestNElseDefault() {
@@ -1050,14 +1041,6 @@ public class Competition {
 
 	public Integer getWomensBestN() {
 		return this.womensBestN;
-	}
-
-	public void scoringSystemRankings(EntityManager em) {
-		// long beforeFindAll = System.currentTimeMillis();
-		List<Athlete> athletes = AthleteRepository.doFindAllByGroupAndWeighIn(em, null, true, null);
-		// long afterFindAll = System.currentTimeMillis();
-		// logger.trace("------------------------- scoringSystemRankings doFindAllByGroupAndWeighIn {}ms", afterFindAll - beforeFindAll);
-		doGlobalRankings(athletes, SCORING_SYSTEM_ONLY);
 	}
 
 	@Override
@@ -1126,6 +1109,10 @@ public class Competition {
 		return this.genderOrder;
 	}
 
+	// public boolean isSimulation() {
+	// return this.simulation;
+	// }
+
 	/**
 	 * Checks if is masters.
 	 *
@@ -1146,10 +1133,6 @@ public class Competition {
 	public boolean isRoundRobinOrder() {
 		return this.roundRobinOrder;
 	}
-
-//	public boolean isSimulation() {
-//		return this.simulation;
-//	}
 
 	public boolean isSinclair() {
 		return this.sinclairMeet || Config.getCurrent().featureSwitch("SinclairMeet");
@@ -1198,6 +1181,41 @@ public class Competition {
 		return false;
 	}
 
+	public List<Athlete> mapToParticipations(List<Athlete> rankedAthletes, boolean resultsByCategory) {
+		List<Athlete> pAthletes;
+		if (resultsByCategory) {
+			pAthletes = new ArrayList<>(rankedAthletes.size() * 2);
+			for (Athlete a : rankedAthletes) {
+				Athlete pa = a;
+				if (a instanceof PAthlete) {
+					pa = ((PAthlete) a)._getAthlete();
+				}
+				for (Participation p : pa.getParticipations()) {
+					PAthlete e = new PAthlete(p);
+					// logger.debug("pa {} participation {} paCat {}", pa.getFullName(), p.getCategory().getCode(), e.getCategory().getCode());
+					pAthletes.add(e);
+				}
+			}
+		} else {
+			// we sometimes get pAthletes and but here we need the wrapped athlete.
+			pAthletes = rankedAthletes.stream()
+			        .peek(r -> {
+				        // logger.debug("{} {}", r.getShortName(), r.getClass().getSimpleName());
+			        })
+			        .map(r -> r instanceof PAthlete ? r : new PAthlete(r))
+			        .collect(Collectors.toList());
+		}
+		return pAthletes;
+	}
+
+	public void scoringSystemRankings(EntityManager em) {
+		// long beforeFindAll = System.currentTimeMillis();
+		List<Athlete> athletes = AthleteRepository.doFindAllByGroupAndWeighIn(em, null, true, null);
+		// long afterFindAll = System.currentTimeMillis();
+		// logger.trace("------------------------- scoringSystemRankings doFindAllByGroupAndWeighIn {}ms", afterFindAll - beforeFindAll);
+		doGlobalRankings(athletes, SCORING_SYSTEM_ONLY);
+	}
+
 	public void setAgeGroupsFileName(String localizedName) {
 		this.ageGroupsFileName = localizedName;
 	}
@@ -1212,6 +1230,10 @@ public class Competition {
 
 	public void setAutomaticCJBreak(boolean automaticCJBreak) {
 		this.automaticCJBreak = automaticCJBreak;
+	}
+
+	public void setBodyWeightListTemplateFileName(String bodyweightListTemplateFileName) {
+		this.bodyWeightListTemplateFileName = bodyweightListTemplateFileName;
 	}
 
 	/**
@@ -1277,6 +1299,10 @@ public class Competition {
 		this.competitionSite = competitionSite;
 	}
 
+	public void setCurrentRecordsTemplateFileName(String currentRecordsTemplateFileName) {
+		this.currentRecordsTemplateFileName = currentRecordsTemplateFileName;
+	}
+
 	public void setCustomScore(boolean customScore) {
 		this.customScore = customScore;
 	}
@@ -1291,6 +1317,10 @@ public class Competition {
 
 	public void setDisplayScores(boolean score) {
 		this.displayScores = score;
+	}
+
+	public void setEmptyProtocolTemplateFileName(String emptyProtocolFileName) {
+		this.emptyProtocolTemplateFileName = emptyProtocolFileName;
 	}
 
 	public void setEnforce20kgRule(boolean enforce20kgRule) {
@@ -1348,6 +1378,10 @@ public class Competition {
 
 	public void setGenderOrder(boolean genderOrder) {
 		this.genderOrder = genderOrder;
+	}
+
+	public void setIntroductionTemplateFileName(String introductionTemplateFileName) {
+		this.introductionTemplateFileName = introductionTemplateFileName;
 	}
 
 	/**
@@ -1437,8 +1471,16 @@ public class Competition {
 		this.refereeWakeUpDelay = refereeWakeUpDelay;
 	}
 
+	public void setResultsTemplateFileName(String resultsTemplateFileName) {
+		this.resultsTemplateFileName = resultsTemplateFileName;
+	}
+
 	public void setRoundRobinOrder(boolean roundRobinOrder) {
 		this.roundRobinOrder = roundRobinOrder;
+	}
+
+	public void setScheduleTemplateFileName(String scheduleTemplateFileName) {
+		this.scheduleTemplateFileName = scheduleTemplateFileName;
 	}
 
 	public void setScoringSystem(Ranking scoringSystem) {
@@ -1499,6 +1541,10 @@ public class Competition {
 	@JsonIgnore
 	public void setUseRegistrationCategory(boolean useRegistrationCategory) {
 		this.useRegistrationCategory = false;
+	}
+
+	public void setWeighInFormTemplateFileName(String weighInFormTemplateFileName) {
+		this.weighInFormTemplateFileName = weighInFormTemplateFileName;
 	}
 
 	public void setWomensBestN(Integer womensTeamSize) {
@@ -1729,6 +1775,25 @@ public class Competition {
 		return list;
 	}
 
+	private List<Athlete> getPAthletes(Category category, List<Athlete> medalists, boolean debug) {
+		// logger.trace("getPathletes {} ({})", category, LoggerUtils.whereFrom());
+		List<Athlete> nMedalists = new ArrayList<>();
+		for (Athlete med : medalists) {
+			// need the right participation with the right category.
+			Optional<Participation> part = med.getParticipations().stream().filter(p -> p.getCategory().sameAs(category)).findFirst();
+			if (part.isPresent()) {
+				var particip = part.get();
+				if (debug) {
+					logger./**/debug("    {}\tS{} C{} T{} Sc{} {} {}", med.getAbbreviatedName(), particip.getSnatchRank(),
+					        particip.getCleanJerkRank(), particip.getTotalRank(), particip.getCategoryScoreRank(), System.identityHashCode(particip),
+					        System.identityHashCode(particip.getAthlete()));
+				}
+				nMedalists.add(new PAthlete(particip));
+			}
+		}
+		return nMedalists;
+	}
+
 	private void reportCombined(List<Athlete> sortedAthletes, List<Athlete> sortedMen, List<Athlete> sortedWomen) {
 		getOrCreateBean("mCombined");
 		this.reportingBeans.put("mCombined", sortedMen);
@@ -1748,11 +1813,11 @@ public class Competition {
 		this.reportingBeans.put("mwCustom", sortedAthletes);
 	}
 
-	private void reportSinclair(List<Athlete> sortedMen, List<Athlete> sortedWomen) {
-		getOrCreateBean("mSinclair");
-		this.reportingBeans.put("mSinclair", sortedMen);
-		getOrCreateBean("wSinclair");
-		this.reportingBeans.put("wSinclair", sortedWomen);
+	private void reportQAge(List<Athlete> sortedMen, List<Athlete> sortedWomen) {
+		getOrCreateBean("mQAge");
+		this.reportingBeans.put("mQAge", sortedMen);
+		getOrCreateBean("wQAge");
+		this.reportingBeans.put("wQAge", sortedWomen);
 	}
 
 	private void reportQPoints(List<Athlete> sortedMen, List<Athlete> sortedWomen) {
@@ -1762,11 +1827,11 @@ public class Competition {
 		this.reportingBeans.put("wQPoints", sortedWomen);
 	}
 
-	private void reportQAge(List<Athlete> sortedMen, List<Athlete> sortedWomen) {
-		getOrCreateBean("mQAge");
-		this.reportingBeans.put("mQAge", sortedMen);
-		getOrCreateBean("wQAge");
-		this.reportingBeans.put("wQAge", sortedWomen);
+	private void reportSinclair(List<Athlete> sortedMen, List<Athlete> sortedWomen) {
+		getOrCreateBean("mSinclair");
+		this.reportingBeans.put("mSinclair", sortedMen);
+		getOrCreateBean("wSinclair");
+		this.reportingBeans.put("wSinclair", sortedWomen);
 	}
 
 	private void reportSMF(List<Athlete> sortedMen, List<Athlete> sortedWomen) {
@@ -1830,6 +1895,22 @@ public class Competition {
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@SuppressWarnings("unused")
+	private void saveAthletes(List<Athlete> updatedAthletes) {
+		var msBefore = System.currentTimeMillis();
+		JPAService.runInTransaction(em -> {
+			for (Athlete a : updatedAthletes) {
+				Athlete oldAthlete = em.find(Athlete.class, a.getId());
+				Athlete newAthlete = em.merge(a);
+				// dumpAthlete("updated", a);
+				// dumpAthlete("old", oldAthlete);
+				// dumpAthlete("merged", newAthlete);
+			}
+			return null;
+		});
+		logger.info("*** computeMedalsByCategory saving {}ms", System.currentTimeMillis() - msBefore);
 	}
 
 	@SuppressWarnings({ "unchecked", "unused" })
@@ -1937,89 +2018,6 @@ public class Competition {
 		AthleteSorter.teamPointsOrder(sortedWomen, Ranking.QAGE);
 
 		reportQAge(sortedMen, sortedWomen);
-	}
-
-	public String getResultsTemplateFileName() {
-		return this.resultsTemplateFileName;
-	}
-
-	public void setResultsTemplateFileName(String resultsTemplateFileName) {
-		this.resultsTemplateFileName = resultsTemplateFileName;
-	}
-
-	public String getWeighInFormTemplateFileName() {
-		return weighInFormTemplateFileName;
-	}
-
-	public void setWeighInFormTemplateFileName(String weighInFormTemplateFileName) {
-		this.weighInFormTemplateFileName = weighInFormTemplateFileName;
-	}
-
-	public String getEmptyProtocolTemplateFileName() {
-		return emptyProtocolTemplateFileName;
-	}
-
-	public void setEmptyProtocolTemplateFileName(String emptyProtocolFileName) {
-		this.emptyProtocolTemplateFileName = emptyProtocolFileName;
-	}
-
-	public String getScheduleTemplateFileName() {
-		return scheduleTemplateFileName;
-	}
-
-	public void setScheduleTemplateFileName(String scheduleTemplateFileName) {
-		this.scheduleTemplateFileName = scheduleTemplateFileName;
-	}
-
-	public String getIntroductionTemplateFileName() {
-		return introductionTemplateFileName;
-	}
-
-	public void setIntroductionTemplateFileName(String introductionTemplateFileName) {
-		this.introductionTemplateFileName = introductionTemplateFileName;
-	}
-
-	public String getBodyWeightListTemplateFileName() {
-		return bodyWeightListTemplateFileName;
-	}
-
-	public void setBodyWeightListTemplateFileName(String bodyweightListTemplateFileName) {
-		this.bodyWeightListTemplateFileName = bodyweightListTemplateFileName;
-	}
-
-	public List<Athlete> mapToParticipations(List<Athlete> rankedAthletes, boolean resultsByCategory) {
-		List<Athlete> pAthletes;
-		if (resultsByCategory) {
-			pAthletes = new ArrayList<>(rankedAthletes.size() * 2);
-			for (Athlete a : rankedAthletes) {
-				Athlete pa = a;
-				if (a instanceof PAthlete) {
-					pa = ((PAthlete) a)._getAthlete();
-				}
-				for (Participation p : pa.getParticipations()) {
-					PAthlete e = new PAthlete(p);
-					// logger.debug("pa {} participation {} paCat {}", pa.getFullName(), p.getCategory().getCode(), e.getCategory().getCode());
-					pAthletes.add(e);
-				}
-			}
-		} else {
-			// we sometimes get pAthletes and but here we need the wrapped athlete.
-			pAthletes = rankedAthletes.stream()
-			        .peek(r -> {
-				        // logger.debug("{} {}", r.getShortName(), r.getClass().getSimpleName());
-			        })
-			        .map(r -> r instanceof PAthlete ? r : new PAthlete(r))
-			        .collect(Collectors.toList());
-		}
-		return pAthletes;
-	}
-
-	public String getCurrentRecordsTemplateFileName() {
-		return currentRecordsTemplateFileName;
-	}
-
-	public void setCurrentRecordsTemplateFileName(String currentRecordsTemplateFileName) {
-		this.currentRecordsTemplateFileName = currentRecordsTemplateFileName;
 	}
 
 }

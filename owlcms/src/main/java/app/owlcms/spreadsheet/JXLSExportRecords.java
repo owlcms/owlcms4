@@ -6,11 +6,15 @@
  *******************************************************************************/
 package app.owlcms.spreadsheet;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -178,10 +182,15 @@ public class JXLSExportRecords extends JXLSWorkbookStreamSource {
 		getReportingBeans().put("sessions", sessions);
 	}
 
-//	@Override
-//	public InputStream getTemplate(Locale locale) throws IOException {
-//		return getLocalizedTemplate("/templates/records/exportRecords", ".xls", locale);
-//	}
+	@Override
+	public InputStream getTemplate(Locale locale) throws IOException {
+		if (this.inputStream != null) {
+			logger.debug("explicitly set template {}", this.inputStream);
+			return new BufferedInputStream(this.inputStream);
+		}
+		logger.warn("getTemplate {}", LoggerUtils.whereFrom());
+		return getLocalizedTemplate("/templates/records/exportRecords", ".xls", locale);
+	}
 
 	@Override
 	public void setGroup(Group group) {
