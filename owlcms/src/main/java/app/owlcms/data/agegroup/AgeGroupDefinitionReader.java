@@ -161,9 +161,13 @@ public class AgeGroupDefinitionReader {
 								cellValue = safeGetTextValue(cell);
 								if (cellValue != null && !cellValue.isBlank()) {
 									try {
-										String upperCase = cellValue.toUpperCase();
-										Ranking rv = Ranking.valueOf(upperCase.equals("SMHF") ? "SMM" : upperCase);
-										ag.setScoringSystem(rv);
+										String lowerCase = cellValue.toLowerCase();
+										Ranking rv = Ranking.rankingByReportingName.get(lowerCase);
+										if (rv == null) {
+											reportError(iRow, iColumn, cellValue, new IllegalArgumentException(lowerCase));
+										} else {
+											ag.setScoringSystem(rv);
+										}
 									} catch (Exception e) {
 										reportError(iRow, iColumn, cellValue, e);
 									}

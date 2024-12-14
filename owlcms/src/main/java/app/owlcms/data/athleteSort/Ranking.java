@@ -2,7 +2,9 @@ package app.owlcms.data.athleteSort;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +33,17 @@ public enum Ranking {
 	QPOINTS("QPoints",true), // Huebner QPoints.
 	GAMX("GAMX",true), // Global Adjusted Mixed (Huebner)
 	AGEFACTORS("QYouth",true),
-	QAGE("QAge",true), // QPoints * SMHF age factors
+	QAGE("QMasters",true), // QPoints * SMHF age factors
 	;
+	
+	public static Map<String, Ranking> rankingByReportingName = new HashMap<>();
+	static {
+		for (Ranking r : Ranking.values()) {
+			rankingByReportingName.put(r.reportingName.toLowerCase(), r);
+		}
+		rankingByReportingName.put("smhf", SMM);
+
+	}
 
 	static Logger logger = (Logger) LoggerFactory.getLogger(Ranking.class);
 
