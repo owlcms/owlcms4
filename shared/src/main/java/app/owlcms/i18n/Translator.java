@@ -293,18 +293,20 @@ public class Translator implements I18NProvider {
 
 					// reading to properties
 					while ((stringList = readLine(listReader)) != null) {
-						final String key = stringList.get(0);
+						String key = stringList.get(0);
 						if (key == null) {
 //							String message = MessageFormat.format("{0} line {1}: key is null", csvName, line);
 //							logger.error(message);
 //							throw new RuntimeException(message);
 						} else {
+							key = key.trim();
 							logger.debug(stringList.toString());
 							for (int i = 1; i < nbLanguages + 1; i++) {
 								// treat the CSV strings using same rules as Properties files.
 								// u0000 escapes are translated to Java characters
 								String input = stringList.get(i);
 								if (input != null) {
+									input = input.trim();
 									// "\ " is not valid, \u0020 is needed.
 									String unescapeJava = StringEscapeUtils.unescapeJava(input.trim());
 									if (!unescapeJava.isEmpty()) {

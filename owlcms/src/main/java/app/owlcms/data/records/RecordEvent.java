@@ -267,6 +267,20 @@ public class RecordEvent {
 	public Gender getGender() {
 		return this.gender;
 	}
+	
+	public String getTranslatedGender() {
+		return Translator.translate("Gender."+this.gender);
+	}
+	
+	public String getTranslatedLift() {
+		return Translator.translate("Record."+this.recordLift);
+	}
+	
+	public void setTranslatedGender(String ignored) {
+	}
+	
+	public void setTranslatedLift(String ignored) {
+	}
 
 	/**
 	 * Group Name. If not empty, record was set in the current competition.Autan

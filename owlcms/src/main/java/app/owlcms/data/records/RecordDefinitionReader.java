@@ -57,6 +57,7 @@ public class RecordDefinitionReader {
 	private final static Logger logger = (Logger) LoggerFactory.getLogger(RecordDefinitionReader.class);
 	private final static Logger startupLogger = Main.getStartupLogger();
 
+	
 	public static List<String> createRecords(Workbook workbook, String name, String baseName) {
 		cleanUp(baseName);
 		DateTimeFormatter ymdFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

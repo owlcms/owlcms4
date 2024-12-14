@@ -125,9 +125,10 @@ public class JXLSExportRecords extends JXLSWorkbookStreamSource {
 	
     private Map<String, List<RecordEvent>> groupByAgeGroup(List<RecordEvent> events) {
         Map<String, List<RecordEvent>> groupedEvents = new LinkedHashMap<>();
-        for (RecordEvent event : events) {
-            String ageGroup = event.getAgeGrp();
-            groupedEvents.computeIfAbsent(ageGroup, k -> new ArrayList<>()).add(event);
+        for (RecordEvent record : events) {
+            String ageGroup = record.getAgeGrp();
+            boolean masters = record.getAgeGrpLower() >= 30 && (record.getAgeGrp().startsWith("W") || record.getAgeGrp().startsWith("M"));
+            groupedEvents.computeIfAbsent(masters ? ageGroup : ageGroup+" "+record.getTranslatedGender(), k -> new ArrayList<>()).add(record);
         }
         return groupedEvents;
     }
