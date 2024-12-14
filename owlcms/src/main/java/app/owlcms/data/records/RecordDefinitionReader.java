@@ -294,6 +294,21 @@ public class RecordDefinitionReader {
 									}
 									break;
 								}
+								case 14: { // O
+									String cellValue = cell.getStringCellValue();
+									cellValue = cellValue != null ? cellValue.trim() : cellValue;
+									rec.setEventLocation(cellValue);
+									break;
+								}
+								case 15: { // P is used for new records
+									break;
+								}
+								case 16: { // Q
+									String cellValue = cell.getStringCellValue();
+									cellValue = cellValue != null ? cellValue.trim() : cellValue;
+									rec.setEvent(cellValue);
+									break;
+								}
 
 							}
 
