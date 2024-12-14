@@ -2304,7 +2304,12 @@ public class Athlete {
 	@Transient
 	@JsonIgnore
 	public Double getqPoints() {
-		Integer total = getBestCleanJerk() + getBestSnatch();
+		Integer bestCleanJerk = getBestCleanJerk();
+		Integer bestSnatch = getBestSnatch();
+		if (bestCleanJerk == 0 || bestSnatch == 0) {
+			return 0.0D;
+		}
+		Integer total = bestCleanJerk + bestSnatch;
 		return qPoints.getQPoints(this, total);
 	}
 
@@ -2318,8 +2323,20 @@ public class Athlete {
 	@Transient
 	@JsonIgnore
 	public Double getQPoints() {
+		return getqPoints();
+	}
+	
+	@Transient
+	@JsonIgnore
+	public Double getqPointsForDelta() {
 		Integer total = getBestCleanJerk() + getBestSnatch();
 		return qPoints.getQPoints(this, total);
+	}
+	
+	@Transient
+	@JsonIgnore
+	public Double getQPointsForDelta() {
+		return getqPointsForDelta();
 	}
 
 	public Integer getqPointsRank() {

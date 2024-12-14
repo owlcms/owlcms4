@@ -7,6 +7,7 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 
 import app.owlcms.data.athlete.Athlete;
+import app.owlcms.data.config.Config;
 import app.owlcms.i18n.Translator;
 import ch.qos.logback.classic.Logger;
 
@@ -122,13 +123,21 @@ public enum Ranking {
 				d = 0D; // no such thing
 				break;
 			case BW_SINCLAIR:
-				d = curLifter.getSinclair();
+				if (Config.getCurrent().featureSwitch("interimScores")) {
+					d = curLifter.getSinclairForDelta();
+				} else {
+					d = curLifter.getSinclair();
+				}
 				break;
 			case CAT_SINCLAIR:
 				d = curLifter.getCategorySinclair();
 				break;
 			case SMM:
-				d = curLifter.getSmhfForDelta();
+				if (Config.getCurrent().featureSwitch("interimScores")) {
+					d = curLifter.getSmhfForDelta();
+				} else {
+					d = curLifter.getSmhf();
+				}
 				break;
 			case GAMX:
 				d = curLifter.getGamx();
@@ -137,7 +146,12 @@ public enum Ranking {
 				d = curLifter.getAgeAdjustedTotal();
 				break;
 			case QPOINTS:
-				d = curLifter.getQPoints();
+				if (Config.getCurrent().featureSwitch("interimScores")) {
+					d = curLifter.getQPointsForDelta();
+				} else {
+					d = curLifter.getQPoints();
+				}
+
 				break;
 			case QAGE:
 				d = curLifter.getQAge();

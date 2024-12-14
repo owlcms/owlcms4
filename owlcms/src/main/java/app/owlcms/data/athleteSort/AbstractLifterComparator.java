@@ -883,7 +883,7 @@ public class AbstractLifterComparator {
 	 * @param lifter2 the lifter 2
 	 * @return the int
 	 */
-	int compareSmfForDelta(Athlete lifter1, Athlete lifter2) {
+	int compareSmhfForDelta(Athlete lifter1, Athlete lifter2) {
 		Gender gender = lifter1.getGender();
 		if (gender == null) {
 			return -1;
@@ -907,7 +907,7 @@ public class AbstractLifterComparator {
 	}
 
 	/**
-	 * Compare smm.
+	 * Compare SM(H)F.
 	 *
 	 * @param lifter1 the lifter 1
 	 * @param lifter2 the lifter 2
@@ -937,7 +937,7 @@ public class AbstractLifterComparator {
 	}
 	
 	/**
-	 * Compare smm.
+	 * Compare Q-masters.
 	 *
 	 * @param lifter1 the lifter 1
 	 * @param lifter2 the lifter 2
