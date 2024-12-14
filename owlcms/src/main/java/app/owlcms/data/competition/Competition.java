@@ -286,6 +286,7 @@ public class Competition {
 	private boolean displayByAgeGroup;
 	@Column(columnDefinition = "boolean default true")
 	private boolean announcerControlledJuryDecision = true;
+	private String currentRecordsTemplateFileName;
 
 	public Competition() {
 		this.medalsByGroup = new HashMap<>();
@@ -687,6 +688,15 @@ public class Competition {
 		return this.juryTemplateFileName;
 	}
 
+	@Transient
+	@JsonIgnore
+	public String getComputedCurrentRecordsTemplateFileName() {
+		if (this.currentRecordsTemplateFileName == null) {
+			return "currentRecords.xls";
+		}
+		return this.currentRecordsTemplateFileName;
+	}
+	
 	@Transient
 	@JsonIgnore
 	public String getComputedMedalScheduleTemplateFileName() {
@@ -2002,6 +2012,14 @@ public class Competition {
 			        .collect(Collectors.toList());
 		}
 		return pAthletes;
+	}
+
+	public String getCurrentRecordsTemplateFileName() {
+		return currentRecordsTemplateFileName;
+	}
+
+	public void setCurrentRecordsTemplateFileName(String currentRecordsTemplateFileName) {
+		this.currentRecordsTemplateFileName = currentRecordsTemplateFileName;
 	}
 
 }

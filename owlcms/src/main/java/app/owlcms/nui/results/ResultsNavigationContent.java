@@ -99,7 +99,7 @@ public class ResultsNavigationContent extends BaseNavigationContent implements N
 		medalScheduleButton.ifPresent(c -> ((Button) c).setWidth("100%"));
 		medalScheduleDiv.setWidthFull();
 
-		var recordsWriter = new JXLSExportRecords(UI.getCurrent(), false);
+		var recordsWriter = new JXLSExportRecords(UI.getCurrent(), false, false);
 		JXLSDownloader dd3 = new JXLSDownloader(
 		        () -> {
 			        return recordsWriter;
