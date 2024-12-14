@@ -305,6 +305,11 @@ public class RecordDefinitionReader {
 									break;
 								}
 								case 16: { // Q
+									if (cell.getCellType() == CellType.NUMERIC) {
+										//String cellValue = NumberToTextConverter.toText(cell.getNumericCellValue());
+										rec.setEvent("");
+										break;
+									}
 									String cellValue = cell.getStringCellValue();
 									cellValue = cellValue != null ? cellValue.trim() : cellValue;
 									rec.setEvent(cellValue);
