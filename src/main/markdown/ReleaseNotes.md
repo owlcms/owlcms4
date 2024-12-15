@@ -4,14 +4,14 @@
 > - Beta releases are **not** normally used in actual competitions, except when a new feature is required. Use extreme care in testing if you intend to do so.
 
 - Maintenance log:
-  - 54.2.0: Records: It is now possible to export only the current records (removing the history of improvement).  It is also possible to export current records in a "human-friendly" translated format to publish them.
+  - 54.2.0 IP addresses: if the network is using switches only with no DHCP server reachable, some servers may auto-configure with a link-local (169.254) address. Such addresses were previously hidden and will now be shown in the list.
+  - 54.2.0: Records: It is now possible to export only the current records (keeping just the latest).  It is also possible to export current records in a "human-friendly" translated format to publish them.
   - 54.2.0: Interim scores: if the feature toggle `interimScores` is present, and an age group is using Sinclair or SM(H)F or Q-points for medals, then a score will be shown during snatch even it there is no total
   - 54.2.0: Experimental feature to stop or restart the system from the web interface.  Currently shown on the home page if the feature switch `manageOwlcms` is present.
-  - 54.2.0: AgeGroups definition files will now accept QMasters, QYouth, QPoints and SMHF as input for a scoring system.
+  - 54.2.0: AgeGroups definition files will now accept QMasters, QYouth, QPoints and SMHF as input for a scoring system (case does not matter)
   - 54.1.1: Ages are now always calculated relative to the competition date.
   - 54.1.0: Removed the "Sinclair meet" option, see Score-based Competitions below
   - 54.1.0: The program was giving a spurious warning when a late change was made between the time the next weight was displayed and the time the clock started running.
-  
 - Score-based Competitions
   -  Removed the "Sinclair Meet" option from the competition options.  You can achieve the same using [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions):
     - Create SM and SF age groups with ages 0-999 and only the default weight category.  Select "Already Gendered"
@@ -21,10 +21,8 @@
     - Unselect the traditional categories and reallocate athletes.
 
     - You can also create separate SM and SF for ages 0-34 and MM and MF for ages 35-999.  MM and MF would have SMHF or Q-masters as scoring system.  Same idea if you want youth categories to be score-based,  create additional YM and YF with Q-youth etc.
-
 - Speaker
   - The updates to the lifting order grid are now synchronized with the notifications.  Previously the progression of an athlete could be visible for a moment, leading the speaker to believe the requested weight was going up to that amount.
-
 - Age Groups and Championships
   - It is now possible to edit interactively the age group settings to define the championship in which the age groups belongs
   - It is now possible to define Championships interactively

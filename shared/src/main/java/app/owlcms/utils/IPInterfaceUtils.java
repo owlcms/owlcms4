@@ -63,9 +63,8 @@ public class IPInterfaceUtils {
 		Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 		while (interfaces.hasMoreElements()) {
 			NetworkInterface iface = interfaces.nextElement();
-			// filters out 127.0.0.1 and inactive interfaces
-			if (// iface.isLoopback() ||
-			!iface.isUp()) {
+			// filters inactive interfaces
+			if (!iface.isUp()) {
 				continue;
 			}
 
@@ -269,9 +268,7 @@ public class IPInterfaceUtils {
 					logger.debug("networking check: {} OK {} ({}) {}", ip + ":" + requestPort, ifaceName, ifaceDisplay,
 					        testingURL);
 				}
-				if (addr.isLinkLocalAddress()) {
-					// ignore
-				} else if (addr.isLoopbackAddress()) {
+				if (addr.isLoopbackAddress()) {
 					loopback.add(siteURLString);
 				} else if (ifaceName.startsWith("wlan") || ifaceName.startsWith("wlp")
 				        || ifaceDisplay.contains("wireless")) {
