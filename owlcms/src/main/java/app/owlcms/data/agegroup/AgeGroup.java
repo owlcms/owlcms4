@@ -523,10 +523,13 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 
 	public String scoreCodeCore() {
 		// younger group firsts (max age)
-		// then 85-999 before 0-999 ages
-		// then 0-999 with categories before 0-999 with no categories
-		String core = String.format("%03d", this.getMaxAge())
-		        + "_" + String.format("%03d", 999 - (this.getMaxAge() - this.getMinAge()))
+		// 15-20 should come before 17-20 (min age)
+		// but 85-999 must come before 0-999
+		// then 0-999 with categories before 0-999 with no categories (score medals last within an age range)
+		Integer maxAge2 = this.getMaxAge();
+		Integer minAge2 = this.getMinAge();
+		String core = String.format("%03d", maxAge2)
+		        + "_" + String.format("%03d", maxAge2 >= 900 ? maxAge2 : minAge2)
 		        + "_" + String.format("%03d", 999-this.getCategories().size());
 		return core;
 	}
