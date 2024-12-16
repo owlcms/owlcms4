@@ -1,9 +1,11 @@
 > [!WARNING]
 >
-> - This is a **beta release**, used for testing and translation. ***Some features could be non-functional***.
-> - Beta releases are **not** normally used in actual competitions, except when a new feature is required. Use extreme care in testing if you intend to do so.
+> - This is a release candidate [(see definition)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Release_candidate), used for final public testing and translation. *It is still a preliminary release*
+> - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
+  - 54.2.0: When editing an athlete's registration data, categories will now be shown in "most specific order". Masters and IWF go before all-ages Open.  Score-based categories with no age and no bodyweight boundaries go last.
+  - 54.2.0: added Athlete.sortedCategoriesAsString() for fixing SBDE exports such that the main category is the most specific one
   - 54.2.0: Medal report order improved, see bottom of notes.
   - 54.2.0: (Fixed in beta03) AgeGroups definition files will now accept Sinclair, QMasters, QYouth, and SMHF as input for a scoring system (case does not matter), in addition to the legacy names (BW_Sinclair, QAGE, AGEFACTORS, SMM) 
   - 54.2.0 IP addresses: if the network is using switches only with no DHCP server reachable, some servers may auto-configure with a link-local (169.254) address. Such addresses were previously hidden and will now be shown in the list.
@@ -49,6 +51,7 @@
   - added new properties 
     - ageGroup.sortCode and category.sortCodeWithAgeGroup for templates.  ageGroup.sortCode uses the code, max and min ages.  category.sortCodeWithAgeGroup adds the age group to the sort order - this is used when there are several open championships happening together.
     - athlete.gender.translatedGenderCode now returns the translation (for example, W instead of F)
+    - athlete.sortedCategoriesAsString for use in emergency fixes to SBDE -- ensures main category is the most specific one.
   - Removed the LEGAL paper size from the list.
 - Bar Loading:
   - The weight under which collars are not used is now configurable.  Default is 40kg.
