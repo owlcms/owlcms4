@@ -177,12 +177,24 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		var bAgeGroup = b.getAgeGroup();
 		if (aAgeGroup == null || bAgeGroup == null)
 			return ObjectUtils.compare(aAgeGroup, bAgeGroup, true);
-		int compare = ObjectUtils.compare(aAgeGroup.getGender(), bAgeGroup.getGender());
+		int compare;
+
+		compare = ObjectUtils.compare(aAgeGroup.getGender(), bAgeGroup.getGender());
 		if (compare != 0)
 			return compare;
+
 		int aDelta = aAgeGroup.getMaxAge() - aAgeGroup.getMinAge();
 		int bDelta = bAgeGroup.getMaxAge() - bAgeGroup.getMinAge();
-		return Integer.compare(aDelta, bDelta);
+		compare = Integer.compare(aDelta, bDelta);
+		if (compare != 0)
+			return compare;
+		
+		// military masters 35-39 with no bw categories will be less specific than masters 35-39
+		int aCatNum = aAgeGroup.getCategories().size();
+		int bCatNum = bAgeGroup.getCategories().size();
+		compare = Integer.compare(aCatNum, bCatNum);
+		
+		return compare;
 	};
 
 	public String dump() {
@@ -288,7 +300,7 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		// logger.debug("Category {} sort code {}", this, result);
 		return result;
 	}
-	
+
 	@JsonIgnore
 	@Transient
 	public String getMedalingSortCode() {
@@ -301,14 +313,14 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		} else {
 			result = this.ageGroup.getAgeFirstSortCode() + "_" + getSortCodeLimitString();
 		}
-		//logger.debug("Category {} sort code {}", this, result);
+		// logger.debug("Category {} sort code {}", this, result);
 		return result;
 	}
-	
+
 	@JsonIgnore
 	@Transient
 	public void setMedalingSortCode() {
-		
+
 	}
 
 	@JsonIgnore
