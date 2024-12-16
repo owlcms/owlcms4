@@ -4,7 +4,7 @@
 > - Beta releases are **not** normally used in actual competitions, except when a new feature is required. Use extreme care in testing if you intend to do so.
 
 - Maintenance log:
-  - 54.2.0: Medal report order improved. Medals are ordered by age group.  Younger groups first, then ascending bodyweights.  More age-specific age groups before less (M85 Masters will come before Open). For age groups that have identical age ranges, groups with body weight categories before those that don't (Score-based medals will be after the regular medals)
+  - 54.2.0: Medal report order improved, see bottom of notes.
   - 54.2.0: (Fixed in beta03) AgeGroups definition files will now accept Sinclair, QMasters, QYouth, and SMHF as input for a scoring system (case does not matter), in addition to the legacy names (BW_Sinclair, QAGE, AGEFACTORS, SMM) 
   - 54.2.0 IP addresses: if the network is using switches only with no DHCP server reachable, some servers may auto-configure with a link-local (169.254) address. Such addresses were previously hidden and will now be shown in the list.
   - 54.2.0: Records: It is now possible to export only the current records (keeping just the latest).  It is also possible to export current records in a "human-friendly" translated format to publish them.
@@ -57,6 +57,10 @@
 - Records
   - It is now possible to export only the latest record for all the loaded records.  There are two types of templates: the ones that start with "export" can actually be loaded in the program. The ones that start with "report" have translated column headers are meant for readability -- you can upload them to a Google Sheet for example.
   - You can keep a historical master copy of the records by exporting all (which will include the successive improvements to a record).  You can reload this at every competition.  If you don't care about the exact history, you can export the current records and reload that.
+- Medals: Medals are ordered by age group.
+  - Younger age groups first, presented in ascending bodyweight classes
+  - 15-20 comes before 17-20, with an exception for "all ages" age groups: M85 Masters (85-999) comes before Open (0-999)
+  - For age groups that have identical age ranges, groups with body weight categories before those that don't (score-based medals will be after the regular medals)
 
 
 For other recent changes, see [version 52 release notes](https://github.com/owlcms/owlcms4/releases/tag/52.0.6) and [version 53 release notes](https://github.com/owlcms/owlcms4/releases/tag/53.1.0)
