@@ -332,7 +332,7 @@ public class BreakManagement extends BaseContent implements SafeEventBusRegistra
 	}
 
 	private void computeDefaultTimeValues() {
-		logger.debug("setting default duration as default {}", LoggerUtils.whereFrom());
+		logger.warn("setting default duration as default {}", LoggerUtils.whereFrom());
 		setDurationField(DEFAULT_DURATION);
 
 		if (fop.getGroup() != null

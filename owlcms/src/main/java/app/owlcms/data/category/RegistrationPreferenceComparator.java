@@ -12,6 +12,7 @@ import org.apache.commons.lang3.ObjectUtils;
 
 import app.owlcms.data.agegroup.AgeGroup;
 import app.owlcms.data.agegroup.Championship;
+import app.owlcms.data.config.Config;
 
 /**
  * When several categories are possible for an athlete, this class returns the preferred choice.
@@ -47,6 +48,9 @@ public class RegistrationPreferenceComparator implements Comparator<Category> {
 		} else if (c1 != null && c2 == null) {
 			return -1;
 		} else if (c1 != null && c2 != null) {
+			if (Config.getCurrent().featureSwitch("BWCatsFirst")) {
+				return ObjectUtils.compare(c1.getMedalingSortCode(), c2.getMedalingSortCode());
+			}
 			AgeGroup ag1 = c1.getAgeGroup();
 			AgeGroup ag2 = c2.getAgeGroup();
 			Championship ad1 = (ag1 != null ? ag1.getChampionship() : null);

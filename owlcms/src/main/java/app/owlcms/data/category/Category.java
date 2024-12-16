@@ -192,7 +192,8 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		// military masters 35-39 with no bw categories will be less specific than masters 35-39
 		int aCatNum = aAgeGroup.getCategories().size();
 		int bCatNum = bAgeGroup.getCategories().size();
-		compare = Integer.compare(aCatNum, bCatNum);
+		// more categories comes first
+		compare = -Integer.compare(aCatNum, bCatNum);
 		
 		return compare;
 	};
@@ -313,14 +314,13 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		} else {
 			result = this.ageGroup.getAgeFirstSortCode() + "_" + getSortCodeLimitString();
 		}
-		// logger.debug("Category {} sort code {}", this, result);
+		logger.warn("Category {} sort code {}", this, result);
 		return result;
 	}
 
 	@JsonIgnore
 	@Transient
 	public void setMedalingSortCode() {
-
 	}
 
 	@JsonIgnore
