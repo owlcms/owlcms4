@@ -4,11 +4,11 @@
 > - Beta releases are **not** normally used in actual competitions, except when a new feature is required. Use extreme care in testing if you intend to do so.
 
 - Maintenance log:
+  - 54.2.0: (Fixed in beta03) AgeGroups definition files will now accept Sinclair, QMasters, QYouth, and SMHF as input for a scoring system (case does not matter), in addition to the legacy names (BW_Sinclair, QAGE, AGEFACTORS, SMM) 
   - 54.2.0 IP addresses: if the network is using switches only with no DHCP server reachable, some servers may auto-configure with a link-local (169.254) address. Such addresses were previously hidden and will now be shown in the list.
   - 54.2.0: Records: It is now possible to export only the current records (keeping just the latest).  It is also possible to export current records in a "human-friendly" translated format to publish them.
   - 54.2.0: Interim scores: if the feature toggle `interimScores` is present, and an age group is using Sinclair or SM(H)F or Q-points for medals, then a score will be shown during snatch even it there is no total
   - 54.2.0: Experimental feature to stop or restart the system from the web interface.  Currently shown on the home page if the feature switch `manageOwlcms` is present.
-  - 54.2.0: AgeGroups definition files will now accept QMasters, QYouth, QPoints and SMHF as input for a scoring system (case does not matter)
   - 54.1.1: Ages are now always calculated relative to the competition date.
   - 54.1.0: Removed the "Sinclair meet" option, see Score-based Competitions below
   - 54.1.0: The program was giving a spurious warning when a late change was made between the time the next weight was displayed and the time the clock started running.
