@@ -23,8 +23,7 @@ import app.owlcms.data.config.Config;
  * <li>O21 (21+) or
  * <li>SR (15+)
  * </ul>
- * in that order of preference if all 3 categories are active. The athlete would be placed as a M35 by default, and the
- * choice can be overriden.
+ * in that order of preference if all 3 categories are active. The athlete would be placed as a M35 by default, and the choice can be overriden.
  *
  * Given a 15 year old athlete they could be
  * <ul>
@@ -32,8 +31,8 @@ import app.owlcms.data.config.Config;
  * <li>JR (15-20) or
  * <li>SR (15+)
  * </ul>
- * in that order of preference. Normally youth age groups would not be used in addition to JR because of the ambiguity,
- * but JR and SR could be used at the same time. The lifter would be shown on the boards as JR.
+ * in that order of preference. Normally youth age groups would not be used in addition to JR because of the ambiguity, but JR and SR could be used at the same
+ * time. The lifter would be shown on the boards as JR.
  *
  */
 public class RegistrationPreferenceComparator implements Comparator<Category> {
@@ -48,59 +47,60 @@ public class RegistrationPreferenceComparator implements Comparator<Category> {
 		} else if (c1 != null && c2 == null) {
 			return -1;
 		} else if (c1 != null && c2 != null) {
-			if (Config.getCurrent().featureSwitch("BWCatsFirst")) {
+			if (!Config.getCurrent().featureSwitch("oldCatOrder")) {
 				return ObjectUtils.compare(c1.getMedalingSortCode(), c2.getMedalingSortCode());
+			} else {
+				AgeGroup ag1 = c1.getAgeGroup();
+				AgeGroup ag2 = c2.getAgeGroup();
+				Championship ad1 = (ag1 != null ? ag1.getChampionship() : null);
+				Championship ad2 = (ag2 != null ? ag2.getChampionship() : null);
+
+				int compare = 0;
+				if (ad1 != null && ad2 != null && ag1 != null && ag2 != null) {
+					compare = ObjectUtils.compare(c1.getGender(), c2.getGender());
+					if (compare != 0) {
+						return compare;
+					}
+
+					// Championships are in registration preference order
+					compare = ObjectUtils.compare(ad1.getType(), ad2.getType());
+					if (compare != 0) {
+						return compare;
+					}
+
+					// Championships are in registration preference order
+					compare = ObjectUtils.compare(ad1.getName().length(), ad2.getName().length());
+					if (compare != 0) {
+						return compare;
+					}
+
+					// athlete will be placed in youngest age group by default
+					compare = Integer.compare(ag1.getMinAge(), ag2.getMinAge());
+					if (compare != 0) {
+						return compare;
+					}
+
+					// same minimum age, listed in most specific age category
+					compare = ObjectUtils.compare(ag1.getMaxAge(), ag2.getMaxAge());
+					if (compare != 0) {
+						return compare;
+					}
+
+					// compare age divisions -- grasping at straws to get a total order.
+					compare = ObjectUtils.compare(ad1, ad2);
+					if (compare != 0) {
+						return compare;
+					}
+				}
+
+				// compare max body weights
+				compare = Double.compare(c1.getMaximumWeight(), c2.getMaximumWeight());
+				if (compare != 0) {
+					return compare;
+				}
+
+				return 0;
 			}
-			AgeGroup ag1 = c1.getAgeGroup();
-			AgeGroup ag2 = c2.getAgeGroup();
-			Championship ad1 = (ag1 != null ? ag1.getChampionship() : null);
-			Championship ad2 = (ag2 != null ? ag2.getChampionship() : null);
-
-			int compare = 0;
-			if (ad1 != null && ad2 != null && ag1 != null && ag2 != null) {
-				compare = ObjectUtils.compare(c1.getGender(), c2.getGender());
-				if (compare != 0) {
-					return compare;
-				}
-
-				// Championships are in registration preference order
-				compare = ObjectUtils.compare(ad1.getType(), ad2.getType());
-				if (compare != 0) {
-					return compare;
-				}
-				
-				// Championships are in registration preference order
-				compare = ObjectUtils.compare(ad1.getName().length(), ad2.getName().length());
-				if (compare != 0) {
-					return compare;
-				}
-
-				// athlete will be placed in youngest age group by default
-				compare = Integer.compare(ag1.getMinAge(), ag2.getMinAge());
-				if (compare != 0) {
-					return compare;
-				}
-
-				// same minimum age, listed in most specific age category
-				compare = ObjectUtils.compare(ag1.getMaxAge(), ag2.getMaxAge());
-				if (compare != 0) {
-					return compare;
-				}
-
-				// compare age divisions -- grasping at straws to get a total order.
-				compare = ObjectUtils.compare(ad1, ad2);
-				if (compare != 0) {
-					return compare;
-				}
-			}
-
-			// compare max body weights
-			compare = Double.compare(c1.getMaximumWeight(), c2.getMaximumWeight());
-			if (compare != 0) {
-				return compare;
-			}
-
-			return 0;
 		} else {
 			throw new RuntimeException("can't happen");
 		}
