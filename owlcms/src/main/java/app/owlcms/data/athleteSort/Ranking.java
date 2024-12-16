@@ -40,9 +40,10 @@ public enum Ranking {
 	static {
 		for (Ranking r : Ranking.values()) {
 			rankingByReportingName.put(r.reportingName.toLowerCase(), r);
+			rankingByReportingName.put(r.name().toLowerCase(), r);
+			
 		}
 		rankingByReportingName.put("smhf", SMM);
-
 	}
 
 	static Logger logger = (Logger) LoggerFactory.getLogger(Ranking.class);
