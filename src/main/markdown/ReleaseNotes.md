@@ -4,6 +4,7 @@
 > - Beta releases are **not** normally used in actual competitions, except when a new feature is required. Use extreme care in testing if you intend to do so.
 
 - Maintenance log:
+  - 54.2.0: Medal report order improved. Medals are ordered by age group.  Younger groups first, then ascending bodyweights.  More age-specific age groups before less (M85 Masters will come before Open). For age groups that have identical age ranges, groups with body weight categories before those that don't (Score-based medals will be after the regular medals)
   - 54.2.0: (Fixed in beta03) AgeGroups definition files will now accept Sinclair, QMasters, QYouth, and SMHF as input for a scoring system (case does not matter), in addition to the legacy names (BW_Sinclair, QAGE, AGEFACTORS, SMM) 
   - 54.2.0 IP addresses: if the network is using switches only with no DHCP server reachable, some servers may auto-configure with a link-local (169.254) address. Such addresses were previously hidden and will now be shown in the list.
   - 54.2.0: Records: It is now possible to export only the current records (keeping just the latest).  It is also possible to export current records in a "human-friendly" translated format to publish them.

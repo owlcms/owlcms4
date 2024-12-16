@@ -288,6 +288,28 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		// logger.debug("Category {} sort code {}", this, result);
 		return result;
 	}
+	
+	@JsonIgnore
+	@Transient
+	public String getMedalingSortCode() {
+		String agName = (this.ageGroup != null ? this.ageGroup.getName() : "");
+
+		String result;
+		if (agName == null || agName.isEmpty()) {
+			String catName = "zzzz" + "_" + getGender() + getSortCodeLimitString();
+			result = catName;
+		} else {
+			result = this.ageGroup.getAgeFirstSortCode() + "_" + getSortCodeLimitString();
+		}
+		//logger.debug("Category {} sort code {}", this, result);
+		return result;
+	}
+	
+	@JsonIgnore
+	@Transient
+	public void setMedalingSortCode() {
+		
+	}
 
 	@JsonIgnore
 	@Transient

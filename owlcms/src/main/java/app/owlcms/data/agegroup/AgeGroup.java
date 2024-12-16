@@ -499,4 +499,40 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 		return code2;
 	}
 
+	@Transient
+	@JsonIgnore
+	public String getAgeFirstSortCode() {
+		String core = scoreCodeCore();
+		String result = core + "_" + gender.ordinal();
+		return result;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setAgeFirstSortCode(String ignored) {
+	}
+
+	@Transient
+	@JsonIgnore
+	public String getGenderFirstSortCode() {
+		// all women before all men
+		String core = scoreCodeCore();
+		String result = gender.ordinal() + "_" + core;
+		return result;
+	}
+
+	public String scoreCodeCore() {
+		// younger group firsts (max age)
+		// then 85-999 before 0-999 ages
+		// then 0-999 with categories before 0-999 with no categories
+		String core = String.format("%03d", this.getMaxAge())
+		        + "_" + String.format("%03d", 999 - (this.getMaxAge() - this.getMinAge()))
+		        + "_" + String.format("%03d", 999-this.getCategories().size());
+		return core;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setGenderFirstSortCode(String ignored) {
+	}
 }

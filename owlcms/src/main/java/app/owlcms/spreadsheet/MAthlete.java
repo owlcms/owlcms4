@@ -16,7 +16,7 @@ public class MAthlete extends PAthlete {
 		public int compare(MAthlete o1, MAthlete o2) {
 			int compare;
 
-			compare = ObjectUtils.compare(o1.getCategory(), o2.getCategory(), false);
+			compare = ObjectUtils.compare(o1.getCategory().getMedalingSortCode(), o2.getCategory().getMedalingSortCode(), false);
 			if (compare != 0) {
 				return compare;
 			}
@@ -107,6 +107,13 @@ public class MAthlete extends PAthlete {
 	
 	public void setLiftResult() {
 		// unused
+	}
+	
+	public String getMedalingSortCode() {
+		return getCategory().getMedalingSortCode();
+	}
+	
+	public void setMedalingSortCode(String unused) {
 	}
 
 }
