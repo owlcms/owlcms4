@@ -842,32 +842,6 @@ public class Athlete {
 		return s;
 	}
 
-	// @Transient
-	// @JsonIgnore
-	// private String getAllTranslatedCategoriesAsString() {
-	// Category mrCat = getMainRankings() != null ? this.getMainRankings().getCategory() : null;
-	// String mainCategory = mrCat != null ? mrCat.getNameWithAgeGroup() : "";
-	//
-	// String mainCategoryString = mainCategory;
-	// if (mrCat != null && !getMainRankings().getTeamMember()) {
-	// mainCategoryString = mainCategory + RAthlete.NoTeamMarker;
-	// }
-	//
-	// String eligiblesAsString = this.getParticipations().stream()
-	// .filter(p -> (p.getCategory() != mrCat))
-	// .sorted((a, b) -> a.getCategory().getAgeGroup().compareTo(b.getCategory().getAgeGroup()))
-	// .map(p -> {
-	// String catName = p.getCategory().getNameWithAgeGroup();
-	// return catName + (!p.getTeamMember() ? RAthlete.NoTeamMarker : "");
-	// })
-	// .collect(Collectors.joining(";"));
-	// if (eligiblesAsString.isBlank()) {
-	// return mainCategoryString;
-	// } else {
-	// return mainCategory + "|" + eligiblesAsString;
-	// }
-	// }
-
 	@Transient
 	@JsonIgnore
 	public String getAllCategoriesAsString() {
@@ -893,6 +867,24 @@ public class Athlete {
 		} else {
 			return mainCategory + "|" + eligiblesAsString;
 		}
+	}
+
+	@Transient
+	@JsonIgnore
+	public String getSortedCategoriesAsString() {
+		String eligiblesAsString = this.getParticipations().stream()
+		        .sorted((a, b) -> a.getCategory().getMedalingSortCode().compareTo(b.getCategory().getMedalingSortCode()))
+		        .map(p -> {
+			        String catName = p.getCategory().getDisplayName();
+			        return catName + (!p.getTeamMember() ? RAthlete.NoTeamMarker : "");
+		        })
+		        .collect(Collectors.joining(";"));
+		return eligiblesAsString;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setSortedCategoriesAsString() {
 	}
 
 	/**
@@ -1723,11 +1715,12 @@ public class Athlete {
 	public Set<Category> getEligibleCategories() {
 		// brain dead version, cannot get query version to work.
 		Set<Category> s = new LinkedHashSet<>();
-		List<Participation> participations2 = getParticipations();
-		for (Participation p : participations2) {
-			Category category2 = p.getCategory();
-			s.add(category2);
-		}
+		List<Category> cats = getParticipations().stream()
+		        .map(p -> p.getCategory())
+		        .sorted(Category.medalingComparator())
+		        //.peek(c -> logger.debug("{} {}", c, c.getMedalingSortCode()))
+		        .toList();
+		s.addAll(cats);
 		return s;
 	}
 
@@ -2325,14 +2318,14 @@ public class Athlete {
 	public Double getQPoints() {
 		return getqPoints();
 	}
-	
+
 	@Transient
 	@JsonIgnore
 	public Double getqPointsForDelta() {
 		Integer total = getBestCleanJerk() + getBestSnatch();
 		return qPoints.getQPoints(this, total);
 	}
-	
+
 	@Transient
 	@JsonIgnore
 	public Double getQPointsForDelta() {
@@ -5207,7 +5200,7 @@ public class Athlete {
 			// there are cases where there is a clock owner and the clock is not running
 			if (clockOwner != null && getFop().getState() == FOPState.TIME_RUNNING) {
 				// if clock is running, reference becomes the weight requested by the clock owner
-				// and not the last good/bad lift. 
+				// and not the last good/bad lift.
 				// e.g. 137 is on the bar as the requested weight, and clock has been started, one cannot request 136
 				reference = clockOwner.getRunningLiftOrderInfo();
 				pastOrder.shortDump("lastLift info clock running", getLogger());

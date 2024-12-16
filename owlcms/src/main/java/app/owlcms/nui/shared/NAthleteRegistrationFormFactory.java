@@ -477,18 +477,10 @@ public final class NAthleteRegistrationFormFactory extends OwlcmsCrudFormFactory
 			}
 			logger.debug("v4 {} {}", category, category.getName(), category.getCode());
 			try {
-				// Category matchingEligible = null;
-				// Set<Category> eligibles = getEditedAthlete().getEligibleCategories();
 				List<Category> eligibles = this.allEligible;
 				if (eligibles == null || eligibles.isEmpty()) {
 					return category == null;
 				}
-				// for (Category eligible : eligibles) {
-				// if (eligible.getCode() == category.getCode()) {
-				// matchingEligible = eligible;
-				// break;
-				// }
-				// }
 				Set<Category> selectedEligibles = eligibleField.getValue();
 				return !selectedEligibles.isEmpty();
 			} catch (Exception e) {
@@ -985,7 +977,6 @@ public final class NAthleteRegistrationFormFactory extends OwlcmsCrudFormFactory
 		if (initCategories) {
 			this.allEligible = findEligibleCategories(this.genderField, getAgeFromFields(), this.bodyWeightField,
 			        this.categoryField, this.qualifyingTotalField);
-			logger.debug("*** allEligibles init {}", this.allEligible);
 			updateCategoryFields(category, this.categoryField, this.eligibleField, this.qualifyingTotalField,
 			        this.allEligible, this.allEligible, false);
 		}
@@ -1079,7 +1070,7 @@ public final class NAthleteRegistrationFormFactory extends OwlcmsCrudFormFactory
 			setChangeListenersEnabled(false); // prevent recursion.
 			// false as last argument: do not reset to all eligible categories
 			Category value = this.categoryField.getValue();
-			logger.debug/* edit */("**** eligible new value {} listenersEnabled {} {}", value, isChangeListenersEnabled(),
+			logger.debug("**** eligible new value {} listenersEnabled {} {}", value, isChangeListenersEnabled(),
 			        (value == null ? LoggerUtils.stackTrace() : LoggerUtils.whereFrom()));
 			Set<Category> selectedCategories = this.eligibleField.getSelectedItems();
 			this.allEligible = findEligibleCategories(this.genderField, getAgeFromFields(), this.bodyWeightField,
@@ -1113,7 +1104,7 @@ public final class NAthleteRegistrationFormFactory extends OwlcmsCrudFormFactory
 	private List<Category> findEligibleCategories(ComboBox<Gender> genderField, Integer ageFromFields,
 	        LocalizedDecimalField bodyWeightField, ComboBox<Category> categoryField,
 	        LocalizedIntegerField qualifyingTotalField2) {
-		logger.debug/* edit */("findEligibleCategories");
+		logger.debug("findEligibleCategories");
 		// best match is first
 		Double bw = bodyWeightField.getValue();
 		Double catW = categoryField.getValue() != null ? categoryField.getValue().getMaximumWeight() : null;
@@ -1263,7 +1254,7 @@ public final class NAthleteRegistrationFormFactory extends OwlcmsCrudFormFactory
 				}
 			} else if (genderField.getValue() != null && age != null) {
 				// use age and qualifying total
-				logger.debug/* edit */("using age and total");
+				logger.debug("using age and total");
 				this.allEligible = findEligibleCategories(genderField, getAgeFromFields(), bodyWeightField,
 				        categoryField, qualifyingTotalField2);
 				updateCategoryFields(null, categoryField, eligibleField, qualifyingTotalField2,
@@ -1296,7 +1287,7 @@ public final class NAthleteRegistrationFormFactory extends OwlcmsCrudFormFactory
 
 	private void safeCategorySetItems(List<Category> categories) {
 		Category curCat = this.categoryField.getValue();
-		logger.debug/* edit */("safeCategorySetItems curCat={}", curCat);
+		logger.debug("safeCategorySetItems curCat={}", curCat);
 		boolean listenersEnabled = isChangeListenersEnabled();
 		try {
 			setChangeListenersEnabled(false);
@@ -1409,7 +1400,7 @@ public final class NAthleteRegistrationFormFactory extends OwlcmsCrudFormFactory
 			boolean listenerStatus = isChangeListenersEnabled();
 			try {
 				setChangeListenersEnabled(false);
-				// safeCategorySetItems(pertinentCategories);
+				logger.debug("setting items {}",allEligibles);
 				eligibleField.setItems(allEligibles);
 			} finally {
 				setChangeListenersEnabled(listenerStatus);
@@ -1427,7 +1418,7 @@ public final class NAthleteRegistrationFormFactory extends OwlcmsCrudFormFactory
 					break;
 				}
 			}
-			logger.debug/* edit */("category {} {} matching eligible {}", categoryField, bestMatch, matchingEligible);
+			logger.debug("category {} {} matching eligible {}", categoryField, bestMatch, matchingEligible);
 			setCategoryFieldValue(matchingEligible);
 		} else {
 			logger.debug("category is null");

@@ -314,8 +314,12 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		} else {
 			result = this.ageGroup.getAgeFirstSortCode() + "_" + getSortCodeLimitString();
 		}
-		logger.warn("Category {} sort code {}", this, result);
+		//logger.debug("Category {} sort code {}", this, result);
 		return result;
+	}
+	
+	public static Comparator<Category> medalingComparator() {
+		return (a,b) -> ObjectUtils.compare(a.getMedalingSortCode(), b.getMedalingSortCode());
 	}
 
 	@JsonIgnore
