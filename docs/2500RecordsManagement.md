@@ -16,7 +16,7 @@ In the following example
 
 If records are broken during a meet, they are stored in the database.  They are *not* considered to be official records.  For them to become official, they need to be approved by the appropriate association or federation, and then added to the correct Excel file.  Once the Excel file has been updated, it becomes the new reference and can be loaded again in the database.
 
-### Records Management
+## Records Management
 
 The Records Management page is reached from the Prepare Competition section
 
@@ -34,7 +34,7 @@ The system shows that the IWF World records for 3 age groups were present in the
 
 ![40](nimg/2500RecordsManagement/40.png)
 
-### Updating Records
+## Updating Records
 
 When loaded in the database, the system remembers the file from which the record was loaded.  If a file with the same name is loaded again, old records from that file are replaced with the new content.   However, to keep track of updates, you probably want to include the date of updates in the name of the record file.  If you do so, you will need one extra step to remove the records from the previous file name.
 
@@ -50,7 +50,7 @@ And we now have the updated version only.
 
 ![70](nimg/2500RecordsManagement/70.png)
 
-### Multiple Records
+## Multiple Records
 
 It is also possible to add records from multiple federations or to add records that are specific to an event. We now add a second federation in exactly the same way as before.
 
@@ -70,7 +70,25 @@ Normally, the scoreboard will only show the records for which the current athlet
   2. The second checkbox "Show record values from all federations" would be used.  In this way, both the EWF and IWF records would be shown (all the loaded records, actually), but only the eligible ones would be highlighted.
 - The "All Federations" checkbox can also be used in multi-regional events. In a joint PanAm + South American event, some athletes could beat PanAm Records only, others might beat South American *and* PanAm records.  The key is to correctly set the eligibility criteria for the athletes. See [Eligibility Criteria](#eligibility-criteria) below.
 
-### Record File Format
+## Exporting Records
+
+On the second tab, several options are given to export the records
+
+- Export New Records: only the new records set in this competition are exported
+- Export All Records: All the records set are published, in a single file
+
+![A0](../../../OneDrive/Documents/ShareX/Screenshots/2024-12/A0.png)
+
+There is also the option to export the current records (without all the updates to a given record).  There are two options for this
+
+- When selecting the template with the name "export", you will get a format that can be imported back in a subsequent competition.  There are two formats - all in one file ("exportRecords"), and with separate sheets for each age group ("exportSheets")
+- When selecting the template with the name "report" you will get a format suitable for publishing.  "reportSheets" puts each age group in a separate tab, "reportGroups" creates a single sheet with a heading for each age group.
+
+![A1](../../../OneDrive/Documents/ShareX/Screenshots/2024-12/A1.png)
+
+![A2](../../../OneDrive/Documents/ShareX/Screenshots/2024-12/A2.png)
+
+## Record File Format
 
 The following fields are expected in the file, in that specific order.  The first line contains the names of the field.  The program stops reading at the first line where the Federation field is blank.
 
