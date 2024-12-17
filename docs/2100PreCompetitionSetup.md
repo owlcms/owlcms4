@@ -12,7 +12,7 @@ First, the name and other data about the competition and hosting federation is p
 
 ![20](nimg/2100PreCompetitionSetup/20.png)
 
-#### Standard Competition Rules
+#### Competition Rules
 
 The screen allows selecting common variations on IWF rules.  For most competitions, the options that need to be checked are outlined below.  See the [Advanced Pre-Competition Options](2600AdvancedPreCompetitionSetup) page for the others.
 
@@ -28,14 +28,11 @@ The screen allows selecting common variations on IWF rules.  For most competitio
 
 Additional options are used when running team, kid, or virtual competitions.
 
-![40](nimg/2100PreCompetitionSetup/41.png)
+![40](nimg/2100PreCompetitionSetup/41a.png)
 
 - Scoring System
-  - `Scoring System Selected` determines several things
-    - On the results screens, the scoring system will be shown, in addition to Sinclair and Robi
-    - If the `Show Score on Scoreboard` option is used, this is the score that will be shown.
+  - `Overall Best Athlete Scoring System determines several what is shown by default when producing the final package and on the Competition Results page
   - The `Sinclair` setting determines which version of the coefficients is used.  The 2020 coefficients (issued in 2017) were used until the new ones were issued in fall 2022.  This setting does ***not*** affect the Masters SMF and SMHF coefficients.
-  - `Enable Custom Score` This adds a box on the Athlete Card where a custom score can be entered.  This will typically add bonus points or subtract penalty points.  This is sometimes used for kid competitions where bonuses are given for 5/6 or 6/6 performances.
 - Non-Standard Rules
   - `Group Athletes by Gender`  When hosting kid competitions, it is common to group kids in mixed groups according to age or weight. This setting makes all girls go first to avoid changing bars.
 
@@ -54,7 +51,7 @@ owlcms allows selecting the language for each session using the menu at the top 
 
 ### Time Zone Configuration
 
-When running in the cloud, you need to set the time zone so it matches the competition schedule.
+When running in the cloud, you should the time zone so it matches the competition schedule.
 
 ![70](nimg/2100PreCompetitionSetup/70.png)
 
@@ -72,9 +69,12 @@ OWLCMS supports multiple competition fields of play used at the same time.  A fi
 
 ### Changing the Audio Output
 
-Normally, only the Athlete-Facing Display emits sound.  **The recommended sound setup is to connect speakers directly to the athlete-facing computer and to use the default "Use Browser Sound"**
+There are 4 common configurations
 
-However, in certain circumstances, this may not work (for example, some computer-browser combinations produce garbled sound).  You can then use the main laptop to produce the sounds instead.  If you are running locally on a laptop, then you can get the computer to generate the sound.
+- When using USB devices (including joysticks), the recommended sound setup is to connect speakers directly to the athlete-facing computer and to use the default "Use Browser Sound" (this minimizes delay)
+- When connecting the athlete-facing computer to speakers is not possible, another option is to use server-generated sounds and connect the server to the public-address speakers.
+- When using [owlcms-firmata](https://github.com/jflamy/owlcms-firmata) build-it-yourself MQTT devices, the recommended setting is to use the server-generated sounds.
+- When using [Blue-Owl](https://blue-owl.nemikor.com/) devices with a down signal tell the athlete-facing computer to not generate sounds
 
 ![062_SetSound](img/Preparation/062_SetSound.png)
 

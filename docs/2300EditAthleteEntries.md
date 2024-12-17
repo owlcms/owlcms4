@@ -1,29 +1,29 @@
 The next step in preparing a competition is adjusting the registrations and finalizing the entries.  This involves
 
+- Adjusting the list of participating athletes
 - Drawing lots
 - Finalizing the assignment athletes to groups
 - Assigning Referees to groups
 - Producing a Start List
 - Producing Athlete cards
 
-These steps are performed from the `Prepare Competition` page![10](nimg/2300EditAthleteEntries/10.png)
+These steps are performed from the `Prepare Competition` page![10](nimg/2300EditAthleteEntries/10a.png)
 
 ## Adding or Editing Athletes
 
 In order to add or edit athletes, use the `Edit Athlete Entries` button.
 
-- To add an athlete, use the `+` button at the top of the list.  If you have selected a group at the top, the athlete will be added to that group.![15](nimg/2300EditAthleteEntries/15.png)
-- To edit an athlete click ONCE on the name of the athlete in the list.  You can select a group at the top and type values in the filters at the top of the list to narrow down the list.![20](nimg/2300EditAthleteEntries/20.png)
+- To add an athlete, use the `+` button at the top of the list.  If you have selected a session at the top, the athlete will be added to that session.![15](nimg/2300EditAthleteEntries/15.png)
+- To edit an athlete click ONCE on the name of the athlete in the list.  You can select a group at the top and type values in the filters at the top of the list to narrow down the list.
+- You may then fill the form.  The eligible categories will be computed automatically, and if the athlete is eligible to several categories the most specific category will be used as the registration category.  In the following example, a 16 year-old is eligible for youth, junior and senior medals.  If the competition is organized by age groups, the athlete would lift along the other youths, prior to junior and senior athletes.
 
-You may then fill the form.  The eligible categories will be computed automatically, and if the athlete is eligible to several categories the most specific category will be assigned based on the age (this is in order to compute start numbers, and will be used on scoreboards).
+![40](nimg/2300EditAthleteEntries/40a.png)
 
-![40](nimg/2300EditAthleteEntries/40.png)
-
-The `Eligible for individual ranking` checkbox is used to determine whether the athlete is eligible for medals or is competing "out-of-competition".  Some meets may allow an athlete from another jurisdiction to compete in order to meet a qualification requirement, but not include the athlete in the medals.
+Complementary information can be provided if needed, on the second tab.
 
 ## Drawing lot numbers
 
-After all athletes have been entered, you should draw the lot numbers.  If you are splitting a group and have several athletes with the same entry total, you may need to use the lot number to determine what athlete goes to which group.
+**Once all athletes have been entered, you should draw the lot numbers**.  If you are splitting a group and have several athletes with the same entry total, you would use the lot number to determine what athlete goes to which group.
 
 ![50](nimg/2300EditAthleteEntries/50.png)
 
@@ -33,7 +33,7 @@ Before [producing the Start List and Team Lists](2400PreCompetitionDocuments), i
 
 On initial load, the athlete is automatically made a team member for all the age groups in which he is qualified.  If an athlete qualifies for both JR 55 and SR 55, he is assumed to be part of the JR and SR teams.
 
-The checkbox at the top left allows to set team membership in bulk. This is useful after reassigning categories because reassigning categories clears the team memberships.
+You should filter the championship and age groups to make sure all teams follow the competition rules.  Warning flags are shown  when there is a risk of violating rules.
 
 ![60](nimg/2300EditAthleteEntries/60.png)
 

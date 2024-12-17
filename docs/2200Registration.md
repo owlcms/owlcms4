@@ -1,7 +1,7 @@
 The next step in preparing a competition is registering the athletes.  This involves
 
 - Defining the age groups and the categories
-- Defining the competition groups
+- Defining the competition sessions
 - Entering the initial list of participating athletes
 - Assigning athletes to groups
 
@@ -26,33 +26,23 @@ owlcms assigns athletes to their correct age group and body weight category with
 
   - Masters competitions, where athletes are automatically assigned to an age group based on their birth date according to IWF Masters rules
 
-## Editing Competition Groups
-
-From the `Prepare Competition` page, clicking `Define Groups` allows you to create or edit competition groups.  You can use the `+` on the list of groups to create additional groups.
-
-![15](nimg/2200Registration/15a.png)
-
-Clicking on a group or using the `Edit Details` button enables you to define the expected starting time. This will be used to order the sessions on the start list or schedule.
-
-![16](nimg/2200Registration/16a.png)
-
-The other tabs allow you to enter the officials and the jury.  These will be printed by default on the session protocol and jury sheets.
-
-![16](nimg/2200Registration/16b.png)
-
-## Downloading an Empty Registration Spreadsheet
+## Registering the Athletes
 
 There are two ways to enter athletes.  For a very small competitions, you can enter them interactively using the `Edit Athlete Entries` screen.  But as soon as you have more than about 20 athletes, it is much easier to use a spreadsheet.
 
-From the `Prepare Competition` page, 
+### Manual Registration
 
-- click on the `Download Empty Registration Template` button.  This will download a file with the sessions you created before.  
+To add athletes manually, see the [Edit Athlete Entries](2300EditAthleteEntries) page.  Use the `+ Add` button at the top of the page.
+
+### Downloading an Empty Registration Spreadsheet.
+
+For anything but very small club competitions, it is faster to prepare a spreadsheet. From the `Prepare Competition` page, 
+
+- Click on the `Download Empty Registration Template` button.  This will download a file with the sessions you created before.  
 
 - Save the downloaded file to your own documents area
 
-## Preparing a Spreadsheet (Automatic Category Assignment Mode)
-
-Because entering athletes is tedious, it is easier to upload a list prepared with Excel which allows copy-and-paste in an easier way.  
+### Automatic Category Assignment Mode
 
 This method will automatically assign athletes according to their age and assigned category.  If athletes are eligible to more than one category, they will be assigned to all categories,
 
@@ -77,7 +67,7 @@ See below for explicit category assignments.
 
    ![30](nimg/2200Registration/30a.png)
 
-## Initial Upload of the Completed Spreadsheet
+#### Initial Upload of the Completed Spreadsheet
 
 1. **Upload the completed form** using the `Upload Completed Registration Spreadsheet` button. Note that this **deletes the previous athletes and groups** 
 
@@ -85,11 +75,11 @@ See below for explicit category assignments.
 
 2. **Fix errors**, if any. If there are errors detected on the upload, they will be shown (for example, unreadable dates in a cell, or a missing group).  The athlete will still be created, but without the faulty information.  You can either upload again after correcting.  If you use the program to fix the errors, make sure you export the information so you can reload it later.
 
-## Initial Schedule and Allocation of Athletes
+#### Initial Schedule and Allocation of Athletes
 
 Change your initial spreadsheet and add sessions to the Sessions tab until you are satisfied that you have a good first approximation of your competition with a workable schedule.
 
-## Preparing a Spreadsheet (Explicit Category Assignment Mode)
+### Preparing a Spreadsheet (Explicit Category Assignment Mode)
 
 Sometimes there are additional competition categories created for special awards.  For example, there may be a national competition hosted in a state, and the state competition will take place at the same time.  In such a case, it will be necessary to use explicit names of categories in the file.
 
@@ -114,3 +104,19 @@ In our example, we have 3 cases
 Say that we also have Masters taking place at the same time.  National Masters use the normal `W40 55` groups.  State Masters have been given a STW40 age group, and would be noted `STW40 55`.
 
 In such a case, an athlete eligible to all 4 would be noted `W40 55;STW40 55;W 55;ST W 55`.  We put `W40 55` first so that this is shown on the scoreboard.
+
+## Editing Competition Sessions
+
+From the `Prepare Competition` page, clicking `Define Sessions` allows you to create or edit competition sessions.  You can use the `+ Add` button at the top of the list of sessions to create additional sessions.
+
+![15](nimg/2200Registration/15a.png)
+
+Clicking on a session or using the `Edit Details` button enables you to define the expected starting time. This will be used to order the sessions on the start list or schedule.
+
+![16](nimg/2200Registration/16a.png)
+
+The other tabs allow you to enter the officials and the jury.  These will be printed by default on the session protocol and jury sheets.
+
+![16](nimg/2200Registration/16b.png)
+
+## 
