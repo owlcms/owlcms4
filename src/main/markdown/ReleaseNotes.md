@@ -1,9 +1,10 @@
 > [!WARNING]
 >
-> - This is a **beta release**, used for testing and translation. ***Some features could be non-functional***.
-> - Beta releases are **not** normally used in actual competitions, except when a new feature is required. Use extreme care in testing if you intend to do so.
+> - This is a release candidate [(see definition)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Release_candidate), used for final public testing and translation. *It is still a preliminary release*
+> - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
+  - 54.2.0: Updates to documentation
   - 54.2.0: When editing an athlete's registration data, categories will now be shown in "most specific order". Masters and IWF go before all-ages Open.  Score-based categories with no age and no bodyweight boundaries go last.
   - 54.2.0: added Athlete.sortedCategoriesAsString() for fixing SBDE exports such that the main category is the most specific one
   - 54.2.0: Medal report order improved, see bottom of notes.
