@@ -16,7 +16,7 @@ Normally, the assistant marshal clicks on the athlete. The cursor is placed auto
 >
 > Do not keep athlete cards open, or open them in advance.   The system may have changed values (such as setting an automatic progression) while you had the card open.  Because the marshal is supposed to have the last word, if you hit Update, you will overwrite what changes have been made.
 
-## ![20](nimg/3200Marshaling/20.png)
+![20](nimg/3200Marshaling/20.png)
 
 ## Marshal Pause
 
