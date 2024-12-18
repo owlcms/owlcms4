@@ -119,22 +119,23 @@ The following list is a sampling of the many features available.  <u>*Click on t
 
     ![070_Jury](img/Refereeing/070_Jury.png  ':size=350')
 
-- **[Athlete Registration](Registration) and [Weigh-in](WeighIn) screens**, including production of **[weigh-in sheet](WeighIn#starting-weight-sheet)** with starting weights and **[athlete cards](WeighIn#athlete-cards)**.
+- **[Athlete Registration](Registration) and [Weigh-in](WeighIn) screens**, 
+
+- Production of **[weigh-in sheets](2400PreCompetitionDocuments#weigh-in-forms)** with starting weights and **[athlete cards](2400PreCompetitionDocuments#athlete-cards)**.
 
     ![042_AthleteCards](img/WeighIn/043_AthleteCards.png ':size=350')
 
-- [**Upload of registration sheet**](Registration#uploading-a-list-of-athletes) Upload a list of athletes with their team, group, entry totals etc. (same format as owlcms2, in either xls or xlsx format)
+- [**Upload of registration sheet**](2200Registration#registering-the-athletes) Upload a list of athletes with their team, group, entry totals etc. 
 
-    ![073_excel](img/Preparation/073_excel.png ':size=350')
+    ![20a](nimg/2200Registration/20a.png)
 
 - Multiple **[Simultaneous age divisions](Preparation#defining-age-divisions-and-categories)**: ability to award separate medals according to age division (e.g. youth vs junior vs senior) .  Simultaneous inclusion of Masters and non-masters groups athletes is possible.
 
      ![020_ageGroupList](img/Categories/020_ageGroupList.png ':size=350')
 
 - [**Competition Parameters**](Preparation#competition-information) :  screens for defining a competition (general info, location, organizer, etc.) and special rules that apply (for example, enforcing or not the 20kg rule, etc.)
-
-    ![030_Competition](img/Preparation/030_Competition.png ':size=350')
-
+    ![30](nimg/2100PreCompetitionSetup/30.png)
+    
 - **[Multiple fields of play](Preparation#defining-fields-of-play-platforms)** (platforms): simultaneous competition platforms within the same competition.
 
   ![IMG_1610](img/ZoomVideo/IMG_1610.jpg)
@@ -149,7 +150,7 @@ The following list is a sampling of the many features available.  <u>*Click on t
 
     ![070_IntroTimer](img/Displays/070_IntroTimer.png ':size=350')
 
-- Production of **[group results (protocol sheets)](Documents#group-results)** and of the **[final result package](Documents#competition-package)**
+- Production of **[session results (protocol sheets)](Documents#group-results)**, of interim competition results during the course of the competition, and of the **[final result package](Documents#competition-package)**
 
     ![SessionResults](img/ResultDocuments/SessionResults.png  ':size=350')
 

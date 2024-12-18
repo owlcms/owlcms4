@@ -11,7 +11,7 @@
   * [Documents](2400PreCompetitionDocuments)
   * [Records Management](2500RecordsManagement)
 * Running a Competition
-  * [Weigh-in and Start Numbers](WeighIn)
+  * [Weigh-in and Start Numbers](3100WeighIn)
   * [Announcing, Marshaling and Timekeeping](Announcing)
   * [Scoreboards and Displays](Displays)
   * [Refereeing](Refereeing)

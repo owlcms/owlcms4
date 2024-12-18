@@ -1,12 +1,16 @@
 Weigh-ins take place for each group, so the buttons for the weigh-in officials is on the Lifting Group page.
 
-![010_Weighin](img/WeighIn/010_Weighin.png)
+![010_Weighin](nimg/3100WeighIn/010_Weighin.png)
 
 ## Selecting a Group and Athlete
 
 The first step is to select the group being weighed-in.  The athlete is selected by clicking ONCE in the list.
 
-![012_selectGroup](img/WeighIn/012_selectGroup.png)
+![012_selectGroup](nimg/3100WeighIn/012_selectGroup.png)
+
+## Quick Mode
+
+If information is provided to you on a weigh-in sheet (see the section on [Documents](2400PreCompetitionDocuments), it will be in the same order as shown on the screen.  If you select Quick Mode, when you hit "Enter" or click on Update, you will be brought automatically to the next athlete and you won't have to look up the names.  So you only need to select the first athlete to get going.
 
 ## Entering information
 
