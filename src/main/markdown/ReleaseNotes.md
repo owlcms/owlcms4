@@ -31,6 +31,7 @@
   - Medals scoreboards and medals reports have now been fixed to handle score-based medals and sessions where both traditional and score-based medals are awarded.
   - Changing the medals display shown used for the video stream no longer changes the main screen
   - The "public" scoreboard meant to be used in the main room correctly switches during medal ceremonies
+  - Interim scores: if the feature toggle `interimScores` is present, and an age group is using Sinclair or SM(H)F or Q-points for medals, then a score will be shown during snatch even it there is no total
 - Results
   - During a competition with both score-based and total-based rankings, from the Competition Results page, using the Eligibility Categories report with the Score template will produce correct interim or final results.   Each category will be ranked according to it's scoring system.
   - Updated the competition results and the protocol sheets to use the faster jxls3 template processing. The categories are now listed in alphabetical order.
@@ -62,6 +63,8 @@
   - For age groups that have identical age ranges, groups with body weight categories before those that don't (score-based medals will be after the regular medals)
 - Other
   -  IP addresses: if the network is using switches only with no DHCP server reachable, some servers may auto-configure with a link-local (169.254) address. Such addresses were previously hidden and will now be shown in the list.
+  -  Experimental feature to stop or restart the system from the web interface.  Currently shown on the home page if the feature switch `manageOwlcms` is present.
+  -  Ages are now always calculated relative to the competition date.
 
 
 
