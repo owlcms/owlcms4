@@ -49,6 +49,12 @@ You can produce the cards for one or more sessions.
 
 ![043_AthleteCards](img/WeighIn/043_AthleteCards.png)
 
+## Weigh-in Form
+
+The weigh-in form is used during weigh-ins to capture information from the Athlete Card, in order to facilitate data entry.  In some federations, a signature is required to confirm that no mistakes were made in transcription
+
+![70](nimg/2400PreCompetitionDocuments/70.png)
+
 ### Challenge Cards
 
 Challenge cards are printed from the same menu as Athlete Cards, by selecting the Challenge template instead.
