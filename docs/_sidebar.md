@@ -11,16 +11,21 @@
   * [Documents](2400PreCompetitionDocuments)
   * [Records Management](2500RecordsManagement)
 * Running a Competition
-  * [Weigh-in and Start Numbers](3100WeighIn)
-  * [Announcing, Marshaling and Timekeeping](Announcing)
-  * [Scoreboards and Displays](Displays)
+  * [Weigh-in and Start Numbers](3000WeighIn)
+  * [Basic Announcing](3100AnnouncingIntro)
+  * [Marshaling](3200Marshaling)
+  * [Timekeeping](3300Timekeeping)
+  * [Plates, Barbell](3400TechnicalController)
+  * [Breaks and Ceremonies](Breaks)
+* Refereeing
   * [Refereeing](Refereeing)
   * [Jury](Jury)
-  * [Breaks and Ceremonies](Breaks)
+* Scoreboards and Results
+  * [Scoreboards](Displays)
   * [Result Documents](ResultDocuments)
-  * [Optional Modified Competition Rules](ModifiedRules)
-  * [Score-based Medals](ScoreBasedCompetitions)
 * Advanced Topics
+  * [Score-based Medals](ScoreBasedCompetitions)
+  * [Optional Modified Competition Rules](ModifiedRules)
   * [Competition Options Reference](2600AdvancedPreCompetitionSetup)
   * [System Settings Reference](2120AdvancedSystemSettings)
   * [Customization](UploadingLocalSettings)
