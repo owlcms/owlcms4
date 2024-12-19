@@ -64,7 +64,9 @@ We assume that flags are being used, so we don't worry about the three squares o
 
 ![Slide_9](nimg/3100AnnouncingIntro/Slide_9.png)
 
-When flags are used, we have to tell the system if the lift was good or not.  This is done by clicking on the green checkmark if good, and on the red X if no lift.  Let us assume it was a good lift.
+> If the competition uses REFEREEING BUTTONS, you **DO NOT ENTER THE DECISIONS**.  They are processed automatically and you have nothing to do
+>
+> When flags are used, we have to tell the system if the lift was good or not.  This is done by clicking on the green checkmark if good, and on the red X if no lift.  Let us assume it was a good lift.
 
 ![Slide_10](nimg/3100AnnouncingIntro/Slide_10.png)
 
