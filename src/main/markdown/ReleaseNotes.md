@@ -6,7 +6,7 @@
 - Maintenance log:
   - Final documentation cleanup before stable release
 - Score-based Competitions
-  -  Removed the "Sinclair Meet" option from the competition options.  Now replaced by [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions):
+  -  Removed the "Sinclair Meet" option from the competition options.  Now replaced by [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions).  To acheive the same, you can proceed as follows:
     - Create SM and SF age groups with ages 0-999 and only the default weight category.  Select "Already Gendered"
 
     - Select "Sinclair" or "Q-Points" or what you want as the scoring system. 
@@ -23,7 +23,7 @@
   - See the documentation for [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions)
   - When changing age boundaries, or bodyweight boundaries, a confirmation is required if there are athletes already assigned to the age group.  This is because the old categories are no longer valid and must be removed. Therefore new categories must be selected for the athletes in the age group, which justifies the need for a confirmation.
   - AgeGroups definition files will now accept Sinclair, QMasters, QYouth, and SMHF as input for a scoring system (case does not matter), in addition to the legacy names (BW_Sinclair, QAGE, AGEFACTORS, SMM) 
-  - When editing an athlete's registration data, categories will now be shown in "most specific order". Masters and IWF go before all-ages Open.  Score-based categories with no age and no bodyweight boundaries go last.
+  - When editing an athlete's registration data, categories will now be shown in "most specific order". Masters and IWF go before the Open (all ages) categories with bodyweights.  Score-based categories with no age and no bodyweight boundaries go last.
 - Down Signal and Decisions
   - When using the decision display with keyboard (USB/joystick) devices, there was a *very remote* possibility that events could arrive out of order, causing the system to stay stuck on the down signal.  Now such reverting updates will be ignored.
 - Scoreboards:

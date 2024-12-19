@@ -1,56 +1,62 @@
-Starting the displays is performed from the `Start Displays`  page.  
+Starting the displays is performed from the `Start Displays`  page.  Commonly used scoreboards are highlighted.
 
-![010_displayNav](img/Displays/010_displayNav.png)
+![10](nimg/5100Displays/10.png)
 
 Notes 
 
 - Each display will open in a new tab (or window, depending on your browser preferences).  This allows the announcer to have several displays open in addition to the announcer's own -- for example, to have the scoreboard open in a second tab.
 - Displays meant for the public should be maximized.  Use the F11 key or right-click to go to full-screen mode.
-- Each display manages its own timer. If a display is hidden because it is in a tab that is not shown, the display refreshes don't take place, and the time will lag.  Obviously, a display meant for the public or the athletes will not be hidden, so this behavior has no real consequences.
+- Each display manages its own timer.  Do not hide scoreboards if you use Chromecast or other methods to show them to the public.
 
 ## Display Settings
 
 When a display is first started, a dialog comes up to control the the behavior.
 
 - Displays that show a clock give the option to emit the warning sounds at 90, 30 and 0 seconds, as well as the down signal.  
-  - <u>By default, the display is silent</u>. 
+  - <u>By default, the clock display emits sound, and the others such as the attempt board do not</u>. 
   - To avoid confusion, it is recommended to have only one display with sound in each room.  For example, you can choose to have the attempt board emit sound on the main area, and a scoreboard in the waiting area.
-  - Note that the announcer and marshall consoles always emit the warnings, so it is often convenient to just connect the announcer laptop to the sound system.
-- Displays that show a table have the option to have a white or black table background.
-- The scoreboards that show the attempts and ranks can switch to a medal ceremony display.  
-  - By default, <u>the displays do NOT switch during the medal ceremony</u>.  The default is appropriate for warmup rooms, waiting areas, the jury, etc.
-  - The large public-facing displays can switch, simply by clicking on the display and selecting the "Public" option in the ceremony settings (see the screen capture below)
+- Scoreboards have the option to have a white or black gridbackground.
+- There are warmup room displays that do not switch during medal ceremonies, and main room (public-oriented) displays that switch if the announcer uses the medal ceremony features.
 - Once the dialog is closed, it can be brought back by clicking anywhere in the window.
 
-![075_DisplayParameters](img/Displays/075_DisplayParameters.png)
+![20](nimg/5100Displays/20.png)
 
-## Scoreboard
+## Simple Scoreboard
 
-A standard scoreboard showing the athletes in official order (per category, then per start number) is provided.  The current athlete (having been called or about to be called) is shown in blinking yellow, the next athlete in orange.  The top line contains the information about that athlete.  The timer will run, and when a decision is made, it is shown in the top right.
+A standard scoreboard showing the athletes in official order (per category, then per start number) is provided.  The current athlete (having been called or about to be called) is shown in blinking yellow, the next athlete in orange.  
 
-The scoreboard can be used both for the main platform and in the warm-up room.
+Note that the top line shows the same information as the attempt board (including the down signal and decision lights). So in a smaller competition you may actually do away with a separate attempt board.
 
-![020_Scoreboard](img/Displays/020_Scoreboard.png)
+![30](nimg/5100Displays/30.png)
 
-![022_Scoreboard_Decision](img/Displays/022_Scoreboard_Decision.png)
+## Adjusting the font sizes and column widths
 
-## Scoreboard with Leaderboard
+There are two methods to adjust the display
 
-This scoreboard should be used in meets where the same category is split in several lifting groups.
+- The first method is to use the arrow keys
+  - Up and Down arrows will change the font size
+  - Left and Right will change the width of the Team Column
+- The second method is to click on the screen and bring up the display options.  This method changes the URL, so you can use it for bookmarking
+  - ¨At the bottom are the font size settings. Normal values are between 0.9 (small) to 1.2 (large).  
+  - You can also set the width of the "Team column".  Normal values are between 8 and 16 (wide)
 
-The `Scoreboard with Leadboard` button opens a scoreboard that also shows the leaderboard for the currently lifting athlete's category at the bottom (in a large meet, a group is usually a single category, so the leaderboard is the same for the whole session).
+## Scoreboard with Leaderboard and Records
 
-The other difference with the ordinary scoreboard is that the rankings shown are those across all lifting groups, including those that have lifted earlier (in the image below, the athlete Williams has lifted 70, which currently puts him third, because the 70 from Scott in group M2 shown at the bottom was achieved earlier.)
+This is the official scoreboard content compliant with IWF.  You can turn off the records if they are not loaded, and turn off the leaderboard if you have no A/B/C groups. If you turn off both, you have the same thing as the simple scoreboard.
 
-The image shows the "black on white" display setting.
+The leaderboard is for the currently lifting athlete's category at the bottom. This is the athletes' main registration category, same as is displayed on the line for the athlete.
 
-![024_Scoreboard_Leaders](img/Displays/024_Scoreboard_Leaders.png)
+Rankings shown are those across all lifting groups, including those that have lifted earlier (in the image below, the athlete Williams has lifted 70, which currently puts him third, because the 70 from Scott in group M2 shown at the bottom was achieved earlier.)
+
+![40](nimg/5100Displays/40.png)
 
 ## Lifting Order
 
 In regional meets, some novice coaches may have difficulty tracking the the lifting order to determine how many attempts remain for their athletes.  The lifting order screen is a non-official screen that is useful in these situations.  It is normally used in the warm-up area.
 
-![025_LiftingOrder](img/Displays/025_LiftingOrder.png)
+This shows the alternate "black letters on white background" setting.
+
+![50](nimg/5100Displays/50.png)
 
 ## Attempt Board
 
@@ -64,23 +70,25 @@ When a lifter is announced, the attempt board shows all the information required
 - The loading chart for the requested weight
 - The time remaining
 
-![030_Attempt_Wait](img/Displays/030_Attempt_Wait.png)
+![60](nimg/5100Displays/60.png)
 
 When the clock is started, the time counts down.
 
-![032_Attempt_Running](img/Displays/032_Attempt_Running.png)
+![61](nimg/5100Displays/61.png)
 
 Refereeing devices can be connected directly to the attempt board (see [Refereeing](Refereeing)).  If that is the case, as soon as two referees have hit the same button, a down signal and a sound are emitted.  If the devices are not connected directly to the attempt board, the board will be informed by the server, and will emit the signal and sound as soon as it is told (usually, the delay is not perceptible at all).
 
-![034_AttemptDown](img/Displays/034_AttemptDown.png)
+![62](nimg/5100Displays/62.png)
 
 As soon as the down signal has been given, the system waits for the third decision to be given.  By rule, a 3-second delay is required before showing the decisions to the public (in case there is a decision reversal)
 
-![036_Attempt_LastRef](img/Displays/036_Attempt_LastRef.png)
-
 After the 3 seconds, the decisions are shown.
 
-![038_Attempt_Decision](img/Displays/038_Attempt_Decision.png)
+![63](nimg/5100Displays/63.png)
+
+The display then automatically updates to the next lift in sequence.  If records have been loaded and the attempt is a record attempt, this is shown.
+
+![64](nimg/5100Displays/64.png)
 
 ## Athlete-facing Decision Display
 
@@ -90,38 +98,38 @@ Refereeing devices are usually connected to the computer or laptop driving the a
 
 The exact same sequence takes place as for the Attempt Board: first there is the allowed time (1 or 2 minutes, or whatever time is left from a lifter change)
 
-![040_AF_Waiting](img/Displays/040_AF_Waiting.png)
+![040_AF_Waiting](nimg/5100Displays/040_AF_Waiting.png)
 
 Running time is shown:
 
-![042_AF_Running](img/Displays/042_AF_Running.png)
+![042_AF_Running](nimg/5100Displays/042_AF_Running.png)
 
 Down signal is shown, and sound is emitted.
 
-![044_AF_Down](img/Displays/044_AF_Down.png)
+![044_AF_Down](nimg/5100Displays//044_AF_Down.png)
 
 Three-second waiting period after all three decisions have been entered.
 
-![046_AF_LastRef](img/Displays/046_AF_LastRef.png)
+![046_AF_LastRef](nimg/5100Displays//046_AF_LastRef.png)
 
 Final decision.
 
-![048_AF_Decision](img/Displays/048_AF_Decision.png)
+![048_AF_Decision](nimg/5100Displays//048_AF_Decision.png)
 
 ## Top Teams Scoreboard
 
 Team competitions are supported by a Top Teams Scoreboard that show the teams in contention for a medal.  The full Teams results are available to the competition secretary (see [this page](Documents#Team_Results) for details).  Both pages consider points as computed when the athlete's group is done.  So in competitions where there are multiple groups for a single category the points shown are not definitive.
 
-![050_TeamScoreboard](img/Displays/050_TeamScoreboard.png)
+![050_TeamScoreboard](nimg/5100Displays//050_TeamScoreboard.png)
 
-## Top Sinclair and Top Team Sinclair
+## Top Score and Top Team Score
 
 Sinclair-based competitions are supported by two scoreboards.  The first one shows the athletes in contention for the "best lifter" awards, as well as the weight needed to catch up with first place. 
 
-Note that the Sinclair score (and not the SMF) is used for this scoreboard.
+The score used is actually the Competition-wide best lifter score.
 
-![060_TopSinclair](img/Displays/060_TopSinclair.png)
+![060_TopSinclair](nimg/5100Displays/060_TopSinclair.png)
 
 The second display show the sum of the Sinclair scores for the team members.  The top 5 teams are shown.
 
-![061_TopTeamSinclair](img/Displays/061_TopTeamSinclair.png)
+![061_TopTeamSinclair](nimg/5100Displays//061_TopTeamSinclair.png)
