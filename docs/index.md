@@ -1,7 +1,5 @@
 # owlcms: Olympic Weightlifting Competition Management System 
 
-> **The full-range solution for running competitions**
->
 > This free application is a *fully-compliant* weightlifting competition management system that has been used worldwide to manage competitions of all sizes, from club meets to international championships.   Click here for an [overview of features](#features).
 >
 > **Simple and automatic**
@@ -13,6 +11,10 @@
 > **On-site or Cloud**
 >
 > You can run the program on a laptop at the competition site.  Or if you prefer, in the cloud, without having to install anything, using *free* hosting services.
+>
+> **Utmost flexibility**
+>
+> Multiple age groups can be handled simultaneously, with separate awards, on one or several simultaneous platforms.  Multiple medaling formats can be used in the same event, including the traditional format or any of several score-based formats.
 
 ## Gallery
 
@@ -20,7 +22,7 @@
 <tr><td><a href="http://u.osmfr.org/m/1119300/" target="_bkank"><img src='img/Gallery/Map.png'></a></td><td>Current Usage (each dot is a cluster of locations)<br/><a href="http://u.osmfr.org/m/1119300/" target="_blank">Click on image for an interactive map</a>.<br/>The owlcms competition management system is currently in use in over 80 federations.  See here for <a href="./#/Countries">a list</a></td></tr>
 <tr><td><img src='img/Gallery/IMG_5050.jpg'></img></td><td>USA National Championships<br>1500 athletes, 9 days (U11, U13, U15, U17, U20, U23, U25, Open and Adaptive championships)</td></tr>
 <tr><td><img src='img/Gallery/ElSalvador.jpg'></img></td><td>National Competition, El Salvador.<br>A simple setup with everyday electronics.</td></tr>
-<tr><td><img src='img/Gallery/chelles.jpg' size=250></img></td><td>Club meet, Chelles, France.<br>Supports mixed-gender kid groups.  Attempt board shows correct loading for 5kg/10kg bars and 2.5kg/5kg large plates.</td></tr>
+<tr><td><img src='img/Gallery/IMG_6536.jpg' size=250></img></td><td>Club meet, Montreal, Canada.<br>Supports mixed-gender kid groups.  Attempt board shows correct loading for 5kg/10kg bars and 2.5kg/5kg large plates.</td></tr>
 <tr><td><img src='img/Gallery/IMG_1480.jpg' size=250></img></td><td>Canadian Senior Championship, Kelowna, Canada. A full-scale national championship.</td></tr>
 <tr><td><img src='img/Gallery/gaspe2018.png' size=250></img></td><td>PanAm Masters Championship, Gaspé, Canada. The program has full support of Masters rules and coefficients.</td></tr>
 <tr><td><img src='img/Gallery/Streaming.png' size=250></img></td><td>Multiple simultaneous age groups (South American Championships, Guayaquil, Ecuador)<br /><br /> Built-in customizable live streaming/TV-oriented displays.</td></tr>
