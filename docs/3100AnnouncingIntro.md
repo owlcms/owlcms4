@@ -44,12 +44,13 @@ Notifications are shown to the speaker when the weight on the bar changes, and t
 
 ### Announcing the Athlete
 
-All the information required is at the top of the screen.  Normally the speaker would say
+All the information required is at the top of the screen.  Normally the speaker would say the sentences in **bold**
 
-- Loaders, 67kg on the bar please    (or "Tighten up 67kg please" -- if the bar weight remains the same)
-- (when bar is loaded) This will be the first attempt of Larry Brown, representing club North
-- (clock is started if loaders have left the platform, otherwise wait for loaders to leave)
-- Ronald Jackson, get ready.
+- **Loaders, 67kg on the bar please**    (or "**Tighten up 67kg please**" -- if the bar weight remains the same)
+- (as soon as the bar is loaded) **This will be the first attempt of Larry Brown, representing club North**
+  Whenever possible, it is best to wait for the bar to be loaded to announce the athlete.  This avoids naming several athletes when there are many late changes. 
+- (The clock is started if loaders have left the platform, otherwise we wait for loaders to leave)
+- **Ronald Jackson, get ready**.
 
 IMPORTANT: the clock should only be started after both the loaders have left and the athlete has been announced.  If you start the clock too early, you may actually prevent legal changes, or cause an athlete to lose a 2:00 break timer to which they are entitled.
 

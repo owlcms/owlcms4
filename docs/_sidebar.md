@@ -12,7 +12,7 @@
   * [Records Management](2500RecordsManagement)
 * Running a Competition
   * [Weigh-in and Start Numbers](3000WeighIn)
-  * [Basic Announcing](3100AnnouncingIntro)
+  * [Announcing](3100AnnouncingIntro)
   * [Marshaling](3200Marshaling)
   * [Timekeeping](3300Timekeeping)
   * [Plates, Barbell](3400TechnicalController)
@@ -36,6 +36,7 @@
   * [Configuration Parameters](Configuration)
   * [Feature Toggles](FeatureToggles)
   * [Simulation and Load Testing](Simulation)
+  * [Keypad Configurations](Keypads)
   * [MQTT Server Configuration](MQTT)
   * [MQTT Messaging Specification](MQTTMessages)
   * [Using PostgreSQL](PostgreSQL)

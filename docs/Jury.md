@@ -49,37 +49,7 @@ There are two ways to build jury devices.  The first way is to emulate a keyboar
 
 ### Jury Keypads
 
-##### Jury Member Keypad
-
-Each jury member must have a button keypad connected to the laptop (either directly, via a USB hub, or via Bluetooth). 
-
-The same conventions are used as for the refereeing keypads.  You can use the same devices for the first three jury members as for the three referees.
-
-| Jury# | Good | Bad  |
-| ----- | ---- | ---- |
-| 1     | 1    | 2    |
-| 2     | 3    | 4    |
-| 3     | 5    | 6    |
-| 4     | 7    | 8    |
-| 5     | 9    | 0    |
-
-##### Jury President Keypad
-
-> If you intend to build a jury president keypad, you should consider the Arduino-based [button-only jury box](#button-only-jury-box) below, since the hardware is identical, and you can save yourself the programming.
-
-An additional keypad can be connected to the Jury console, which would typically be operated by the Jury president.  This keypad also works using keyboard shortcuts.
-
-In order to support a jury console keypad, the following shortcuts are bound.  Depending on how your device behaves, you may have to send either the lowercase letter or the uppercase letter, <u>please try both</u> !
-
-- "d" opens the deliberation dialog and starts a jury break (`KeyD` event code)
-- "g" to indicate a good lift  (`KeyG` event code)
-- "b" to indicate a bad lift  (`KeyB` event code)
-- "c" to call the technical controller (ex: for a loading error where the athlete will need to make a decision) (`KeyC` event code)
-- "t" to start a technical break if the Jury spots a technical issue (`KeyT` event code.)  The process is the same as for a deliberation. "c" can be used to call the controller, and "Escape" ends the technical pause.
-- "h", "i", "j" and "k".  Call referee 1, referee 2, referee 3 and all referees.
-- "Escape" to close the dialog and ends the jury break (`Escape` event code)
-
-Please refer to [this document](https://www.w3.org/TR/uievents-code/#key-alphanumeric-writing-system) for the exact definition of the event codes.
+You can configure programmable keypads for each of the jury members and for the jury president.  Refer to the [Keypads](Keypads) Advanced topic documentation for information.
 
 ### Arduino-based Jury Devices
 

@@ -1,6 +1,6 @@
 The timekeeper screen is straightforward.  It allows starting/stopping the time, and resetting the clock to 1 or 2 minutes.
 
-![10](C:\Users\lamyj\git\owlcms4\docs\nimg\3300Timekeeping\10.png)
+![10](nimg\3300Timekeeping\10.png)
 
 The timekeeper screen is often displayed on a tablet.  It works on iPhones, iPads and Android phones.
 

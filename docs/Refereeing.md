@@ -80,23 +80,13 @@ The refereeing computer sees the device as a Joystick.  To convert the button pr
 
 You can use Bluetooth buttons to control an iPad or a Windows laptop.  You can find Bluetooth buttons from Home Automation providers, such as [Flic2](https://flic.io/) buttons in Universal mode](https://flic.io/flic-universal) (you only need the buttons, not the hub)
 
+#### Using Keypads
+
+When using keypads, *you must click in the black area of the refereeing screen.*  Hitting the key on the keypad is like typing on a keyboard.  The key must be typed on the owlcms screen to be understood by the browser and sent to the program.
+
 #### Keypad Configuration
 
-The keys or buttons on the keypads are programmed to send key sequences.  The decision display is waiting for these keypresses.  You must click in the black area of the screen to make sure that the keypresses are seen by the browser.
-
-OWLCMS interprets Even digits as red, and Odd digits as white.  The same devices can be used for referees and for the jury. 
-
-| Referee# | Good | Bad  |
-| -------- | ---- | ---- |
-| 1        | 1    | 2    |
-| 2        | 3    | 4    |
-| 3        | 5    | 6    |
-|          | 7    | 8    |
-|          | 9    | 0    |
-
-Note that the shortcut keys are as defined according to [a standard](https://www.w3.org/TR/uievents-code/#key-alphanumeric-writing-system)
-
-- For most countries, hitting the key "Digit1" sends a 1.  But there are exceptions. For example, in France, hitting Digit1 will actually send a "&" and depending on the software you may actually need to use "&" instead of "1".  Fortunately, most national keyboards send the digits directly.
+Refer to the [Keypads](Keypads) Advanced topic documentation for information on how to configure a programmable keypad.
 
 ## Arduino-Based Devices
 
