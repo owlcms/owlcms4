@@ -4,9 +4,11 @@
 > - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
-  - Additional documentation and screenshot cleanups before stable release
+  - rc04 Danish, Romanian, Hungarian, Russian translation updates
+  - rc04: fixed broken image links in the documentation
+  - rc04: adjusted hidden columns in reports for current records
 - Score-based Competitions
-  -  Removed the "Sinclair Meet" option from the competition options.  Now replaced by [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions).  To acheive the same, you can proceed as follows:
+  -  Removed the "Sinclair Meet" option from the competition options.  Now replaced by [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions).  To achieve the same, you can proceed as follows:
     - Create SM and SF age groups with ages 0-999 and only the default weight category.  Select "Already Gendered"
 
     - Select "Sinclair" or "Q-Points" or what you want as the scoring system. 
