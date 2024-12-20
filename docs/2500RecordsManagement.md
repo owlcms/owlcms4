@@ -77,16 +77,16 @@ On the second tab, several options are given to export the records
 - Export New Records: only the new records set in this competition are exported
 - Export All Records: All the records set are published, in a single file
 
-![A0](../../../OneDrive/Documents/ShareX/Screenshots/2024-12/A0.png)
+![A0](nimg/2500RecordsManagement/A0.png)
 
 There is also the option to export the current records (without all the updates to a given record).  There are two options for this
 
 - When selecting the template with the name "export", you will get a format that can be imported back in a subsequent competition.  There are two formats - all in one file ("exportRecords"), and with separate sheets for each age group ("exportSheets")
 - When selecting the template with the name "report" you will get a format suitable for publishing.  "reportSheets" puts each age group in a separate tab, "reportGroups" creates a single sheet with a heading for each age group.
 
-![A1](../../../OneDrive/Documents/ShareX/Screenshots/2024-12/A1.png)
+![A1](nimg/2500RecordsManagement/A1.png)
 
-![A2](../../../OneDrive/Documents/ShareX/Screenshots/2024-12/A2.png)
+![A2](nimg/2500RecordsManagement/A2.png)
 
 ## Record File Format
 
