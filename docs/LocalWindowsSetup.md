@@ -1,6 +1,6 @@
 ## Windows Installation
 
-- **Windows Installer** : Get the current [`owlcms_setup_54.1.0.exe`](https://github.com/owlcms/owlcms4/releases/download/54.1.0/owlcms_setup_54.1.0.exe) file (located in the `assets` section at the bottom of each release in the [release repository](https://github.com/owlcms/owlcms4/releases/latest) ).
+- **Windows Installer** : Get the current [`owlcms_setup_54.2.0.exe`](https://github.com/owlcms/owlcms4/releases/download/54.2.0/owlcms_setup_54.2.0.exe) file (located in the `assets` section at the bottom of each release in the [release repository](https://github.com/owlcms/owlcms4/releases/latest) ).
 - Download and open the installer
   > You may get false alarms about the software being potentially dangerous.  *Rest assured that it is absolutely not*.  Use the `...` and dropdown menu options to get and keep the downloaded files anyway.
   >
@@ -26,27 +26,34 @@ When OWLCMS is started on a laptop, two windows are visible:  a command-line win
 
 ![040_starting](img\LocalInstall\040_starting.png)
 
-- The command-line window (typically with a black background) is where the OWLCMS primary web server shows its execution log.  
+- The terminal (command-line) window (typically with a black background) is where the OWLCMS primary web server shows its execution log.  Something like this will be visible to show that all is going well.  If you have already started the owlcms program, you may see an error message telling you that you can only have one at a time -- you will need to find the other one and stop it.
+  ![log](img/LocalInstall/log.png)
+  
+- Normally, a browser will be opened automatically.  If the browser does not open automatically, start a browser and navigate to http://localhost:8080 .  The browser will sit there waiting for the program to finish loading the database and become ready.
 
-  All the other displays and screens connect to the primary server.  <u>You can stop the program by clicking on the x</u> or clicking in the window and typing `Control-C`.  The various screens and displays will spin in wait mode until you restart the primary program -- there is normally no need to restart or refresh them.
+- After the browser page loads, if you look at the top, you will see what address to use when connecting from other laptops
 
-- The white window is a normal browser.  If you look at the top, you will see two or more lines that tell you how to open more browsers and connect them to the primary server.
+  ![startup](img/LocalInstall/startup.png)
 
-  ![060_urls](img\LocalInstall\060_urls.png)
+  In this example the other laptops on the network would use the address `http://192.168.1.174:8080/` to communicate with the primary server.  "(wired)" refers to the fact that the primary laptop is connected via an Ethernet cable to its router -- see [Local Access](EquipmentSetup#local-access-over-a-local-network) for discussion.  
 
-  In this example the other laptops on the network would use the address `http://192.168.4.1:8080/` to communicate with the primary server.  "(wired)" refers to the fact that the primary laptop is connected via an Ethernet wire to its router -- see [Local Access](EquipmentSetup#local-access-over-a-local-network) for discussion.  When available, a wired connection is preferred.
+  > When running a competition with a local router, it is recommended to connect the owlcms server to the router with an Ethernet cable.  If a (wired) address is shown, this is the one you should use on the other laptops.
 
-  The address <u>depends on your own specific networking setup</u> and you must use one of the addresses displayed **on your setup.**  If none of the addresses listed work, you will need to refer to the persons that set up the networking at your site and on your laptop.  A "proxy" or a "firewall", or some other technical configuration may be blocking access, or requiring a different address that the server can't discover.
+  The addresses shown <u>depend on your own specific networking setup</u> and you normally use one of the addresses displayed on the home page.
 
-  ## Accessing the Program Files and Configuration
+  If none of the addresses listed work, something in your networking setup is preventing access.   The most likely cause is a firewall running on the server or on the network, which will need to be disabled. 
 
-  In order to uninstall owlcms4, to report problems, or to change some program configurations, you may need to access the program directory. In order to do so, right-click on the desktop shortcut and select "Open File Location"
+- All the other displays and screens connect to the primary server.  <u>You can stop the program by clicking on the x</u> or clicking in the window and typing `Control-C`.  If you stop the program, all the other screens and displays will wait.  If you restart the main program, they will notice and reload.  Normally there is no need to reload them manually, but there is no harm in doing so.
 
-  ![070_openLocation](img\LocalInstall\070_openLocation.png)
+## Accessing the Program Files and Configuration
 
-  If you do so, you will see the installation directory content:
+In order to uninstall owlcms4, to report problems, or to change some program configurations, you may need to access the program directory. In order to do so, right-click on the desktop shortcut and select "Open File Location"
 
-  ![080_files](img\LocalInstall\080_files.png)
+![070_openLocation](img\LocalInstall\070_openLocation.png)
+
+If you do so, you will see the installation directory content:
+
+![080_files](img\LocalInstall\080_files.png)
 
 - `owlcms.exe` starts the owlcms server.  `demo-owlcms.exe` does the same, but using fictitious data that is reset anew on every start; this makes it perfect for practicing.
 
