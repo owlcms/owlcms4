@@ -20,7 +20,11 @@
 
 <table>
 <tr><td><a href="http://u.osmfr.org/m/1119300/" target="_bkank"><img src='img/Gallery/Map.png'></a></td><td>Current Usage (each dot is a cluster of locations)<br/><a href="http://u.osmfr.org/m/1119300/" target="_blank">Click on image for an interactive map</a>.<br/>The owlcms competition management system is currently in use in over 80 federations.  See here for <a href="./#/Countries">a list</a></td></tr>
+<<<<<<< HEAD
 <tr><td><img src='img/Gallery/IMG_5050.jpg'></img></td><td>USA National Championships<br>1500 athletes, 3 platforms, 9 days (U11, U13, U15, U17, U20, U23, U25, Open and Adaptive championships)</td></tr>
+=======
+<tr><td><img src='img/Gallery/IMG_5050.jpg'></img></td><td>USA National Championships<br>1500 athletes, 9 days (U11, U13, U15, U17, U20, U23, U25, Open and Adaptive championships)</td></tr>
+>>>>>>> branch 'main54' of https://github.com/jflamy/owlcms4.git
 <tr><td><img src='img/Gallery/ElSalvador.jpg'></img></td><td>National Competition, El Salvador.<br>A simple setup with everyday electronics.</td></tr>
 <tr><td><img src='img/Gallery/IMG_6536.jpg' size=250></img></td><td>Club meet, Montreal, Canada.<br>Supports mixed-gender kid groups.  Attempt board shows correct loading for 5kg/10kg bars and 2.5kg/5kg large plates.</td></tr>
 <tr><td><img src='img/Gallery/IMG_6565.jpg' size=250></img></td><td>Phones or tablets can be used for <a href="#/Refereeing.md">refereeing</a>, as well as simple USB or joystick devices.<br>For dedicated use, <a href="https://blue-owl.nemikor.com">rules-compliant refereeing and jury devices</a> are commercially available, as well as other <a href="https://www.serfeng.com">options</a>.  Fully documented <a href="https://github.com/jflamy/owlcms-firmata/blob/v24/README.md">build-your-own designs</a> using Arduino boards are also available.</td></tr>
