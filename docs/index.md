@@ -20,11 +20,7 @@
 
 <table>
 <tr><td><a href="http://u.osmfr.org/m/1119300/" target="_bkank"><img src='img/Gallery/Map.png'></a></td><td>Current Usage (each dot is a cluster of locations)<br/><a href="http://u.osmfr.org/m/1119300/" target="_blank">Click on image for an interactive map</a>.<br/>The owlcms competition management system is currently in use in over 80 federations.  See here for <a href="./#/Countries">a list</a></td></tr>
-<<<<<<< HEAD
-<tr><td><img src='img/Gallery/IMG_5050.jpg'></img></td><td>USA National Championships<br>1500 athletes, 3 platforms, 9 days (U11, U13, U15, U17, U20, U23, U25, Open and Adaptive championships)</td></tr>
-=======
 <tr><td><img src='img/Gallery/IMG_5050.jpg'></img></td><td>USA National Championships<br>1500 athletes, 9 days (U11, U13, U15, U17, U20, U23, U25, Open and Adaptive championships)</td></tr>
->>>>>>> branch 'main54' of https://github.com/jflamy/owlcms4.git
 <tr><td><img src='img/Gallery/ElSalvador.jpg'></img></td><td>National Competition, El Salvador.<br>A simple setup with everyday electronics.</td></tr>
 <tr><td><img src='img/Gallery/IMG_6536.jpg' size=250></img></td><td>Club meet, Montreal, Canada.<br>Supports mixed-gender kid groups.  Attempt board shows correct loading for 5kg/10kg bars and 2.5kg/5kg large plates.</td></tr>
 <tr><td><img src='img/Gallery/IMG_6565.jpg' size=250></img></td><td>Phones or tablets can be used for <a href="#/Refereeing.md">refereeing</a>, as well as simple USB or joystick devices.<br>For dedicated use, <a href="https://blue-owl.nemikor.com">rules-compliant refereeing and jury devices</a> are commercially available, as well as other <a href="https://www.serfeng.com">options</a>.  Fully documented <a href="https://github.com/jflamy/owlcms-firmata/blob/v24/README.md">build-your-own designs</a> using Arduino boards are also available.</td></tr>
@@ -33,10 +29,6 @@
 <tr><td><img src='img/Gallery/lima.jpg'></img></td><td>PanAm Junior and SouthAmerican  U20/U17/U15 Championships, Lima, Peru.<br>The program  supports simultaneous platforms and displays the multiple rankings for multiple concurrent age group competitions</td></tr>
 <tr><td><img src='img/Gallery/BRICS.png'></img></td><td>BRICS Games 2024 Multi-national event.</td></tr>
 </table>
-
-
-
-
 
 
 ## Downloads and Installation
@@ -92,7 +84,7 @@ The following list is a sampling of the many features available.  <u>*Click on t
 
 - [**Timekeeping**](Announcing#Starting_the_clock) Time can either be [managed by the announcer](Announcing#Starting-the-clock)  (useful for smaller meets) or a dedicated [timekeeper screen](Announcing#Timekeeper) can be used. The timekeeper screen can be conveniently operated from a phone or tablet.
 
-    <img src="img/Lifting/050_Timekeeper.png" alt="050_Timekeeper.png" width=350 style="border-style:solid; border-width: thin" />
+    <img src="img/Lifting/050_Timekeeper.png" alt="050_Timekeeper.png" style="border-style:solid; border-width: thin" />
 
 - **[Attempt Board](Displays#attempt-board)** showing current athlete information, remaining time, weight requested, down signal and decision.
 
