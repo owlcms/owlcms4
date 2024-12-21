@@ -4,6 +4,8 @@
 > - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
+  - rc05: German translation
+  - rc05: update to Raspberry Pi installation instructions
   - rc04 Danish, Romanian, Hungarian, Russian translation updates
   - rc04: fixed broken image links in the documentation
   - rc04: adjusted hidden columns in reports for current records
