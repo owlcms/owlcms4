@@ -1,17 +1,9 @@
-> [!WARNING]
+> **Reminder**
 >
-> - This is a release candidate [(see definition)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Release_candidate), used for final public testing and translation. *It is still a preliminary release*
-> - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
+> - You should test all releases, with actual data, *several days* before a competition.
 
-- Maintenance log:
-  - rc06: Updated the QMasters table to use the 2025 age coefficients for men.
-  - rc05: German translation
-  - rc05: update to Raspberry Pi installation instructions
-  - rc04 Danish, Romanian, Hungarian, Russian translation updates
-  - rc04: fixed broken image links in the documentation
-  - rc04: adjusted hidden columns in reports for current records
 - QMasters
-  - The QMasters score now uses updated men age factors for 2025 (female age factors are unchanged).
+  - The QMasters score now uses the updated age factors for 2025
 
 - Score-based Competitions
   -  Removed the "Sinclair Meet" option from the competition options.  Now replaced by [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions).  To achieve the same, you can proceed as follows:
@@ -48,7 +40,7 @@
   - The best athlete system can be selected when producing the results (the default is set in the overall competition rules.) on all three types of documents.
 - Templates:
   - the athlete's score and ranks in the current category are now obtained by using `${l.categoryScore}` `${l.categoryScoreRank}` (where l is the loop variable giving the current athlete).  
-  - If the current category is not score-based, this is the same as `${l.total}`and the `${l.totalRank}`, so it is always possible to use the `Score` templates for a total-based competition.
+  - If the current category is not score-based,  the score is same as `${l.total}`and the rank is same as `${l.totalRank}`. It is therefore always possible to use the `Score` templates for a total-based competition.
   - added new properties 
     - ageGroup.sortCode and category.sortCodeWithAgeGroup for templates.  ageGroup.sortCode uses the code, max and min ages.  category.sortCodeWithAgeGroup adds the age group to the sort order - this is used when there are several open championships happening together.
     - athlete.gender.translatedGenderCode now returns the translation (for example, W instead of F)
@@ -63,8 +55,8 @@
   - Reorganized the structure for running a comp, updated screenshots
 
 - Records
-  - It is now possible to export only the latest record for all the loaded records.  There are two types of templates: the ones that start with "export" can actually be loaded in the program. The ones that start with "report" have translated column headers are meant for readability -- you can upload them to a Google Sheet for example.
-  - You can keep a historical master copy of the records by exporting all (which will include the successive improvements to a record).  You can reload this at every competition.  If you don't care about the exact history, you can export the current records and reload that.
+  - Exporting current records: It is now possible to export only the latest record for all the loaded records.  There are two types of templates: the ones that start with "export" can actually be loaded in the program. The ones that start with "report" have translated column headers are meant for readability -- you can upload them to a Google Sheet for example.
+  - You can keep a historical master copy of the records by exporting all (which will include the successive improvements to a record).  You can reload this at every competition.
 - Medals: Medals are ordered by age group.
   - Younger age groups first, presented in ascending bodyweight classes
   - 15-20 comes before 17-20, with an exception for "all ages" age groups: M85 Masters (85-999) comes before Open (0-999)
