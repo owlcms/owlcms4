@@ -4,11 +4,15 @@
 > - You should test all releases, with actual data, *several days* before a competition. This is especially important when considering the use of a release candidate.
 
 - Maintenance log:
+  - rc06: Updated the QMasters table to use the 2025 age coefficients for men.
   - rc05: German translation
   - rc05: update to Raspberry Pi installation instructions
   - rc04 Danish, Romanian, Hungarian, Russian translation updates
   - rc04: fixed broken image links in the documentation
   - rc04: adjusted hidden columns in reports for current records
+- QMasters
+  - The QMasters score now uses updated men age factors for 2025 (female age factors are unchanged).
+
 - Score-based Competitions
   -  Removed the "Sinclair Meet" option from the competition options.  Now replaced by [score-based medals](https://jflamy.github.io/owlcms4/#/ScoreBasedCompetitions).  To achieve the same, you can proceed as follows:
     - Create SM and SF age groups with ages 0-999 and only the default weight category.  Select "Already Gendered"

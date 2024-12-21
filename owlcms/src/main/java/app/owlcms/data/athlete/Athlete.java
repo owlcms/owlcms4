@@ -2286,7 +2286,7 @@ public class Athlete {
 	}
 
 	public Double getQAge() {
-		double d = getQPoints() * getSmhfFactor();
+		double d = getQPoints() * getQMastersFactor();
 		return d;
 	}
 
@@ -2587,6 +2587,16 @@ public class Athlete {
 			return 0.0F;
 		}
 		return sinclairProperties2020.getAgeGenderCoefficient(YEAR - birthDate1, getGender());
+	}
+	
+	@Transient
+	@JsonIgnore
+	public Float getQMastersFactor() {
+		final Integer birthDate1 = getYearOfBirth();
+		if (birthDate1 == null) {
+			return 0.0F;
+		}
+		return qPoints.getAgeGenderCoefficient(YEAR - birthDate1, getGender());
 	}
 
 	/**
