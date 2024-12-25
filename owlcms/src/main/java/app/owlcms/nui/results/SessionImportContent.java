@@ -85,21 +85,21 @@ public class SessionImportContent extends BaseContent implements CrudListener<Gr
 		this.topBar.getStyle().set("flex", "100 1");
 		this.topBar.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
 		this.topBar.setAlignItems(FlexComponent.Alignment.CENTER);
-		
+
 		Button uploadCustom = new Button(Translator.translate("ImportSessions.UploadDatabaseExport"),
 		        new Icon(VaadinIcon.UPLOAD_ALT),
 		        buttonClickEvent -> {
-		        	SessionResultsUploadDialog sessionUploadDialog = new SessionResultsUploadDialog();
-		        	sessionUploadDialog.setCallback((mb) -> {
-						try {
-							AthleteSessionDataReader.importAthletes(mb.getInputStream(),getSortedSelection());
-						} catch (IOException e) {
-							LoggerUtils.logError(logger, e);
-						}
-					});
-		        	sessionUploadDialog.open();
+			        SessionResultsUploadDialog sessionUploadDialog = new SessionResultsUploadDialog();
+			        sessionUploadDialog.setCallback((mb) -> {
+				        try {
+					        AthleteSessionDataReader.importAthletes(mb.getInputStream(), getSortedSelection());
+				        } catch (IOException e) {
+					        LoggerUtils.logError(logger, e);
+				        }
+			        });
+			        sessionUploadDialog.open();
 		        });
-		topBar.add(uploadCustom);
+		this.topBar.add(uploadCustom);
 
 		return this.topBar;
 	}
@@ -107,7 +107,6 @@ public class SessionImportContent extends BaseContent implements CrudListener<Gr
 	@Override
 	public void delete(Group domainObjectToDelete) {
 	}
-
 
 	@Override
 	public Collection<Group> findAll() {
@@ -174,7 +173,7 @@ public class SessionImportContent extends BaseContent implements CrudListener<Gr
 		grid.addColumn(LocalDateTimeField.getRenderer(Group::getCompetitionTime, this.getLocale()))
 		        .setHeader(Translator.translate("StartTime"));
 		grid.addColumn(Group::getPlatform).setHeader(Translator.translate("Platform")).setTextAlign(ColumnTextAlign.CENTER);
-		
+
 		for (Column<Group> c : grid.getColumns()) {
 			c.setResizable(true);
 		}

@@ -114,6 +114,27 @@ public class MarshallContent extends AthleteGridContent implements HasDynamicTit
 		return Translator.translate("Marshall") + OwlcmsSession.getFopNameIfMultiple();
 	}
 
+	@Override
+	public boolean isLiveLights() {
+		// logger.debug("is live lights {} -- {}",this.liveLights, LoggerUtils.whereFrom());
+		return this.liveLights;
+	}
+
+	@Override
+	public boolean isStartOrder() {
+		return this.startOrder;
+	}
+
+	@Override
+	public void setLiveLights(boolean showLiveLights) {
+		this.liveLights = showLiveLights;
+	}
+
+	@Override
+	public void setStartOrder(boolean useStartOrder) {
+		this.startOrder = useStartOrder;
+	}
+
 	@Subscribe
 	public void slaveRefereeDecision(UIEvent.Decision e) {
 		UIEventProcessor.uiAccess(this, this.uiEventBus, e, () -> {
@@ -157,15 +178,6 @@ public class MarshallContent extends AthleteGridContent implements HasDynamicTit
 		return buttons;
 	}
 
-	/**
-	 * @see app.owlcms.nui.shared.AthleteGridContent#decisionButtons(com.vaadin.flow.component.orderedlayout.HorizontalLayout)
-	 */
-	@Override
-	protected HorizontalLayout decisionButtons(FlexLayout announcerBar) {
-		HorizontalLayout decisions = new HorizontalLayout();
-		return decisions;
-	}
-
 	@Override
 	protected void createTopBarSettingsMenu() {
 		this.topBarSettings = new MenuBar();
@@ -205,25 +217,13 @@ public class MarshallContent extends AthleteGridContent implements HasDynamicTit
 		startOrder.setCheckable(true);
 		startOrder.setChecked(this.isStartOrder());
 	}
-	
-	@Override
-	public boolean isLiveLights() {
-		// logger.debug("is live lights {} -- {}",this.liveLights, LoggerUtils.whereFrom());
-		return this.liveLights;
-	}
-	
-	@Override
-	public void setLiveLights(boolean showLiveLights) {
-		this.liveLights = showLiveLights;
-	}
 
+	/**
+	 * @see app.owlcms.nui.shared.AthleteGridContent#decisionButtons(com.vaadin.flow.component.orderedlayout.HorizontalLayout)
+	 */
 	@Override
-	public void setStartOrder(boolean useStartOrder) {
-		this.startOrder = useStartOrder;
-	}
-	
-	@Override
-	public boolean isStartOrder() {
-		return this.startOrder;
+	protected HorizontalLayout decisionButtons(FlexLayout announcerBar) {
+		HorizontalLayout decisions = new HorizontalLayout();
+		return decisions;
 	}
 }

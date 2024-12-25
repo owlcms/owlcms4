@@ -154,16 +154,15 @@ public class JXLSDownloader {
 	}
 
 	/**
-	 * Deprecated because the time stamp in the file name is determined when the download button
-	 * is created, and not when the file is downloaded.
-	 * 
+	 * Deprecated because the time stamp in the file name is determined when the download button is created, and not when the file is downloaded.
+	 *
 	 * Use LazyDownloadButton instead.
-	 * 
+	 *
 	 * @param tooltipText
 	 * @return
 	 */
-	//@Deprecated
-	//TODO remove use of createImmediateDownloadButton
+	// @Deprecated
+	// TODO remove use of createImmediateDownloadButton
 	public Anchor createImmediateDownloadButton(String... tooltipText) {
 		this.xlsWriter = this.streamSourceSupplier.get();
 		Supplier<String> supplier = () -> getTargetFileName();
@@ -237,9 +236,9 @@ public class JXLSDownloader {
 					this.logger.debug("(2) template as set {}", this.templateNameGetter.apply(current));
 
 					this.xlsWriter = this.streamSourceSupplier.get();
-					this.logger.debug("(2) xlsWriter dialog {} {}", xlsWriter, dialog);
+					this.logger.debug("(2) xlsWriter dialog {} {}", this.xlsWriter, this.dialog);
 					if (this.xlsWriter == null) {
-						UI.getCurrent().access(() -> dialog.close());
+						UI.getCurrent().access(() -> this.dialog.close());
 						return;
 					}
 					this.logger.debug("(2) xlsWriter {} {}", this.xlsWriter.getClass().getSimpleName(),

@@ -73,14 +73,12 @@ public interface ParameterReader extends HasUrlParameter<String> {
 	 *
 	 * The values are stored in the URL in order to allow bookmarking and easy reloading.
 	 *
-	 * Note: what Vaadin calls a parameter is in the REST style, actually part of the URL path. We use the old-style
-	 * Query parameters for our purposes.
+	 * Note: what Vaadin calls a parameter is in the REST style, actually part of the URL path. We use the old-style Query parameters for our purposes.
 	 *
 	 * @see com.vaadin.flow.router.HasUrlParameter#setParameter(com.vaadin.flow.router. BeforeEvent, java.lang.Object)
 	 */
 	/**
-	 * @see app.owlcms.apputils.queryparameters.ParameterReader#setParameter(com.vaadin.flow.router.BeforeEvent,
-	 *      java.lang.String)
+	 * @see app.owlcms.apputils.queryparameters.ParameterReader#setParameter(com.vaadin.flow.router.BeforeEvent, java.lang.String)
 	 */
 	@Override
 	public default void setParameter(BeforeEvent event, @OptionalParameter String routeParameter) {

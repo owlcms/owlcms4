@@ -31,8 +31,7 @@ public interface CustomFormFactory<T> {
 	Binder<T> buildBinder(CrudOperation operation, T doNotUse);
 
 	/**
-	 * @see org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory#buildCaption(org.vaadin.crudui.crud.CrudOperation,
-	 *      java.lang.Object)
+	 * @see org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory#buildCaption(org.vaadin.crudui.crud.CrudOperation, java.lang.Object)
 	 */
 	String buildCaption(CrudOperation operation, T aFromDb);
 
@@ -44,9 +43,9 @@ public interface CustomFormFactory<T> {
 	/**
 	 * We create a copy of the edited object so that we can validate live
 	 *
-	 * @see app.owlcms.nui.crudui.OwlcmsCrudFormFactory#buildNewForm(org.vaadin.crudui.crud.CrudOperation,
-	 *      java.lang.Object, boolean, com.vaadin.flow.component.ComponentEventListener,
-	 *      com.vaadin.flow.component.ComponentEventListener, com.vaadin.flow.component.ComponentEventListener)
+	 * @see app.owlcms.nui.crudui.OwlcmsCrudFormFactory#buildNewForm(org.vaadin.crudui.crud.CrudOperation, java.lang.Object, boolean,
+	 *      com.vaadin.flow.component.ComponentEventListener, com.vaadin.flow.component.ComponentEventListener,
+	 *      com.vaadin.flow.component.ComponentEventListener)
 	 */
 	Component buildNewForm(CrudOperation operation, T aFromDb, boolean readOnly,
 	        ComponentEventListener<ClickEvent<Button>> cancelButtonClickListener,

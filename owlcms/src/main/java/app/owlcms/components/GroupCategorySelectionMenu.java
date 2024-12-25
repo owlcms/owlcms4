@@ -53,6 +53,8 @@ public class GroupCategorySelectionMenu extends MenuBar {
 	private FieldOfPlay fop;
 	private TriConsumer<Group, Category, FieldOfPlay> whenChecked;
 	private TriConsumer<Group, Category, FieldOfPlay> whenUnselected;
+	boolean subMenuLoaded = false;
+	Map<Group, Set<String>> medalCategoriesPerGroup = new HashMap<>();
 
 	public GroupCategorySelectionMenu(List<Group> groups, FieldOfPlay fop,
 	        TriConsumer<Group, Category, FieldOfPlay> whenChecked,
@@ -62,77 +64,6 @@ public class GroupCategorySelectionMenu extends MenuBar {
 		this.fop = fop;
 		this.whenChecked = whenChecked;
 		this.whenUnselected = whenUnselected;
-	}
-
-	@Override
-	protected void onAttach(AttachEvent attachEvent) {
-		subMenuLoaded = false;
-		init(groups, fop, whenChecked, whenUnselected, this.getUI().get());
-	}
-
-	public void recompute() {
-		UI ui = this.getUI().get();
-		this.removeAll();
-		subMenuLoaded = false;
-		init(this.groups, this.fop, this.whenChecked, this.whenUnselected, ui);
-	}
-
-	public void setIncludeNotCompleted(Boolean value) {
-		this.includeNotCompleted = value;
-	}
-
-	@SuppressWarnings("unused")
-	private String describedName(Group g) {
-		String desc = g.getDescription();
-		if (desc == null || desc.isBlank()) {
-			return g.getName();
-		} else {
-			return g.getName() + " - " + g.getDescription();
-		}
-	}
-
-	private Set<String> getAllCategories(Group g) {
-		TreeMap<String, List<Athlete>> medals = Competition.getCurrent().getMedals(g, false);
-		return medals.keySet();
-	}
-
-	private Set<String> getFinishedCategories(Group g) {
-		Set<String> finishedCategories = new TreeSet<>();
-		TreeMap<String, List<Athlete>> medals = Competition.getCurrent().getMedals(g, true);
-		finishedCategories = medals.keySet();
-		return finishedCategories;
-	}
-
-	boolean subMenuLoaded = false;
-	Map<Group, Set<String>> medalCategoriesPerGroup = new HashMap<>();
-
-	private void init(List<Group> groups, FieldOfPlay fop, TriConsumer<Group, Category, FieldOfPlay> whenChecked,
-	        TriConsumer<Group, Category, FieldOfPlay> whenUnselected, UI ui) {
-
-		MenuItem item;
-		String menuTitle = Translator.translate("Group") + "/" + Translator.translate("Category") + "\u2003\u25bc";
-		this.setId("sessionDropDown");
-		item = this.addItem(menuTitle);
-		this.addThemeVariants(MenuBarVariant.LUMO_SMALL, MenuBarVariant.LUMO_PRIMARY);
-		this.setEnabled(false);
-
-		if (!subMenuLoaded) {
-			medalCategoriesPerGroup.clear();
-			new Thread(() -> {
-				for (Group g : groups) {
-					Set<String> categories = this.includeNotCompleted ? getAllCategories(g) : getFinishedCategories(g);
-					if (!categories.isEmpty()) {
-						medalCategoriesPerGroup.put(g, categories);
-					}
-				}
-				subMenuLoaded = true;
-				ui.access(() -> {
-					fillMenu(groups, medalCategoriesPerGroup, fop, whenChecked, whenUnselected, item, menuTitle);
-					this.setEnabled(true);
-				});
-			}).start();
-		}
-
 	}
 
 	public void fillMenu(List<Group> groups, Map<Group, Set<String>> medalCategoriesPerGroup, FieldOfPlay fop,
@@ -156,7 +87,7 @@ public class GroupCategorySelectionMenu extends MenuBar {
 				}
 				subItem.getElement().setAttribute("style", "margin: 0px; padding: 0px");
 
-				logger.debug("***medal categories {}", categories);
+				this.logger.debug("***medal categories {}", categories);
 				for (String c : categories) {
 
 					Category cat = CategoryRepository.findByCode(c);
@@ -193,6 +124,74 @@ public class GroupCategorySelectionMenu extends MenuBar {
 		        });
 		item3.setCheckable(false);
 		item.setEnabled(true);
+	}
+
+	public void recompute() {
+		UI ui = this.getUI().get();
+		this.removeAll();
+		this.subMenuLoaded = false;
+		init(this.groups, this.fop, this.whenChecked, this.whenUnselected, ui);
+	}
+
+	public void setIncludeNotCompleted(Boolean value) {
+		this.includeNotCompleted = value;
+	}
+
+	@Override
+	protected void onAttach(AttachEvent attachEvent) {
+		this.subMenuLoaded = false;
+		init(this.groups, this.fop, this.whenChecked, this.whenUnselected, this.getUI().get());
+	}
+
+	@SuppressWarnings("unused")
+	private String describedName(Group g) {
+		String desc = g.getDescription();
+		if (desc == null || desc.isBlank()) {
+			return g.getName();
+		} else {
+			return g.getName() + " - " + g.getDescription();
+		}
+	}
+
+	private Set<String> getAllCategories(Group g) {
+		TreeMap<String, List<Athlete>> medals = Competition.getCurrent().getMedals(g, false);
+		return medals.keySet();
+	}
+
+	private Set<String> getFinishedCategories(Group g) {
+		Set<String> finishedCategories = new TreeSet<>();
+		TreeMap<String, List<Athlete>> medals = Competition.getCurrent().getMedals(g, true);
+		finishedCategories = medals.keySet();
+		return finishedCategories;
+	}
+
+	private void init(List<Group> groups, FieldOfPlay fop, TriConsumer<Group, Category, FieldOfPlay> whenChecked,
+	        TriConsumer<Group, Category, FieldOfPlay> whenUnselected, UI ui) {
+
+		MenuItem item;
+		String menuTitle = Translator.translate("Group") + "/" + Translator.translate("Category") + "\u2003\u25bc";
+		this.setId("sessionDropDown");
+		item = this.addItem(menuTitle);
+		this.addThemeVariants(MenuBarVariant.LUMO_SMALL, MenuBarVariant.LUMO_PRIMARY);
+		this.setEnabled(false);
+
+		if (!this.subMenuLoaded) {
+			this.medalCategoriesPerGroup.clear();
+			new Thread(() -> {
+				for (Group g : groups) {
+					Set<String> categories = this.includeNotCompleted ? getAllCategories(g) : getFinishedCategories(g);
+					if (!categories.isEmpty()) {
+						this.medalCategoriesPerGroup.put(g, categories);
+					}
+				}
+				this.subMenuLoaded = true;
+				ui.access(() -> {
+					fillMenu(groups, this.medalCategoriesPerGroup, fop, whenChecked, whenUnselected, item, menuTitle);
+					this.setEnabled(true);
+				});
+			}).start();
+		}
+
 	}
 
 	private void setChecked(MenuItem menuItem, SubMenu subMenu, boolean checked) {

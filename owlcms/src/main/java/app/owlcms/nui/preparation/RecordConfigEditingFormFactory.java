@@ -187,7 +187,7 @@ public class RecordConfigEditingFormFactory extends OwlcmsCrudFormFactory<Record
 		Div allRecords = new Div();
 		allRecords.add(dd.createImmediateDownloadButton());
 		allRecords.setWidthFull();
-		
+
 		var recordsWriter1 = new JXLSExportRecords(UI.getCurrent(), true, true);
 		JXLSDownloader dd1 = new JXLSDownloader(
 		        () -> {

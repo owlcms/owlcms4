@@ -33,8 +33,8 @@ import app.owlcms.utils.ResourceWalker;
 import ch.qos.logback.classic.Logger;
 
 /**
- * This class is used to compute the Robi score for athletes based on their body weight. It locates what the athlete's
- * category if the Athlete was competing in a IWF competition.
+ * This class is used to compute the Robi score for athletes based on their body weight. It locates what the athlete's category if the Athlete was competing in
+ * a IWF competition.
  */
 public class RobiCategories {
 
@@ -64,7 +64,7 @@ public class RobiCategories {
 					return 1;
 				}
 			} catch (Exception e) {
-				
+
 			}
 			return 0;
 		}
@@ -76,8 +76,7 @@ public class RobiCategories {
 	private static ArrayList<Category> ythReferenceCategories;
 
 	/**
-	 * Create category templates that will be copied to instantiate the actual categories. The world records are read
-	 * and included in the template.
+	 * Create category templates that will be copied to instantiate the actual categories. The world records are read and included in the template.
 	 *
 	 * @param workbook
 	 * @return

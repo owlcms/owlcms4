@@ -36,8 +36,8 @@ public interface FOPParametersReader extends ParameterReader, FOPParameters {
 	final Logger logger = (Logger) LoggerFactory.getLogger(FOPParametersReader.class);
 
 	/**
-	 * @see app.owlcms.apputils.queryparameters.ParameterReader#doUpdateUrlLocation(com.vaadin.flow.component.UI,
-	 *      com.vaadin.flow.router.Location, java.util.Map)
+	 * @see app.owlcms.apputils.queryparameters.ParameterReader#doUpdateUrlLocation(com.vaadin.flow.component.UI, com.vaadin.flow.router.Location,
+	 *      java.util.Map)
 	 */
 	@Override
 	public default void doUpdateUrlLocation(UI ui, Location location, Map<String, List<String>> queryParameterMap) {
@@ -64,8 +64,7 @@ public interface FOPParametersReader extends ParameterReader, FOPParameters {
 	}
 
 	/**
-	 * @see app.owlcms.apputils.queryparameters.ParameterReader#readParams(com.vaadin.flow.router.Location,
-	 *      java.util.Map)
+	 * @see app.owlcms.apputils.queryparameters.ParameterReader#readParams(com.vaadin.flow.router.Location, java.util.Map)
 	 */
 	@Override
 	@SuppressWarnings("null")
@@ -86,11 +85,10 @@ public interface FOPParametersReader extends ParameterReader, FOPParameters {
 		if (!isIgnoreFopFromURL()) {
 			if (fopFound) {
 				String decoded = URLDecoder.decode(fopNames.get(0), StandardCharsets.UTF_8);
-				//logger.debug("URL fop = {} decoded = {}",fopNames.get(0), decoded);
+				// logger.debug("URL fop = {} decoded = {}",fopNames.get(0), decoded);
 				tFop = OwlcmsFactory.getFOPByName(decoded);
 				this.setFop(tFop);
-			} 
-			else if (OwlcmsSession.getFop() != null) {
+			} else if (OwlcmsSession.getFop() != null) {
 				// logger.trace("OwlcmsSession.getFop() {}", OwlcmsSession.getFop());
 				tFop = OwlcmsSession.getFop();
 				this.setFop(tFop);
@@ -140,14 +138,12 @@ public interface FOPParametersReader extends ParameterReader, FOPParameters {
 	 *
 	 * The values are stored in the URL in order to allow bookmarking and easy reloading.
 	 *
-	 * Note: what Vaadin calls a parameter is in the REST style, actually part of the URL path. We use the old-style
-	 * Query parameters for our purposes.
+	 * Note: what Vaadin calls a parameter is in the REST style, actually part of the URL path. We use the old-style Query parameters for our purposes.
 	 *
 	 * @see com.vaadin.flow.router.HasUrlParameter#setParameter(com.vaadin.flow.router. BeforeEvent, java.lang.Object)
 	 */
 	/**
-	 * @see app.owlcms.apputils.queryparameters.ParameterReader#setParameter(com.vaadin.flow.router.BeforeEvent,
-	 *      java.lang.String)
+	 * @see app.owlcms.apputils.queryparameters.ParameterReader#setParameter(com.vaadin.flow.router.BeforeEvent, java.lang.String)
 	 */
 	@Override
 	public default void setParameter(BeforeEvent event, @OptionalParameter String routeParameter) {
@@ -166,8 +162,7 @@ public interface FOPParametersReader extends ParameterReader, FOPParameters {
 	}
 
 	/**
-	 * @see app.owlcms.apputils.queryparameters.ParameterReader#storeInSessionStorage(java.lang.String,
-	 *      java.lang.String)
+	 * @see app.owlcms.apputils.queryparameters.ParameterReader#storeInSessionStorage(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public default void storeInSessionStorage(String key, String value) {
@@ -182,8 +177,7 @@ public interface FOPParametersReader extends ParameterReader, FOPParameters {
 	}
 
 	/**
-	 * @see app.owlcms.apputils.queryparameters.ParameterReader#updateParam(java.util.Map, java.lang.String,
-	 *      java.lang.String)
+	 * @see app.owlcms.apputils.queryparameters.ParameterReader#updateParam(java.util.Map, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public default void updateParam(Map<String, List<String>> parameters, String parameter, String value) {
@@ -195,8 +189,8 @@ public interface FOPParametersReader extends ParameterReader, FOPParameters {
 	}
 
 	/**
-	 * @see app.owlcms.apputils.queryparameters.ParameterReader#updateURLLocation(com.vaadin.flow.component.UI,
-	 *      com.vaadin.flow.router.Location, java.lang.String, java.lang.String)
+	 * @see app.owlcms.apputils.queryparameters.ParameterReader#updateURLLocation(com.vaadin.flow.component.UI, com.vaadin.flow.router.Location,
+	 *      java.lang.String, java.lang.String)
 	 */
 	@Override
 	public default void updateURLLocation(UI ui, Location location, String parameter, String value) {

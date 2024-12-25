@@ -116,15 +116,6 @@ public class AnnouncerContent extends AthleteGridContent implements HasDynamicTi
 
 	}
 
-	@Override
-	protected void onAttach(AttachEvent attachEvent) {
-		super.onAttach(attachEvent);
-		createTopBarGroupSelect();
-		// setLiveLights(!Config.getCurrent().featureSwitch("noLiveLights"));
-		// setCenterNotifications(Config.getCurrent().featureSwitch("centerAnnouncerNotifications"));
-		defineFilters(this.getCrudGrid());
-	}
-
 	/**
 	 * Not used in this class. We use createInitialBar and createTopBar as required.
 	 *
@@ -175,6 +166,16 @@ public class AnnouncerContent extends AthleteGridContent implements HasDynamicTi
 		return Translator.translate("Announcer") + OwlcmsSession.getFopNameIfMultiple();
 	}
 
+	@Override
+	public boolean isCenterNotifications() {
+		return this.centerNotifications;
+	}
+
+	@Override
+	public boolean isDeclarations() {
+		return this.declarations;
+	}
+
 	/**
 	 * The URL contains the group, contrary to other screens.
 	 *
@@ -189,8 +190,25 @@ public class AnnouncerContent extends AthleteGridContent implements HasDynamicTi
 	}
 
 	@Override
+	public boolean isLiveLights() {
+		// logger.debug("is live lights {} -- {}",this.liveLights, LoggerUtils.whereFrom());
+		return this.liveLights;
+	}
+
+	@Override
 	public boolean isSingleReferee() {
 		return this.singleReferee;
+	}
+
+	@Override
+	public void setCenterNotifications(boolean centerNotifications) {
+		// logger.debug"setCenterNotifications {} {}",centerNotifications,LoggerUtils.whereFrom());
+		this.centerNotifications = centerNotifications;
+	}
+
+	@Override
+	public void setDeclarations(boolean showDeclarations) {
+		this.declarations = showDeclarations;
 	}
 
 	@Override
@@ -200,6 +218,11 @@ public class AnnouncerContent extends AthleteGridContent implements HasDynamicTi
 		getRouterLayout().showLocaleDropdown(false);
 		getRouterLayout().setDrawerOpened(false);
 		getRouterLayout().updateHeader(false);
+	}
+
+	@Override
+	public void setLiveLights(boolean showLiveLights) {
+		this.liveLights = showLiveLights;
 	}
 
 	@Override
@@ -351,18 +374,18 @@ public class AnnouncerContent extends AthleteGridContent implements HasDynamicTi
 		});
 	}
 
-	@Override
-	@Subscribe
-	public void slaveUpdateGrid(Decision e) {
-		// do nothing, prevents premature update of lifting order grid
-	}
-
 	@Subscribe
 	public void slaveStartTime(UIEvent.StartTime e) {
 		UIEventProcessor.uiAccess(this, this.uiEventBus, e, () -> {
 			buttonsTimeStarted();
 			displayLiveDecisions();
 		});
+	}
+
+	@Override
+	@Subscribe
+	public void slaveUpdateGrid(Decision e) {
+		// do nothing, prevents premature update of lifting order grid
 	}
 
 	/**
@@ -712,38 +735,6 @@ public class AnnouncerContent extends AthleteGridContent implements HasDynamicTi
 
 	}
 
-	@Override
-	public void setLiveLights(boolean showLiveLights) {
-		this.liveLights = showLiveLights;
-	}
-
-	@Override
-	public boolean isLiveLights() {
-		// logger.debug("is live lights {} -- {}",this.liveLights, LoggerUtils.whereFrom());
-		return this.liveLights;
-	}
-
-	@Override
-	public void setCenterNotifications(boolean centerNotifications) {
-		// logger.debug"setCenterNotifications {} {}",centerNotifications,LoggerUtils.whereFrom());
-		this.centerNotifications = centerNotifications;
-	}
-
-	@Override
-	public boolean isCenterNotifications() {
-		return this.centerNotifications;
-	}
-
-	@Override
-	public void setDeclarations(boolean showDeclarations) {
-		this.declarations = showDeclarations;
-	}
-
-	@Override
-	public boolean isDeclarations() {
-		return this.declarations;
-	}
-
 	/**
 	 * @see app.owlcms.nui.shared.AthleteGridContent#decisionButtons(com.vaadin.flow.component.orderedlayout.HorizontalLayout)
 	 */
@@ -759,6 +750,15 @@ public class AnnouncerContent extends AthleteGridContent implements HasDynamicTi
 
 		HorizontalLayout decisions = new HorizontalLayout(good, bad);
 		return decisions;
+	}
+
+	@Override
+	protected void onAttach(AttachEvent attachEvent) {
+		super.onAttach(attachEvent);
+		createTopBarGroupSelect();
+		// setLiveLights(!Config.getCurrent().featureSwitch("noLiveLights"));
+		// setCenterNotifications(Config.getCurrent().featureSwitch("centerAnnouncerNotifications"));
+		defineFilters(this.getCrudGrid());
 	}
 
 	private void badLift() {

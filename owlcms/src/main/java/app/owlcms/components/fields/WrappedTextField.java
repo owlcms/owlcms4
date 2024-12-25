@@ -24,8 +24,8 @@ import ch.qos.logback.classic.Logger;
 /**
  * Common base for creating fields that parse text to obtain a value.
  *
- * Subclasses define a converter and a renderer. This parent class uses a TextField to display and read the
- * corresponding text. Typical use of a subclass of this class is as follows
+ * Subclasses define a converter and a renderer. This parent class uses a TextField to display and read the corresponding text. Typical use of a subclass of
+ * this class is as follows
  *
  * <pre>
  * LocalDateField f = ((LocalDateField) field);
@@ -33,8 +33,8 @@ import ch.qos.logback.classic.Logger;
  * binder.forField(f).withValidator(fv).bind(property);
  * </pre>
  *
- * In the example, validator fv is the most basic validation -- the content of the field was syntactically legal and was
- * converted successfully into a value. Additional semantic validations can of course be chained after fv.
+ * In the example, validator fv is the most basic validation -- the content of the field was syntactically legal and was converted successfully into a value.
+ * Additional semantic validations can of course be chained after fv.
  *
  * @author Jean-François Lamy
  *
@@ -189,10 +189,9 @@ public abstract class WrappedTextField<T> extends AbstractCompositeField<Validat
 	/**
 	 * Keep parsing result for use during validation.
 	 *
-	 * Binder validates converted values, it does not convert again from the field content. So if an ill-formed syntax
-	 * is used, the field value is not updated, and the original valid value is still present. So no error is shown to
-	 * the user. In order to show the error, we memorize the last parsing status and we systematically use the
-	 * {@link #formatValidation(Locale)} validator when binding a field.
+	 * Binder validates converted values, it does not convert again from the field content. So if an ill-formed syntax is used, the field value is not updated,
+	 * and the original valid value is still present. So no error is shown to the user. In order to show the error, we memorize the last parsing status and we
+	 * systematically use the {@link #formatValidation(Locale)} validator when binding a field.
 	 *
 	 * @param valid
 	 * @param locale

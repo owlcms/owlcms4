@@ -5,8 +5,7 @@ import com.github.appreciated.css.interfaces.CssUnit;
 /**
  * This interface is implemented by the following classes to match the following
  * <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-rows">grid-template-rows</a> standard and the
- * <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns">grid-template-columns</a> standard
- * <br>
+ * <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns">grid-template-columns</a> standard <br>
  * {@link com.github.appreciated.css.grid.sizes.Auto} <br>
  * {@link com.github.appreciated.css.grid.sizes.Length} <br>
  * {@link com.github.appreciated.css.grid.sizes.Flex} <br>

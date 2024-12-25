@@ -18,35 +18,45 @@ import ch.qos.logback.classic.Logger;
  */
 public enum Ranking {
     // category values
-	SNATCH("Sn",false),
-	CLEANJERK("CJ",false),
-	TOTAL("Tot",false),
-	CUSTOM("Cus",false), // modified total / custom score (e.g. technical merit for kids competition)
-	SNATCH_CJ_TOTAL("Combined",false), // sum of all three point scores
-	CATEGORY_SCORE("SCORE",false), // copy of TOTAL, CUSTOM or any of the global scoring systems if used to award category medals
+	SNATCH("Sn", false),
+	CLEANJERK("CJ", false),
+	TOTAL("Tot", false),
+	CUSTOM("Cus", false), // modified total / custom score (e.g. technical merit for kids competition)
+	SNATCH_CJ_TOTAL("Combined", false), // sum of all three point scores
+	CATEGORY_SCORE("SCORE", false), // copy of TOTAL, CUSTOM or any of the global scoring systems if used to award category medals
 
     // global scoring systems
-	BW_SINCLAIR("Sinclair",true), // normal Sinclair
-	CAT_SINCLAIR("CatSinclair",true), // legacy Quebec federation, Sinclair computed at category boundary
-	SMM("Smm",true), // Legacy name, kept for import/export backward compatibility Sinclair Meltzer Huebner Faber
-	ROBI("Robi",true), // IWF ROBI
-	QPOINTS("QPoints",true), // Huebner QPoints.
-	GAMX("GAMX",true), // Global Adjusted Mixed (Huebner)
-	AGEFACTORS("QYouth",true),
-	QAGE("QMasters",true), // QPoints * SMHF age factors
+	BW_SINCLAIR("Sinclair", true), // normal Sinclair
+	CAT_SINCLAIR("CatSinclair", true), // legacy Quebec federation, Sinclair computed at category boundary
+	SMM("Smm", true), // Legacy name, kept for import/export backward compatibility Sinclair Meltzer Huebner Faber
+	ROBI("Robi", true), // IWF ROBI
+	QPOINTS("QPoints", true), // Huebner QPoints.
+	GAMX("GAMX", true), // Global Adjusted Mixed (Huebner)
+	AGEFACTORS("QYouth", true),
+	QAGE("QMasters", true), // QPoints * SMHF age factors
 	;
-	
+
 	public static Map<String, Ranking> rankingByReportingName = new HashMap<>();
 	static {
 		for (Ranking r : Ranking.values()) {
 			rankingByReportingName.put(r.reportingName.toLowerCase(), r);
 			rankingByReportingName.put(r.name().toLowerCase(), r);
-			
+
 		}
 		rankingByReportingName.put("smhf", SMM);
 	}
-
 	static Logger logger = (Logger) LoggerFactory.getLogger(Ranking.class);
+
+	public static String formatScoreboardRank(Integer total) {
+		if (total == null || total == 0) {
+			return "-";
+		} else if (total == -1) {
+			// invited lifter, not eligible.
+			return Translator.translate("Results.Extra/Invited");
+		} else {
+			return total.toString();
+		}
+	}
 
 	public static int getRanking(Athlete curLifter, Ranking rankingType) {
 		Integer value = null;
@@ -175,27 +185,6 @@ public enum Ranking {
 		return d != null ? d : 0D;
 	}
 
-	public static String getScoringTitle(Ranking rankingType) {
-		if (rankingType == null || rankingType == Ranking.CATEGORY_SCORE) {
-			return Translator.translate("Score");
-		}
-		switch (rankingType) {
-			case ROBI:
-			case CUSTOM:
-			case BW_SINCLAIR:
-			case CAT_SINCLAIR:
-			case SMM:
-			case GAMX:
-			case QPOINTS:
-			case AGEFACTORS:
-			case QAGE:
-			case TOTAL:
-				return Translator.translate("Ranking." + rankingType);
-			default:
-				throw new UnsupportedOperationException("not a score ranking " + rankingType);
-		}
-	}
-
 	public static String getScoringExplanation(Ranking rankingType) {
 		if (rankingType == null || rankingType == Ranking.CATEGORY_SCORE) {
 			return Translator.translate("Score");
@@ -217,6 +206,27 @@ public enum Ranking {
 		}
 	}
 
+	public static String getScoringTitle(Ranking rankingType) {
+		if (rankingType == null || rankingType == Ranking.CATEGORY_SCORE) {
+			return Translator.translate("Score");
+		}
+		switch (rankingType) {
+			case ROBI:
+			case CUSTOM:
+			case BW_SINCLAIR:
+			case CAT_SINCLAIR:
+			case SMM:
+			case GAMX:
+			case QPOINTS:
+			case AGEFACTORS:
+			case QAGE:
+			case TOTAL:
+				return Translator.translate("Ranking." + rankingType);
+			default:
+				throw new UnsupportedOperationException("not a score ranking " + rankingType);
+		}
+	}
+
 	public static List<Ranking> scoringSystems() {
 		List<Ranking> systems = new ArrayList<>(Arrays.asList(BW_SINCLAIR, SMM, ROBI, AGEFACTORS, QPOINTS, QAGE, GAMX, CAT_SINCLAIR));
 		return systems;
@@ -226,7 +236,7 @@ public enum Ranking {
 	private boolean medalScore;
 
 	/**
-	 * @param medalScore 
+	 * @param medalScore
 	 * @param reportingInfoName the name of the beans used for Excel reporting
 	 */
 	Ranking(String reportingName, boolean medalScore) {
@@ -246,19 +256,8 @@ public enum Ranking {
 		return "w" + this.reportingName;
 	}
 
-	public static String formatScoreboardRank(Integer total) {
-		if (total == null || total == 0) {
-			return "-";
-		} else if (total == -1) {
-			// invited lifter, not eligible.
-			return Translator.translate("Results.Extra/Invited");
-		} else {
-			return total.toString();
-		}
-	}
-
 	public boolean isMedalScore() {
-		return medalScore;
+		return this.medalScore;
 	}
 
 	public void setMedalScore(boolean medalScore) {

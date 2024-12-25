@@ -43,10 +43,6 @@ import ch.qos.logback.classic.Logger;
 @JsonIgnoreProperties(ignoreUnknown = true, value = { "hibernateLazyInitializer", "logger" })
 @JsonInclude(Include.NON_NULL)
 public class RecordEvent {
-	
-	RecordEvent() {
-		setId(IdUtils.getTimeBasedId());
-	}
 
 	public class MissingAgeGroup extends Exception {
 	}
@@ -93,7 +89,7 @@ public class RecordEvent {
 	private Double athleteBW;
 	private Integer athleteAge;
 	@Id
-	//@GeneratedValue(strategy = GenerationType.AUTO)
+	// @GeneratedValue(strategy = GenerationType.AUTO)
 	Long id;
 	Double recordValue;
 	private String ageGrp;
@@ -120,6 +116,10 @@ public class RecordEvent {
 	@Transient
 	@JsonIgnore
 	private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	RecordEvent() {
+		setId(IdUtils.getTimeBasedId());
+	}
 
 	// @Override
 	// public boolean equals(Object obj) {
@@ -149,19 +149,16 @@ public class RecordEvent {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
+		}
 
-		if (!(o instanceof RecordEvent))
+		if (!(o instanceof RecordEvent)) {
 			return false;
+		}
 
 		RecordEvent other = (RecordEvent) o;
-		return id != null && id.equals(other.getId());
-	}
-
-	@Override
-	public int hashCode() {
-		return getClass().hashCode();
+		return this.id != null && this.id.equals(other.getId());
 	}
 
 	public void fillDefaults() throws MissingAgeGroup, MissingGender, UnknownIWFBodyWeightCategory {
@@ -267,20 +264,6 @@ public class RecordEvent {
 	public Gender getGender() {
 		return this.gender;
 	}
-	
-	public String getTranslatedGender() {
-		return Translator.translate("Gender."+this.gender);
-	}
-	
-	public String getTranslatedLift() {
-		return Translator.translate("Record."+this.recordLift);
-	}
-	
-	public void setTranslatedGender(String ignored) {
-	}
-	
-	public void setTranslatedLift(String ignored) {
-	}
 
 	/**
 	 * Group Name. If not empty, record was set in the current competition.Autan
@@ -357,15 +340,18 @@ public class RecordEvent {
 		}
 	}
 
-	// @Override
-	// public int hashCode() {
-	// return Objects.hash(this.ageGrp, this.ageGrpLower, this.ageGrpUpper, this.athleteName, this.birthDate,
-	// this.birthYear, this.bwCatLower,
-	// this.bwCatString, this.bwCatUpper, this.categoryString, this.event, this.eventLocation, this.gender,
-	// this.groupNameString, this.id, this.nation,
-	// this.recordDate, this.recordFederation, this.recordLift, this.recordName, this.recordValue,
-	// this.fileName, this.recordYear);
-	// }
+	public String getTranslatedGender() {
+		return Translator.translate("Gender." + this.gender);
+	}
+
+	public String getTranslatedLift() {
+		return Translator.translate("Record." + this.recordLift);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 
 	/**
 	 * The two records are equivalent (ignores Id in database)
@@ -427,6 +413,16 @@ public class RecordEvent {
 		        && Objects.equals(this.recordName, other.recordName)
 		        && this.recordYear == other.recordYear;
 	}
+
+	// @Override
+	// public int hashCode() {
+	// return Objects.hash(this.ageGrp, this.ageGrpLower, this.ageGrpUpper, this.athleteName, this.birthDate,
+	// this.birthYear, this.bwCatLower,
+	// this.bwCatString, this.bwCatUpper, this.categoryString, this.event, this.eventLocation, this.gender,
+	// this.groupNameString, this.id, this.nation,
+	// this.recordDate, this.recordFederation, this.recordLift, this.recordName, this.recordValue,
+	// this.fileName, this.recordYear);
+	// }
 
 	public void setAgeGrp(String ageGrp) {
 		this.ageGrp = ageGrp;
@@ -545,6 +541,12 @@ public class RecordEvent {
 
 	public void setRecordYear(int parseInt) {
 		this.recordYear = parseInt;
+	}
+
+	public void setTranslatedGender(String ignored) {
+	}
+
+	public void setTranslatedLift(String ignored) {
 	}
 
 	@Override

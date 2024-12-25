@@ -26,9 +26,8 @@ public class RuleViolationException extends RuntimeException {
 		/**
 		 * Athlete cannot move down to same weight as someone with a higher attempt number.
 		 *
-		 * Athlete A on first attempt requests more than an athlete on second attempt. Then A wants to move down to that
-		 * B weight. Cannot, because lower attempt number must lift first. This would give A unfair rest if A could lift
-		 * after B.
+		 * Athlete A on first attempt requests more than an athlete on second attempt. Then A wants to move down to that B weight. Cannot, because lower attempt
+		 * number must lift first. This would give A unfair rest if A could lift after B.
 		 *
 		 * @param requestedWeight
 		 * @param startNumber
@@ -85,12 +84,11 @@ public class RuleViolationException extends RuntimeException {
 
 	public static class LiftedEarlier extends RuleViolationException {
 		/**
-		 * Athlete cannot move down the weight on the bar was already taken by someone who lifted later on the previous
-		 * attempt.
+		 * Athlete cannot move down the weight on the bar was already taken by someone who lifted later on the previous attempt.
 		 *
-		 * Athlete A lifted on first attempt, then B, due to the requested weight. A requests higher than B on second
-		 * attempt. A cannot move down to B's requested weight after B attempts, as this makes A lift out of order -- By
-		 * rule, A must come before B if they both attempt the same weight at the same attempt.
+		 * Athlete A lifted on first attempt, then B, due to the requested weight. A requests higher than B on second attempt. A cannot move down to B's
+		 * requested weight after B attempts, as this makes A lift out of order -- By rule, A must come before B if they both attempt the same weight at the
+		 * same attempt.
 		 *
 		 * @param requestedWeight
 		 * @param referenceAthlete
@@ -105,8 +103,8 @@ public class RuleViolationException extends RuntimeException {
 
 	public static class LiftValueNotWhatWasRequested extends RuleViolationException {
 		/**
-		 * When correcting an error manually (athlete on platform was not the one called), the value entered for the
-		 * lift must match the last declaration or change
+		 * When correcting an error manually (athlete on platform was not the one called), the value entered for the lift must match the last declaration or
+		 * change
 		 *
 		 * @param curLift
 		 * @param actualLift
@@ -123,11 +121,10 @@ public class RuleViolationException extends RuntimeException {
 
 	public static class LotNumberTooHigh extends RuleViolationException {
 		/**
-		 * This rule is there as precaution when weigh-in officials forgot to attribute start numbers. Athlete cannot
-		 * move down because same weight was attempted by an athlete with lower start number.
+		 * This rule is there as precaution when weigh-in officials forgot to attribute start numbers. Athlete cannot move down because same weight was
+		 * attempted by an athlete with lower start number.
 		 *
-		 * On first lift, start number 1 cannot request higher than start 2 and, after 2 has been called, move down to
-		 * same weight (lifting out of order).
+		 * On first lift, start number 1 cannot request higher than start 2 and, after 2 has been called, move down to same weight (lifting out of order).
 		 *
 		 * @param requestedWeight
 		 * @param referenceLotNumber
@@ -188,8 +185,7 @@ public class RuleViolationException extends RuntimeException {
 		/**
 		 * Athlete cannot move down because same weight was attempted by an athlete with lower start number.
 		 *
-		 * On first lift, start number 1 cannot request higher than start 2 and, after 2 has been called, move down to
-		 * same weight (lifting out of order).
+		 * On first lift, start number 1 cannot request higher than start 2 and, after 2 has been called, move down to same weight (lifting out of order).
 		 *
 		 * @param requestedWeight
 		 * @param referenceStartNumber
@@ -220,8 +216,7 @@ public class RuleViolationException extends RuntimeException {
 		/**
 		 * Another athlete has already lifted more than what is requested.
 		 *
-		 * Bar cannot go down in weight. Unless error occurred, in which case T.O. can use "force as current lifter" to
-		 * disable validation.
+		 * Bar cannot go down in weight. Unless error occurred, in which case T.O. can use "force as current lifter" to disable validation.
 		 *
 		 * @param requestedWeight
 		 * @param startNumber

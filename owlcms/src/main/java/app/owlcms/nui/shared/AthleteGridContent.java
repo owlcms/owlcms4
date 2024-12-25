@@ -308,29 +308,29 @@ public abstract class AthleteGridContent extends BaseContent
 		this.breakButton.getStyle().set("color", "white");
 		this.breakButton.getStyle().set("background-color", "var(--lumo-error-color)");
 		// breakButton.setText(Translator.translate("BreakButton.Paused"));
-		fop = this.getFop();
-		//OwlcmsSession.withFop(fop -> {
-			IBreakTimer breakTimer = fop.getBreakTimer();
-			if (!breakTimer.isIndefinite()) {
-				BreakTimerElement bte = (BreakTimerElement) getBreakTimerElement();
-				bte.syncWithFopTimer(fop);
-				bte.setParent(this.getClass().getSimpleName() + "_" + this.id);
-				this.breakButton.setIcon(bte);
-				this.breakButton.setIconAfterText(true);
-			}
+		this.fop = this.getFop();
+		// OwlcmsSession.withFop(fop -> {
+		IBreakTimer breakTimer = this.fop.getBreakTimer();
+		if (!breakTimer.isIndefinite()) {
+			BreakTimerElement bte = (BreakTimerElement) getBreakTimerElement();
+			bte.syncWithFopTimer(this.fop);
+			bte.setParent(this.getClass().getSimpleName() + "_" + this.id);
+			this.breakButton.setIcon(bte);
+			this.breakButton.setIconAfterText(true);
+		}
 
-			if (fop.getCeremonyType() != null) {
-				this.breakButton.setText(Translator.translate("CeremonyType." + fop.getCeremonyType()));
+		if (this.fop.getCeremonyType() != null) {
+			this.breakButton.setText(Translator.translate("CeremonyType." + this.fop.getCeremonyType()));
+		} else {
+			BreakType breakType = this.fop.getBreakType();
+			if (breakType != null) {
+				this.breakButton.setText(Translator.translate("BreakType." + breakType) + "\u00a0\u00a0");
 			} else {
-				BreakType breakType = fop.getBreakType();
-				if (breakType != null) {
-					this.breakButton.setText(Translator.translate("BreakType." + breakType) + "\u00a0\u00a0");
-				} else {
-					// break done.  the button will be hidden in a subsequent step.
-					this.breakButton.setText(Translator.translate("BreakButton.Paused") + "\u00a0\u00a0");
-				}
+				// break done. the button will be hidden in a subsequent step.
+				this.breakButton.setText(Translator.translate("BreakButton.Paused") + "\u00a0\u00a0");
 			}
-		//});
+		}
+		// });
 
 	}
 
@@ -668,6 +668,15 @@ public abstract class AthleteGridContent extends BaseContent
 	}
 
 	@Subscribe
+	public void slaveDecision(UIEvent.Decision e) {
+		Athlete athlete = e.getAthlete();
+		// logger.debug("athletegrid slaveDecision");
+		UIEventProcessor.uiAccess(this.topBar, this.uiEventBus, e, () -> {
+			warnOthersIfCurrent(e, athlete, e.getFop());
+		});
+	}
+
+	@Subscribe
 	public void slaveGroupDone(UIEvent.GroupDone e) {
 		uiEventLogger.debug("### {} {} {} {}", this.getClass().getSimpleName(), e.getClass().getSimpleName(),
 		        this.getOrigin(), e.getOrigin());
@@ -837,11 +846,13 @@ public abstract class AthleteGridContent extends BaseContent
 	}
 
 	@Subscribe
-	public void slaveDecision(UIEvent.Decision e) {
-		Athlete athlete = e.getAthlete();
-		// logger.debug("athletegrid slaveDecision");
-		UIEventProcessor.uiAccess(this.topBar, this.uiEventBus, e, () -> {
-			warnOthersIfCurrent(e, athlete, e.getFop());
+	public void slaveUpdateGrid(UIEvent.Decision e) {
+		if (this.getCrudGrid() == null) {
+			return;
+		}
+		logger.debug("{} {}", e.getOrigin(), LoggerUtils.whereFrom());
+		UIEventProcessor.uiAccess(this.getCrudGrid(), this.uiEventBus, e, () -> {
+			this.getCrudGrid().refreshGrid();
 		});
 	}
 
@@ -852,17 +863,6 @@ public abstract class AthleteGridContent extends BaseContent
 	 */
 	@Subscribe
 	public void slaveUpdateGrid(UIEvent.LiftingOrderUpdated e) {
-		if (this.getCrudGrid() == null) {
-			return;
-		}
-		logger.debug("{} {}", e.getOrigin(), LoggerUtils.whereFrom());
-		UIEventProcessor.uiAccess(this.getCrudGrid(), this.uiEventBus, e, () -> {
-			this.getCrudGrid().refreshGrid();
-		});
-	}
-
-	@Subscribe
-	public void slaveUpdateGrid(UIEvent.Decision e) {
 		if (this.getCrudGrid() == null) {
 			return;
 		}
@@ -1271,9 +1271,9 @@ public abstract class AthleteGridContent extends BaseContent
 
 	/**
 	 * Notifications for FOP events. Good/bad lifts are done in AnnouncerContent.
-	 * 
+	 *
 	 * Notification theme styling is done in META-INF/resources/frontend/styles/shared-styles.html
-	 * 
+	 *
 	 * @param text
 	 * @param theme
 	 */
@@ -1414,6 +1414,18 @@ public abstract class AthleteGridContent extends BaseContent
 		getTopBarLeft().setId("topBarLeft");
 	}
 
+	protected OwlcmsCrudGrid<Athlete> getCrudGrid() {
+		return this.crudGrid;
+	}
+
+	protected HorizontalLayout getDecisionLights() {
+		return this.decisionLights;
+	}
+
+	protected ComboBox<Gender> getGenderFilter() {
+		return this.genderFilter;
+	}
+
 	protected Object getOrigin() {
 		return this;
 	}
@@ -1472,6 +1484,24 @@ public abstract class AthleteGridContent extends BaseContent
 		this.uiEventBus = uiEventBusRegister(this, getFop());
 	}
 
+	// protected void syncWithFOP(boolean refreshGrid) {
+	// OwlcmsSession.withFop((fop) -> {
+	// syncWithFop(refreshGrid, fop);
+	// });
+	// }
+
+	protected void setCrudGrid(OwlcmsCrudGrid<Athlete> crudGrid) {
+		this.crudGrid = crudGrid;
+	}
+
+	protected void setDecisionLights(HorizontalLayout decisionLights) {
+		this.decisionLights = decisionLights;
+	}
+
+	protected void setGenderFilter(ComboBox<Gender> genderFilter) {
+		this.genderFilter = genderFilter;
+	}
+
 	protected void setGroupFilter(ComboBox<Group> groupFilter) {
 		this.groupFilter = groupFilter;
 	}
@@ -1487,12 +1517,6 @@ public abstract class AthleteGridContent extends BaseContent
 		this.topBarTitle = title;
 	}
 
-	// protected void syncWithFOP(boolean refreshGrid) {
-	// OwlcmsSession.withFop((fop) -> {
-	// syncWithFop(refreshGrid, fop);
-	// });
-	// }
-
 	protected void syncWithFop(boolean refreshGrid, FieldOfPlay fop) {
 		createTopBarGroupSelect();
 
@@ -1503,9 +1527,9 @@ public abstract class AthleteGridContent extends BaseContent
 					// sort by start number by default.
 					// underlying source is lift order, so clearing the sort arrow gives back lift order.
 					List<GridSortOrder<Athlete>> sortOrder = new ArrayList<>();
-					Grid<Athlete> grid = crudGrid.getGrid();
+					Grid<Athlete> grid = this.crudGrid.getGrid();
 					Column<Athlete> col = grid.getColumnByKey("startNumber");
-					sortOrder.add(new GridSortOrder<Athlete>(col, SortDirection.ASCENDING));
+					sortOrder.add(new GridSortOrder<>(col, SortDirection.ASCENDING));
 					grid.sort(sortOrder);
 				} else {
 					// underlying order (lift order)
@@ -1726,30 +1750,6 @@ public abstract class AthleteGridContent extends BaseContent
 			}
 		}
 
-	}
-
-	protected OwlcmsCrudGrid<Athlete> getCrudGrid() {
-		return crudGrid;
-	}
-
-	protected void setCrudGrid(OwlcmsCrudGrid<Athlete> crudGrid) {
-		this.crudGrid = crudGrid;
-	}
-
-	protected ComboBox<Gender> getGenderFilter() {
-		return genderFilter;
-	}
-
-	protected void setGenderFilter(ComboBox<Gender> genderFilter) {
-		this.genderFilter = genderFilter;
-	}
-
-	protected HorizontalLayout getDecisionLights() {
-		return decisionLights;
-	}
-
-	protected void setDecisionLights(HorizontalLayout decisionLights) {
-		this.decisionLights = decisionLights;
 	}
 
 }

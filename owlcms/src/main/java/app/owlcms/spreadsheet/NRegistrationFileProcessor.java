@@ -392,9 +392,22 @@ public class NRegistrationFileProcessor implements IRegistrationFileProcessor {
 		}
 	}
 
+	private boolean checkTranslation(String valueRead, String string) {
+		String translate = Translator.translate(string);
+		String translate2 = Translator.translateExplicitLocale(string, Locale.ENGLISH);
+		return valueRead.contentEquals(translate)
+		        || valueRead.contentEquals(translate2);
+	}
+
+	private boolean checkTranslation(String valueRead, String string, String string2) {
+		return valueRead.contentEquals(Translator.translate(string) + " " + Translator.translate(string2))
+		        || valueRead.contentEquals(Translator.translateExplicitLocale(string, Locale.ENGLISH) + " "
+		                + Translator.translateExplicitLocale(string2, Locale.ENGLISH));
+	}
+
 	private void processException(RAthlete a, String s, Cell c, Exception e, Consumer<String> errorConsumer) {
 		errorConsumer.accept(c.getAddress() + " " + e.getLocalizedMessage() + System.lineSeparator());
-		logger.error("{} {} {}", c.getAddress(), s, e.getMessage());
+		this.logger.error("{} {} {}", c.getAddress(), s, e.getMessage());
 		// LoggerUtils.logError(this.logger, e, true);
 	}
 
@@ -453,7 +466,7 @@ public class NRegistrationFileProcessor implements IRegistrationFileProcessor {
 								}
 								a.setGender(s);
 							} catch (Exception e) {
-								processException(a, s, c, new Exception(Translator.translate("Registration.IllegalGender",s)), errorConsumer);
+								processException(a, s, c, new Exception(Translator.translate("Registration.IllegalGender", s)), errorConsumer);
 							}
 						});
 					} else if (checkTranslation(trimmedCellValue, "Card.category")) {
@@ -628,19 +641,6 @@ public class NRegistrationFileProcessor implements IRegistrationFileProcessor {
 			iRow++;
 		}
 		return new AthleteInput(athletes);
-	}
-
-	private boolean checkTranslation(String valueRead, String string, String string2) {
-		return valueRead.contentEquals(Translator.translate(string) + " " + Translator.translate(string2))
-		        || valueRead.contentEquals(Translator.translateExplicitLocale(string, Locale.ENGLISH) + " "
-		                + Translator.translateExplicitLocale(string2, Locale.ENGLISH));
-	}
-
-	private boolean checkTranslation(String valueRead, String string) {
-		String translate = Translator.translate(string);
-		String translate2 = Translator.translateExplicitLocale(string, Locale.ENGLISH);
-		return valueRead.contentEquals(translate)
-		        || valueRead.contentEquals(translate2);
 	}
 
 }

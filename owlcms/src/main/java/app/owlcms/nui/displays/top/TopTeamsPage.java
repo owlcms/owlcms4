@@ -89,11 +89,6 @@ public class TopTeamsPage extends AbstractResultsDisplayPage implements TopParam
 	}
 
 	@Override
-	public final Championship getChampionship() {
-		return this.ageDivision;
-	}
-
-	@Override
 	public final AgeGroup getAgeGroup() {
 		return this.ageGroup;
 	}
@@ -108,6 +103,11 @@ public class TopTeamsPage extends AbstractResultsDisplayPage implements TopParam
 		return this.category;
 	}
 
+	@Override
+	public final Championship getChampionship() {
+		return this.ageDivision;
+	}
+
 	/**
 	 * @see com.vaadin.flow.router.HasDynamicTitle#getPageTitle()
 	 */
@@ -117,8 +117,7 @@ public class TopTeamsPage extends AbstractResultsDisplayPage implements TopParam
 	}
 
 	/**
-	 * @see app.owlcms.apputils.queryparameters.DisplayParametersReader#readParams(com.vaadin.flow.router.Location,
-	 *      java.util.Map)
+	 * @see app.owlcms.apputils.queryparameters.DisplayParametersReader#readParams(com.vaadin.flow.router.Location, java.util.Map)
 	 */
 	@Override
 	public HashMap<String, List<String>> readParams(Location location, Map<String, List<String>> parametersMap) {
@@ -172,13 +171,6 @@ public class TopTeamsPage extends AbstractResultsDisplayPage implements TopParam
 	}
 
 	@Override
-	public void setChampionship(Championship ageDivision) {
-		this.ageDivision = ageDivision;
-		((TopTeams) this.getBoard()).setChampionship(ageDivision);
-		((TopTeams) this.getBoard()).doUpdate(Competition.getCurrent());
-	}
-
-	@Override
 	public final void setAgeGroup(AgeGroup ag) {
 		this.ageGroup = ag;
 		((TopTeams) this.getBoard()).setAgeGroup(ag);
@@ -196,6 +188,13 @@ public class TopTeamsPage extends AbstractResultsDisplayPage implements TopParam
 	public final void setCategory(Category cat) {
 		this.category = cat;
 		((TopTeams) this.getBoard()).setCategory(cat);
+		((TopTeams) this.getBoard()).doUpdate(Competition.getCurrent());
+	}
+
+	@Override
+	public void setChampionship(Championship ageDivision) {
+		this.ageDivision = ageDivision;
+		((TopTeams) this.getBoard()).setChampionship(ageDivision);
 		((TopTeams) this.getBoard()).doUpdate(Competition.getCurrent());
 	}
 

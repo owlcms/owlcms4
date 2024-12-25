@@ -69,48 +69,48 @@ public class JXLSMedalSchedule extends JXLSWorkbookStreamSource {
 			this.session = session;
 		}
 
-		List<Category> computeSessionCategories() {
-			TreeSet<Category> sessionCategories = new TreeSet<>();
-			for (Athlete a : session.getAthletes()) {
-				if (this.gender != null && a.getGender() != this.gender) {
-					continue;
-				}
-				sessionCategories.addAll(a.getEligibleCategories());
-			}
-			ArrayList<Category> returned = new ArrayList<Category>();
-			returned.addAll(sessionCategories);
-			return returned;
+		public TreeSet<Category> getCategories() {
+			return this.categories;
 		}
 
 		public String getCategoriesAsString() {
 			return getCategories().stream().map(c -> c.toString()).distinct().collect(Collectors.joining(", "));
 		}
 
-		public void setCategoriesAsString(String unused) {
-		}
-
-		public TreeSet<Category> getCategories() {
-			return categories;
-		}
-
-		public void setCategories(List<Category> newCategories) {
-			this.categories = new TreeSet<Category>(newCategories);
+		public Gender getGender() {
+			return this.gender;
 		}
 
 		public Group getSession() {
-			return session;
+			return this.session;
+		}
+
+		public void setCategories(List<Category> newCategories) {
+			this.categories = new TreeSet<>(newCategories);
+		}
+
+		public void setCategoriesAsString(String unused) {
+		}
+
+		public void setGender(Gender gender) {
+			this.gender = gender;
 		}
 
 		public void setSession(Group session) {
 			this.session = session;
 		}
 
-		public Gender getGender() {
-			return gender;
-		}
-
-		public void setGender(Gender gender) {
-			this.gender = gender;
+		List<Category> computeSessionCategories() {
+			TreeSet<Category> sessionCategories = new TreeSet<>();
+			for (Athlete a : this.session.getAthletes()) {
+				if (this.gender != null && a.getGender() != this.gender) {
+					continue;
+				}
+				sessionCategories.addAll(a.getEligibleCategories());
+			}
+			ArrayList<Category> returned = new ArrayList<>();
+			returned.addAll(sessionCategories);
+			return returned;
 		}
 
 	}
@@ -150,7 +150,7 @@ public class JXLSMedalSchedule extends JXLSWorkbookStreamSource {
 			SessionStats sessionStats = new SessionStats(session);
 			List<Category> newCategories = sessionStats.computeSessionCategories();
 
-			//List<String> ncCodes = newCategories.stream().map(c -> c.getCode()).toList();
+			// List<String> ncCodes = newCategories.stream().map(c -> c.getCode()).toList();
 			newCategories = newCategories.stream().filter(c -> !alreadyMedaledCodes.contains(c.getCode())).toList();
 
 			sessionStats.setCategories(newCategories);
@@ -163,15 +163,15 @@ public class JXLSMedalSchedule extends JXLSWorkbookStreamSource {
 			medalingPerSession.put(session, sessionStats);
 		}
 
-		ArrayList<SessionStats> all = new ArrayList<SessionStats>();
+		ArrayList<SessionStats> all = new ArrayList<>();
 		all.addAll(medalingPerSession.values());
 		getReportingBeans().put("medalStatsPerSession", all);
 
-		ArrayList<CategoryStat> categories = new ArrayList<CategoryStat>();
+		ArrayList<CategoryStat> categories = new ArrayList<>();
 		categorySessions.forEach((Category category, Group session) -> {
 			categories.add(new CategoryStat(category, session));
 		});
-		categories.sort((a, b) -> a.getCategory().compareTo(b.getCategory())) ;
+		categories.sort((a, b) -> a.getCategory().compareTo(b.getCategory()));
 		getReportingBeans().put("medalStatsPerCategory", categories);
 	}
 

@@ -54,11 +54,6 @@ public class TopSinclairPage extends AbstractResultsDisplayPage implements TopPa
 	}
 
 	@Override
-	public Championship getChampionship() {
-		return this.ageDivision;
-	}
-
-	@Override
 	public final AgeGroup getAgeGroup() {
 		return this.ageGroup;
 	}
@@ -74,14 +69,14 @@ public class TopSinclairPage extends AbstractResultsDisplayPage implements TopPa
 	}
 
 	@Override
-	public String getPageTitle() {
-		return Translator.translate("Scoreboard.TopScore",
-		        Ranking.getScoringTitle(Competition.getCurrent().getScoringSystem()));
+	public Championship getChampionship() {
+		return this.ageDivision;
 	}
 
 	@Override
-	public void setChampionship(Championship ageDivision) {
-		this.ageDivision = ageDivision;
+	public String getPageTitle() {
+		return Translator.translate("Scoreboard.TopScore",
+		        Ranking.getScoringTitle(Competition.getCurrent().getScoringSystem()));
 	}
 
 	@Override
@@ -97,6 +92,11 @@ public class TopSinclairPage extends AbstractResultsDisplayPage implements TopPa
 	@Override
 	public final void setCategory(Category cat) {
 		this.category = cat;
+	}
+
+	@Override
+	public void setChampionship(Championship ageDivision) {
+		this.ageDivision = ageDivision;
 	}
 
 	@Override

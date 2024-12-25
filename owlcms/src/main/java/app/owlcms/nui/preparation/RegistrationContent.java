@@ -166,9 +166,9 @@ public class RegistrationContent extends BaseContent implements CrudListener<Ath
 	public FlexLayout createMenuArea() {
 		createTopBarGroupSelect();
 
-//		Button bwButton = createBWButton();
-//		Button categoriesListButton = createCategoriesListButton();
-//		Button teamsListButton = createTeamsListButton();
+		// Button bwButton = createBWButton();
+		// Button categoriesListButton = createCategoriesListButton();
+		// Button teamsListButton = createTeamsListButton();
 
 		Button drawLots = new Button(Translator.translate("DrawLotNumbers"), (e) -> {
 			drawLots();
@@ -208,13 +208,13 @@ public class RegistrationContent extends BaseContent implements CrudListener<Ath
 		hr.getStyle().set("margin", "0");
 		hr.getStyle().set("padding", "0");
 		FlexLayout buttons = new FlexLayout(
-//		        new NativeLabel(Translator.translate("Preparation")),
+		        // new NativeLabel(Translator.translate("Preparation")),
 		        drawLots, deleteAthletes, clearLifts,
 		        resetCats
-//		        , hr,
-//		        new NativeLabel(Translator.translate("Entries")),
-//		        bwButton, categoriesListButton, teamsListButton
-		        );
+		// , hr,
+		// new NativeLabel(Translator.translate("Entries")),
+		// bwButton, categoriesListButton, teamsListButton
+		);
 		buttons.getStyle().set("flex-wrap", "wrap");
 		buttons.getStyle().set("gap", "1ex");
 		buttons.getStyle().set("margin-left", "3em");
@@ -428,11 +428,9 @@ public class RegistrationContent extends BaseContent implements CrudListener<Ath
 	 * Note: because we have the @Route, the parameters are parsed *before* our parent layout is created.
 	 *
 	 * @param event     Vaadin navigation event
-	 * @param parameter null in this case -- we don't want a vaadin "/" parameter. This allows us to add query
-	 *                  parameters instead.
+	 * @param parameter null in this case -- we don't want a vaadin "/" parameter. This allows us to add query parameters instead.
 	 *
-	 * @see app.owlcms.apputils.queryparameters.FOPParameters#setParameter(com.vaadin.flow.router.BeforeEvent,
-	 *      java.lang.String)
+	 * @see app.owlcms.apputils.queryparameters.FOPParameters#setParameter(com.vaadin.flow.router.BeforeEvent, java.lang.String)
 	 */
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
@@ -576,7 +574,7 @@ public class RegistrationContent extends BaseContent implements CrudListener<Ath
 		grid.addColumn("category").setHeader(Translator.translate("Category")).setAutoWidth(true)
 		        .setTextAlign(ColumnTextAlign.CENTER)
 		        .setRenderer(
-		                new TextRenderer<Athlete>(a -> a.getCategory() != null ? a.getCategory().toString() : "-"));
+		                new TextRenderer<>(a -> a.getCategory() != null ? a.getCategory().toString() : "-"));
 		grid.addColumn(new NumberRenderer<>(Athlete::getBodyWeight, "%.2f", this.getLocale()))
 		        .setSortProperty("bodyWeight")
 		        .setHeader(Translator.translate("BodyWeight")).setAutoWidth(true).setTextAlign(ColumnTextAlign.CENTER);
@@ -593,8 +591,8 @@ public class RegistrationContent extends BaseContent implements CrudListener<Ath
 
 		List<GridSortOrder<Athlete>> sortOrder = new ArrayList<>();
 		// groupWeighinTimeComparator implements traditional platform name comparisons e.g. USAW.
-		groupCol.setComparator((a,b) -> Group.groupWeighinTimeComparator.compare(a.getGroup(), b.getGroup()));
-		sortOrder.add(new GridSortOrder<Athlete>(groupCol, SortDirection.ASCENDING));
+		groupCol.setComparator((a, b) -> Group.groupWeighinTimeComparator.compare(a.getGroup(), b.getGroup()));
+		sortOrder.add(new GridSortOrder<>(groupCol, SortDirection.ASCENDING));
 		grid.sort(sortOrder);
 
 		OwlcmsCrudGrid<Athlete> crudGrid = new OwlcmsCrudGrid<>(Athlete.class, new OwlcmsGridLayout(Athlete.class) {
@@ -620,10 +618,10 @@ public class RegistrationContent extends BaseContent implements CrudListener<Ath
 	 * @return the form factory that will create the actual form on demand
 	 */
 	protected OwlcmsCrudFormFactory<Athlete> createFormFactory() {
-		athleteEditingFormFactory = new NAthleteRegistrationFormFactory(Athlete.class,
+		this.athleteEditingFormFactory = new NAthleteRegistrationFormFactory(Athlete.class,
 		        getGroup(), null);
 		// createFormLayout(athleteEditingFormFactory);
-		return athleteEditingFormFactory;
+		return this.athleteEditingFormFactory;
 	}
 
 	protected Button createTeamsListButton() {
@@ -816,74 +814,6 @@ public class RegistrationContent extends BaseContent implements CrudListener<Ath
 		return found;
 	}
 
-	private List<Athlete> filterAthletes(List<Athlete> athletes) {
-		Category catFilterValue = getCategoryValue();
-		Group group2 = getGroup() == null
-		        ? null
-		        : (getGroup().getName() == "*" ? null : getGroup());
-		Stream<Athlete> stream = athletes.stream()
-		        .filter(a -> {
-			        Platform platformFilterValue = getPlatform();
-			        if (platformFilterValue == null) {
-				        return true;
-			        }
-			        Platform athletePlaform = a.getGroup() != null
-			                ? (a.getGroup().getPlatform() != null ? a.getGroup().getPlatform() : null)
-			                : null;
-			        return platformFilterValue.equals(athletePlaform);
-		        })
-		        .filter(a -> {
-			        return group2 != null ? group2.equals(a.getGroup())
-			                : true;
-		        })
-		        .filter(a -> {
-			        String fLastName = getLastName();
-			        if (fLastName == null) {
-				        return true;
-			        }
-			        String aLastName = a.getLastName();
-			        if (aLastName == null || aLastName.isBlank())
-				        return false;
-			        aLastName = aLastName.toLowerCase();
-			        fLastName = fLastName.toLowerCase();
-			        return aLastName.startsWith(fLastName);
-		        })
-		        .filter(a -> {
-					if (getWeighedIn() == null) {
-						return true;
-					}
-
-					if (getWeighedIn()) {
-						return a.getBodyWeight() != null && a.getBodyWeight() > 0;
-					}
-
-					return a.getBodyWeight() == null || a.getBodyWeight() == 0;
-				})
-		        // .filter(a -> a.getCategory() != null)
-		        .filter(a -> {
-			        Gender genderFilterValue = getGender();
-			        Gender athleteGender = a.getGender();
-			        boolean catOk = (catFilterValue == null
-			                || (a.getCategory() != null
-			                        && catFilterValue.toString().equals(a.getCategory().toString())))
-			                && (genderFilterValue == null || genderFilterValue == athleteGender);
-			        return catOk;
-		        })
-		        .filter(a -> getTeam() != null ? getTeam().contentEquals(a.getTeam())
-		                : true)
-		        .map(a -> {
-			        if (a.getTeam() == null) {
-				        a.setTeam("");
-			        }
-			        return a;
-		        });
-
-		List<Athlete> found = stream.sorted(
-		        groupCategoryComparator())
-		        .collect(Collectors.toList());
-		return found;
-	}
-
 	protected void setAgeGroup(AgeGroup value) {
 		this.ageGroup = value;
 
@@ -953,6 +883,13 @@ public class RegistrationContent extends BaseContent implements CrudListener<Ath
 		        gender);
 	}
 
+	@SuppressWarnings("unused")
+	private String athleteLog(Athlete a1) {
+		Participation mainRankings1 = a1.getMainRankings() != null ? a1.getMainRankings() : null;
+		Category category1 = mainRankings1 != null ? mainRankings1.getCategory() : null;
+		return "[" + a1.getShortName() + " " + a1.getGroup() + " " + category1 + " " + a1.getEntryTotal() + "]";
+	}
+
 	private void clearLifts() {
 		JPAService.runInTransaction(em -> {
 			List<Athlete> athletes = athletesFindAll(false);
@@ -992,10 +929,10 @@ public class RegistrationContent extends BaseContent implements CrudListener<Ath
 		logger.debug("newCurrentGroup.getName() {}", newCurrentGroup.getName());
 		if (newCurrentGroup != null && newCurrentGroup.getName() == "*") {
 			setGroup(null);
-			athleteEditingFormFactory.setCurrentGroup(null);
+			this.athleteEditingFormFactory.setCurrentGroup(null);
 		} else {
 			setGroup(newCurrentGroup);
-			athleteEditingFormFactory.setCurrentGroup(newCurrentGroup);
+			this.athleteEditingFormFactory.setCurrentGroup(newCurrentGroup);
 		}
 		// getRouterLayout().updateHeader(true);
 		getGroupFilter().setValue(newCurrentGroup);
@@ -1012,6 +949,75 @@ public class RegistrationContent extends BaseContent implements CrudListener<Ath
 			return null;
 		});
 		refreshCrudGrid();
+	}
+
+	private List<Athlete> filterAthletes(List<Athlete> athletes) {
+		Category catFilterValue = getCategoryValue();
+		Group group2 = getGroup() == null
+		        ? null
+		        : (getGroup().getName() == "*" ? null : getGroup());
+		Stream<Athlete> stream = athletes.stream()
+		        .filter(a -> {
+			        Platform platformFilterValue = getPlatform();
+			        if (platformFilterValue == null) {
+				        return true;
+			        }
+			        Platform athletePlaform = a.getGroup() != null
+			                ? (a.getGroup().getPlatform() != null ? a.getGroup().getPlatform() : null)
+			                : null;
+			        return platformFilterValue.equals(athletePlaform);
+		        })
+		        .filter(a -> {
+			        return group2 != null ? group2.equals(a.getGroup())
+			                : true;
+		        })
+		        .filter(a -> {
+			        String fLastName = getLastName();
+			        if (fLastName == null) {
+				        return true;
+			        }
+			        String aLastName = a.getLastName();
+			        if (aLastName == null || aLastName.isBlank()) {
+				        return false;
+			        }
+			        aLastName = aLastName.toLowerCase();
+			        fLastName = fLastName.toLowerCase();
+			        return aLastName.startsWith(fLastName);
+		        })
+		        .filter(a -> {
+			        if (getWeighedIn() == null) {
+				        return true;
+			        }
+
+			        if (getWeighedIn()) {
+				        return a.getBodyWeight() != null && a.getBodyWeight() > 0;
+			        }
+
+			        return a.getBodyWeight() == null || a.getBodyWeight() == 0;
+		        })
+		        // .filter(a -> a.getCategory() != null)
+		        .filter(a -> {
+			        Gender genderFilterValue = getGender();
+			        Gender athleteGender = a.getGender();
+			        boolean catOk = (catFilterValue == null
+			                || (a.getCategory() != null
+			                        && catFilterValue.toString().equals(a.getCategory().toString())))
+			                && (genderFilterValue == null || genderFilterValue == athleteGender);
+			        return catOk;
+		        })
+		        .filter(a -> getTeam() != null ? getTeam().contentEquals(a.getTeam())
+		                : true)
+		        .map(a -> {
+			        if (a.getTeam() == null) {
+				        a.setTeam("");
+			        }
+			        return a;
+		        });
+
+		List<Athlete> found = stream.sorted(
+		        groupCategoryComparator())
+		        .collect(Collectors.toList());
+		return found;
 	}
 
 	private Comparator<? super Athlete> groupCategoryComparator() {
@@ -1049,13 +1055,6 @@ public class RegistrationContent extends BaseContent implements CrudListener<Ath
 		} else if (compare > 0) {
 			// logger.trace("({}) {} > {}", string, athleteLog(a1), athleteLog(a2));
 		}
-	}
-
-	@SuppressWarnings("unused")
-	private String athleteLog(Athlete a1) {
-		Participation mainRankings1 = a1.getMainRankings() != null ? a1.getMainRankings() : null;
-		Category category1 = mainRankings1 != null ? mainRankings1.getCategory() : null;
-		return "[" + a1.getShortName() + " " + a1.getGroup() + " " + category1 + " " + a1.getEntryTotal() + "]";
 	}
 
 	private void resetCategories() {

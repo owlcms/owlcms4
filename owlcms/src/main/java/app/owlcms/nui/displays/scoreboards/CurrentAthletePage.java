@@ -50,8 +50,8 @@ public class CurrentAthletePage extends AbstractResultsDisplayPage {
 
 	@Override
 	protected void init() {
-		logger = (Logger) LoggerFactory.getLogger(CurrentAthletePage.class);
-		uiEventLogger = (Logger) LoggerFactory.getLogger("UI" + this.logger.getName());
+		this.logger = (Logger) LoggerFactory.getLogger(CurrentAthletePage.class);
+		this.uiEventLogger = (Logger) LoggerFactory.getLogger("UI" + this.logger.getName());
 		var board = new CurrentAthlete(this);
 		this.setBoard(board);
 
@@ -77,7 +77,7 @@ public class CurrentAthletePage extends AbstractResultsDisplayPage {
 		fullMap.putAll(additionalMap);
 		setDefaultParameters(QueryParameters.simple(fullMap));
 	}
-	
+
 	@Override
 	protected void onAttach(AttachEvent attachEvent) {
 		DisplayParameters board = (DisplayParameters) this.getBoard();

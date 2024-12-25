@@ -82,6 +82,20 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
 		return 0;
 	}
 
+	public int compareAgeAdjustedTotal(Athlete lifter1, Athlete lifter2) {
+		Double lifter1Value = lifter1.getAgeAdjustedTotal();
+		Double lifter2Value = lifter2.getAgeAdjustedTotal();
+		final Double notWeighed = 0D;
+		if (lifter1Value == null) {
+			lifter1Value = notWeighed;
+		}
+		if (lifter2Value == null) {
+			lifter2Value = notWeighed;
+		}
+		// bigger adjusted total comes first
+		return -lifter1Value.compareTo(lifter2Value);
+	}
+
 	/**
 	 * Determine who ranks first on AgeFactor-adjusted total.
 	 *
@@ -102,20 +116,6 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
 		}
 
 		return tieBreak(lifter1, lifter2, true);
-	}
-
-	public int compareAgeAdjustedTotal(Athlete lifter1, Athlete lifter2) {
-		Double lifter1Value = lifter1.getAgeAdjustedTotal();
-		Double lifter2Value = lifter2.getAgeAdjustedTotal();
-		final Double notWeighed = 0D;
-		if (lifter1Value == null) {
-			lifter1Value = notWeighed;
-		}
-		if (lifter2Value == null) {
-			lifter2Value = notWeighed;
-		}
-		// bigger adjusted total comes first
-		return -lifter1Value.compareTo(lifter2Value);
 	}
 
 	/**
@@ -201,32 +201,6 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
 		return tieBreak(lifter1, lifter2, Competition.getCurrent().isUseOldBodyWeightTieBreak());
 	}
 
-	public int compareScoreResultOrder(Athlete lifter1, Athlete lifter2, boolean ignoreCategories) {
-		int compare = 0;
-
-		if (!ignoreCategories) {
-			compare = ObjectUtils.compare(lifter1.getCategory(), lifter2.getCategory(), true);
-			traceComparison("!ignoreCategories", lifter1, lifter2, compare);
-			if (compare != 0) {
-				return compare;
-			}
-		}
-
-		compare = compareScore(lifter1, lifter2);
-		traceComparison("score", lifter1, lifter2, compare);
-		if (compare != 0) {
-			return -compare; // we want reverse order - smaller comes after
-		}
-
-		compare = compareTotal(lifter1, lifter2);
-		traceComparison("total", lifter1, lifter2, compare);
-		if (compare != 0) {
-			return -compare; // we want reverse order - smaller comes after
-		}
-
-		return tieBreak(lifter1, lifter2, Competition.getCurrent().isUseOldBodyWeightTieBreak());
-	}
-
 	/**
 	 * Determine who ranks first on GAMX points.
 	 *
@@ -258,6 +232,29 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
 	 * @param lifter2 the lifter 2
 	 * @return the int
 	 */
+	public int compareQAgeResultOrder(Athlete lifter1, Athlete lifter2) {
+		int compare = 0;
+		compare = ObjectUtils.compare(lifter1.getGender(), lifter2.getGender());
+		if (compare != 0) {
+			return compare;
+		}
+		compare = compareQAge(lifter1, lifter2);
+		traceComparison("qPoints", lifter1, lifter2, compare);
+		if (compare != 0) {
+			return compare;
+		}
+		compare = compareBodyWeight(lifter1, lifter2);
+		traceComparison("qage compareBodyWeight", lifter1, lifter2, compare);
+		return compare; // smaller Athlete wins
+	}
+
+	/**
+	 * Determine who ranks first on QPoints points.
+	 *
+	 * @param lifter1 the lifter 1
+	 * @param lifter2 the lifter 2
+	 * @return the int
+	 */
 	public int compareQPointsResultOrder(Athlete lifter1, Athlete lifter2) {
 		int compare = 0;
 		compare = ObjectUtils.compare(lifter1.getGender(), lifter2.getGender());
@@ -275,29 +272,6 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
 		}
 		compare = compareBodyWeight(lifter1, lifter2);
 		traceComparison("qpoints compareBodyWeight", lifter1, lifter2, compare);
-		return compare; // smaller Athlete wins
-	}
-
-	/**
-	 * Determine who ranks first on QPoints points.
-	 *
-	 * @param lifter1 the lifter 1
-	 * @param lifter2 the lifter 2
-	 * @return the int
-	 */
-	public int compareQAgeResultOrder(Athlete lifter1, Athlete lifter2) {
-		int compare = 0;
-		compare = ObjectUtils.compare(lifter1.getGender(), lifter2.getGender());
-		if (compare != 0) {
-			return compare;
-		}
-		compare = compareQAge(lifter1, lifter2);
-		traceComparison("qPoints", lifter1, lifter2, compare);
-		if (compare != 0) {
-			return compare;
-		}
-		compare = compareBodyWeight(lifter1, lifter2);
-		traceComparison("qage compareBodyWeight", lifter1, lifter2, compare);
 		return compare; // smaller Athlete wins
 	}
 
@@ -324,6 +298,32 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
 		compare = compareBodyWeight(lifter1, lifter2);
 		traceComparison("robi compareBodyWeight", lifter1, lifter2, compare);
 		return compare; // smaller Athlete wins
+	}
+
+	public int compareScoreResultOrder(Athlete lifter1, Athlete lifter2, boolean ignoreCategories) {
+		int compare = 0;
+
+		if (!ignoreCategories) {
+			compare = ObjectUtils.compare(lifter1.getCategory(), lifter2.getCategory(), true);
+			traceComparison("!ignoreCategories", lifter1, lifter2, compare);
+			if (compare != 0) {
+				return compare;
+			}
+		}
+
+		compare = compareScore(lifter1, lifter2);
+		traceComparison("score", lifter1, lifter2, compare);
+		if (compare != 0) {
+			return -compare; // we want reverse order - smaller comes after
+		}
+
+		compare = compareTotal(lifter1, lifter2);
+		traceComparison("total", lifter1, lifter2, compare);
+		if (compare != 0) {
+			return -compare; // we want reverse order - smaller comes after
+		}
+
+		return tieBreak(lifter1, lifter2, Competition.getCurrent().isUseOldBodyWeightTieBreak());
 	}
 
 	/**
@@ -514,7 +514,6 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
 		// traceComparison("qpoints", lifter1, lifter2, compare);
 		return compare;
 	}
-	
 
 	/**
 	 * Compare Q-Points.

@@ -84,8 +84,7 @@ public class DocsContent extends RegistrationContent implements HasDynamicTitle,
 	private ComboBox<Platform> platformFilter;
 
 	/**
-	 * Instantiates a new announcer content. Does nothing. Content is created in
-	 * {@link #setParameter(BeforeEvent, String)} after URL parameters are parsed.
+	 * Instantiates a new announcer content. Does nothing. Content is created in {@link #setParameter(BeforeEvent, String)} after URL parameters are parsed.
 	 */
 	public DocsContent() {
 	}
@@ -171,8 +170,7 @@ public class DocsContent extends RegistrationContent implements HasDynamicTitle,
 	}
 
 	/**
-	 * @see app.owlcms.apputils.queryparameters.DisplayParameters#readParams(com.vaadin.flow.router.Location,
-	 *      java.util.Map)
+	 * @see app.owlcms.apputils.queryparameters.DisplayParameters#readParams(com.vaadin.flow.router.Location, java.util.Map)
 	 */
 
 	@Override
@@ -224,7 +222,7 @@ public class DocsContent extends RegistrationContent implements HasDynamicTitle,
 	}
 
 	public ComboBox<Platform> getPlatformFilter() {
-		return platformFilter;
+		return this.platformFilter;
 	}
 
 	@Override
@@ -296,11 +294,9 @@ public class DocsContent extends RegistrationContent implements HasDynamicTitle,
 	 * Note: because we have the @Route, the parameters are parsed *before* our parent layout is created.
 	 *
 	 * @param event     Vaadin navigation event
-	 * @param parameter null in this case -- we don't want a vaadin "/" parameter. This allows us to add query
-	 *                  parameters instead.
+	 * @param parameter null in this case -- we don't want a vaadin "/" parameter. This allows us to add query parameters instead.
 	 *
-	 * @see app.owlcms.apputils.queryparameters.FOPParameters#setParameter(com.vaadin.flow.router.BeforeEvent,
-	 *      java.lang.String)
+	 * @see app.owlcms.apputils.queryparameters.FOPParameters#setParameter(com.vaadin.flow.router.BeforeEvent, java.lang.String)
 	 */
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String unused) {
@@ -441,7 +437,7 @@ public class DocsContent extends RegistrationContent implements HasDynamicTitle,
 			        // get current version of athletes.
 			        List<Athlete> athletesFindAll = athletesFindAll(true);
 			        startingXlsWriter.setSortedAthletes(athletesFindAll);
-					startingXlsWriter.setPostProcessor(null);
+			        startingXlsWriter.setPostProcessor(null);
 
 			        return startingXlsWriter;
 		        },

@@ -239,6 +239,10 @@ public class AgeGroupContent extends BaseContent implements CrudListener<AgeGrou
 		return all;
 	}
 
+	public GridCrud<AgeGroup> getCrud() {
+		return this.crud;
+	}
+
 	@Override
 	public String getMenuTitle() {
 		return Translator.translate("EditAgeGroups");
@@ -259,6 +263,10 @@ public class AgeGroupContent extends BaseContent implements CrudListener<AgeGrou
 
 	public void highlightResetButton() {
 		this.resetCats.setThemeName("primary error");
+	}
+
+	public void setCrud(GridCrud<AgeGroup> crud) {
+		this.crud = crud;
 	}
 
 	@Override
@@ -322,7 +330,7 @@ public class AgeGroupContent extends BaseContent implements CrudListener<AgeGrou
 		grid.addColumn(new TextRenderer<>(
 		        item -> {
 			        Ranking ss = item.getScoringSystem();
-			        String tr = (ss != null ? Translator.translate("Ranking."+ss) : "");
+			        String tr = (ss != null ? Translator.translate("Ranking." + ss) : "");
 			        return tr;
 		        }))
 		        .setHeader(Translator.translate("CeremonyType.MEDALS"));
@@ -444,14 +452,6 @@ public class AgeGroupContent extends BaseContent implements CrudListener<AgeGrou
 
 	private void unHighlightResetButton() {
 		this.resetCats.setThemeName("");
-	}
-
-	public GridCrud<AgeGroup> getCrud() {
-		return crud;
-	}
-
-	public void setCrud(GridCrud<AgeGroup> crud) {
-		this.crud = crud;
 	}
 
 }

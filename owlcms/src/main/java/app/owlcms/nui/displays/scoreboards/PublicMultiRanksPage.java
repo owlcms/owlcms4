@@ -104,16 +104,16 @@ public class PublicMultiRanksPage extends AbstractResultsDisplayPage {
 		fullMap.putAll(additionalMap);
 		setDefaultParameters(QueryParameters.simple(fullMap));
 	}
-	
+
 	@Override
 	protected void onAttach(AttachEvent attachEvent) {
 		DisplayParameters board = (DisplayParameters) this.getBoard();
 		board.setFop(getFop());
 		getMedalsBoard().setFop(getFop());
-		
+
 		this.setResultsBoard((ResultsMultiRanks) board);
 		this.setMedalsBoard(getMedalsBoard());
-		
+
 		this.addComponent((Component) board);
 		getMedalsBoard().setVisible(false);
 		this.addComponent(getMedalsBoard());

@@ -48,7 +48,7 @@ public enum Gender {
 				throw new IllegalStateException();
 		}
 	}
-	
+
 	public String getTranslatedGenderCode() {
 		switch (this) {
 			case F:
@@ -59,7 +59,7 @@ public enum Gender {
 				throw new IllegalStateException();
 		}
 	}
-	
+
 	public void setTranslatedGenderCode(String ignored) {
 		// do nothing, for bean introspection
 	}

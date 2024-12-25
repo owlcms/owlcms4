@@ -119,7 +119,6 @@ public class BreakTimerElement extends TimerElement {
 	@ClientCallable
 	public void clientTimerStarting(String fopName, double remainingTime, double lateMillis, String from) {
 		if (!Config.getCurrent().featureSwitch("oldTimers")) {
-			return;
 		}
 		// logger.debug("timer {} starting on client: remaining = {}, late={}, roundtrip={}", from, remainingTime,
 		// lateMillis, delta(lastStartMillis));
@@ -135,7 +134,6 @@ public class BreakTimerElement extends TimerElement {
 	@ClientCallable
 	public void clientTimerStopped(String fopName, double remainingTime, String from) {
 		if (!Config.getCurrent().featureSwitch("oldTimers")) {
-			return;
 		}
 		// do not stop the server-side timer, otherwise we create an infinite loop.
 	}
@@ -200,38 +198,38 @@ public class BreakTimerElement extends TimerElement {
 
 	@Override
 	public void syncWithFopTimer(FieldOfPlay fop) {
-		//OwlcmsSession.withFop(fop -> {
-			init(fop.getName());
-			// sync with current status of FOP
-			IProxyTimer breakTimer = getFopTimer(fop);
-			if (breakTimer != null) {
-				if (this.uiEventLogger.isDebugEnabled()) {
-					this.uiEventLogger.debug("&&& breakTimerElement sync running {} indefinite {}",
-					        breakTimer.isRunning(),
-					        breakTimer.isIndefinite());
-				}
-				if (breakTimer.isRunning()) {
-					if (breakTimer.isIndefinite()) {
-						if (this.uiEventLogger.isDebugEnabled()) {
-							this.uiEventLogger.debug("&&& indefinite {}", breakTimer.liveTimeRemaining());
-						}
-						doStartTimer(null, fop.isEmitSoundsOnServer());
-					} else {
-						if (this.uiEventLogger.isDebugEnabled()) {
-							this.uiEventLogger.debug("&&& live {}", breakTimer.liveTimeRemaining());
-						}
-						doStartTimer(breakTimer.liveTimeRemaining(), isSilenced() || fop.isEmitSoundsOnServer());
-					}
-				} else {
-					doSetTimer(null);
-					// if (breakTimer.isIndefinite()) {
-					// doSetTimer(null);
-					// } else {
-					// doSetTimer(breakTimer.getTimeRemainingAtLastStop());
-					// }
-				}
+		// OwlcmsSession.withFop(fop -> {
+		init(fop.getName());
+		// sync with current status of FOP
+		IProxyTimer breakTimer = getFopTimer(fop);
+		if (breakTimer != null) {
+			if (this.uiEventLogger.isDebugEnabled()) {
+				this.uiEventLogger.debug("&&& breakTimerElement sync running {} indefinite {}",
+				        breakTimer.isRunning(),
+				        breakTimer.isIndefinite());
 			}
-		//});
+			if (breakTimer.isRunning()) {
+				if (breakTimer.isIndefinite()) {
+					if (this.uiEventLogger.isDebugEnabled()) {
+						this.uiEventLogger.debug("&&& indefinite {}", breakTimer.liveTimeRemaining());
+					}
+					doStartTimer(null, fop.isEmitSoundsOnServer());
+				} else {
+					if (this.uiEventLogger.isDebugEnabled()) {
+						this.uiEventLogger.debug("&&& live {}", breakTimer.liveTimeRemaining());
+					}
+					doStartTimer(breakTimer.liveTimeRemaining(), isSilenced() || fop.isEmitSoundsOnServer());
+				}
+			} else {
+				doSetTimer(null);
+				// if (breakTimer.isIndefinite()) {
+				// doSetTimer(null);
+				// } else {
+				// doSetTimer(breakTimer.getTimeRemainingAtLastStop());
+				// }
+			}
+		}
+		// });
 	}
 
 	@Override

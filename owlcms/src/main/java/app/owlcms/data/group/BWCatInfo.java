@@ -8,7 +8,6 @@ class BWCatInfo implements Comparable<BWCatInfo> {
 	String subCat;
 
 	public BWCatInfo(int maxWeight, String limitString, String subCat) {
-		super();
 		this.maxWeight = maxWeight;
 		this.limitString = limitString;
 		this.subCat = subCat != null && !subCat.isBlank() ? subCat : "A";
@@ -18,8 +17,9 @@ class BWCatInfo implements Comparable<BWCatInfo> {
 	public int compareTo(BWCatInfo o) {
 		int compare = 0;
 		compare = ObjectUtils.compare(this.maxWeight, o.maxWeight);
-		if (compare != 0)
+		if (compare != 0) {
 			return compare;
+		}
 		String subCat2 = this.subCat;
 		String subCat3 = o.subCat;
 		compare = ObjectUtils.compare(subCat2, subCat3);
@@ -27,10 +27,10 @@ class BWCatInfo implements Comparable<BWCatInfo> {
 	}
 
 	public String getFormattedString() {
-		return limitString+subCat;
+		return this.limitString + this.subCat;
 	}
-	
+
 	public String getKey() {
-		return String.format("%03d%s", maxWeight, subCat);
+		return String.format("%03d%s", this.maxWeight, this.subCat);
 	}
 }

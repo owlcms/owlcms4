@@ -30,19 +30,18 @@ public class EditChampionshipsDialog extends Dialog {
 
 		dialog.setHeaderTitle(Translator.translate("EditChampionships.Title"));
 		VerticalLayout content = new VerticalLayout();
-//		Paragraph paragraph = new Paragraph();
-//		paragraph.getElement().setProperty("innerHTML", Translator.translate("EditChampionships.Intro"));
-//		paragraph.setWidth("550px");
+		// Paragraph paragraph = new Paragraph();
+		// paragraph.getElement().setProperty("innerHTML", Translator.translate("EditChampionships.Intro"));
+		// paragraph.setWidth("550px");
 
-
-		updateChampionshipsTable(championshipsTable);	
-		content.add(/* paragraph, */championshipsTable);
+		updateChampionshipsTable(this.championshipsTable);
+		content.add(this./* paragraph, */championshipsTable);
 
 		HorizontalLayout buttons = new HorizontalLayout();
 		Button closeButton = new Button(Translator.translate("Close"), event -> {
 			dialog.close();
 			ageGroupContent.getCrud().refreshGrid();
-			
+
 		});
 		closeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
@@ -69,7 +68,7 @@ public class EditChampionshipsDialog extends Dialog {
 				updateChampionshipsTable(championshipsTable);
 			});
 			delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
-			HorizontalLayout ctRow = new HorizontalLayout(nameField,update,delete);
+			HorizontalLayout ctRow = new HorizontalLayout(nameField, update, delete);
 			championshipsTable.add(ctRow);
 		});
 		HorizontalLayout addRow = new HorizontalLayout();
@@ -78,8 +77,8 @@ public class EditChampionshipsDialog extends Dialog {
 			Championship.addChampionship(nameField.getValue(), ChampionshipType.U);
 			updateChampionshipsTable(championshipsTable);
 		});
-		addRow.add(nameField,addButton);
+		addRow.add(nameField, addButton);
 		championshipsTable.add(addRow);
-		
+
 	}
 }

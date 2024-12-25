@@ -42,7 +42,6 @@ public class JXLSCardsWeighIn extends JXLSCardsDocs {
 	protected void postProcess(Workbook workbook) {
 		if (this.getPageLength() != null) {
 			setPageBreaks(workbook, 1, this.getPageLength());
-			return;
 		}
 	}
 

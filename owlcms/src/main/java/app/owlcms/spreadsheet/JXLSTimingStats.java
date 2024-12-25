@@ -195,14 +195,14 @@ public class JXLSTimingStats extends JXLSWorkbookStreamSource {
 
 		List<Athlete> athletes = AthleteRepository.findAllByGroupAndWeighIn(null, isExcludeNotWeighed());
 		athletes = AthleteSorter.registrationExportCopy(athletes);
-		
+
 		if (athletes.isEmpty()) {
 			// prevent outputting silliness.
 			throw new RuntimeException("");
 		} else {
 			this.logger.debug("{} athletes", athletes.size());
 		}
-		
+
 		List<Group> groups = GroupRepository.findAll();
 		groups.sort(Group.groupWeighinTimeComparator);
 
@@ -218,15 +218,15 @@ public class JXLSTimingStats extends JXLSWorkbookStreamSource {
 				if (curGroup == null) {
 					continue; // we simply skip over athletes with no groups
 				}
-	
+
 				// update stats, min, max.
 				curStat.setNbAthletes(curStat.getNbAthletes() + 1);
 				LocalDateTime minTime = curAthlete.getFirstAttemptedLiftTime();
 				curStat.updateMinTime(minTime);
-	
+
 				LocalDateTime maxTime = curAthlete.getLastAttemptedLiftTime();
 				curStat.updateMaxTime(maxTime);
-	
+
 				int nbAttemptedLifts = curAthlete.getActuallyAttemptedLifts();
 				curStat.setNbAttemptedLifts(curStat.getNbAttemptedLifts() + nbAttemptedLifts);
 				this.logger.debug(curStat.toString());

@@ -91,7 +91,6 @@ public class AthleteTimerElement extends TimerElement {
 	@ClientCallable
 	public void clientSyncTime(String fopName) {
 		if (!Config.getCurrent().featureSwitch("oldTimers")) {
-			return;
 		}
 		// timer should only get explicit changes
 		// OwlcmsSession.withFop(fop -> {
@@ -225,6 +224,19 @@ public class AthleteTimerElement extends TimerElement {
 		doStopTimer(milliseconds);
 	}
 
+	public void syncWithFop(FieldOfPlay fop) {
+		init(fop.getName());
+		// sync with current status of FOP
+		IProxyTimer athleteTimer = getFopTimer(fop);
+		if (athleteTimer != null) {
+			if (athleteTimer.isRunning()) {
+				doStartTimer(athleteTimer.liveTimeRemaining(), isSilenced() || fop.isEmitSoundsOnServer());
+			} else {
+				doSetTimer(athleteTimer.getTimeRemaining());
+			}
+		}
+	}
+
 	@Override
 	public void syncWithFopTimer(FieldOfPlay fop) {
 		// only used by break timer
@@ -262,19 +274,6 @@ public class AthleteTimerElement extends TimerElement {
 			// we listen on uiEventBus.
 			uiEventBusRegister(this, fop);
 		});
-	}
-
-	public void syncWithFop(FieldOfPlay fop) {
-		init(fop.getName());
-		// sync with current status of FOP
-		IProxyTimer athleteTimer = getFopTimer(fop);
-		if (athleteTimer != null) {
-			if (athleteTimer.isRunning()) {
-				doStartTimer(athleteTimer.liveTimeRemaining(), isSilenced() || fop.isEmitSoundsOnServer());
-			} else {
-				doSetTimer(athleteTimer.getTimeRemaining());
-			}
-		}
 	}
 
 }

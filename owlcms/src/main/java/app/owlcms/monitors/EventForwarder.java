@@ -88,6 +88,24 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 	final private static Logger logger = (Logger) LoggerFactory.getLogger(EventForwarder.class);
 	final private static Logger uiEventLogger = (Logger) LoggerFactory.getLogger("UI" + logger.getName());
 	public static final Object singleThreadLock = new Object();
+	private static Map<String, EventForwarder> eventForwarderByName = new HashMap<>();
+
+	synchronized public static EventForwarder initEventForwarderByName(String name, FieldOfPlay fieldOfPlay) {
+		EventForwarder eventForwarder = eventForwarderByName.get(name);
+		if (eventForwarder == null) {
+			logger.info("{}creating event forwarder", FieldOfPlay.getLoggingName(fieldOfPlay));
+			EventForwarder newForwarder = new EventForwarder(name, fieldOfPlay);
+			eventForwarderByName.put(name, newForwarder);
+			return newForwarder;
+		} else {
+			// reusing the found forwarder, forcing the values
+			logger.info("{}reusing event forwarder", FieldOfPlay.getLoggingName(fieldOfPlay));
+			eventForwarder.getFop().setEventForwarder(eventForwarder);
+			eventForwarder.setFop(fieldOfPlay);
+			return eventForwarder;
+		}
+	}
+
 	private boolean NO_KEEPALIVE = false;
 	private String attempt;
 	private Integer attemptNumber;
@@ -143,23 +161,8 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 	private String forwardedFopName;
 	private String liftType;
 	private String liftTypeKey;
-	private static Map<String, EventForwarder> eventForwarderByName = new HashMap<>();
-
-	synchronized public static EventForwarder initEventForwarderByName(String name, FieldOfPlay fieldOfPlay) {
-		EventForwarder eventForwarder = eventForwarderByName.get(name);
-		if (eventForwarder == null) {
-			logger.info("{}creating event forwarder", FieldOfPlay.getLoggingName(fieldOfPlay));
-			EventForwarder newForwarder = new EventForwarder(name, fieldOfPlay);
-			eventForwarderByName.put(name, newForwarder);
-			return newForwarder;
-		} else {
-			// reusing the found forwarder, forcing the values
-			logger.info("{}reusing event forwarder", FieldOfPlay.getLoggingName(fieldOfPlay));
-			eventForwarder.getFop().setEventForwarder(eventForwarder);
-			eventForwarder.setFop(fieldOfPlay);
-			return eventForwarder;
-		}
-	}
+	Map<String, Integer> debouncingHash = new HashMap<>();
+	Map<String, Long> debouncingMillis = new HashMap<>();
 
 	private EventForwarder(String name, FieldOfPlay emittingFop) {
 		this.setForwardedFopName(name);
@@ -249,31 +252,11 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 		setAttempt("");
 		setHidden(false);
 		setCeremonyEventType("ceremonyStarted");
-		setCeremonyType(ceremonyType);
+		setCeremonyType(this.ceremonyType);
 		setCeremonySession(e.getCeremonySession() != null ? e.getCeremonySession() : null);
 		setCeremonyCategory(e.getCeremonyCategory() != null ? e.getCeremonyCategory() : null);
 		setCeremonyAgeGroup(e.getAgeGroup() != null ? e.getAgeGroup() : null);
 		setCeremonyChampionship(e.getChampionship() != null ? e.getChampionship() : null);
-	}
-
-	private void setCeremonyEventType(String ceremonyEventType) {
-		this.ceremonyEventType = ceremonyEventType;
-	}
-
-	private void setCeremonyChampionship(Championship ceremonyChampionship) {
-		this.ceremonyChampionship = ceremonyChampionship;
-	}
-
-	private void setCeremonyAgeGroup(AgeGroup ceremonyAgeGroup) {
-		this.ceremonyAgeGroup = ceremonyAgeGroup;
-	}
-
-	private void setCeremonyCategory(Category ceremonyCategory) {
-		this.ceremonyCategory = ceremonyCategory;
-	}
-
-	private void setCeremonySession(Group ceremonySession) {
-		this.ceremonySession = ceremonySession;
 	}
 
 	public String getBoardMode() {
@@ -533,15 +516,6 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 		doCeremony(e);
 		doBreak(e);
 		pushUpdate(e);
-	}
-
-	private void doCeremony(CeremonyDone e) {
-		setCeremonyEventType("ceremonyDone");
-		setCeremonyType(null);
-		setCeremonySession(null);
-		setCeremonyCategory(null);
-		setCeremonyAgeGroup(null);
-		setCeremonyChampionship(null);
 	}
 
 	@Subscribe
@@ -1070,14 +1044,14 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 
 		CeremonyType ceremonyType = getFop().getCeremonyType();
 		String cts = ceremonyType != null ? ceremonyType.name() : null;
-		mapPut(sb, "ceremonyEventType", ceremonyEventType);
+		mapPut(sb, "ceremonyEventType", this.ceremonyEventType);
 		mapPut(sb, "ceremonyType", cts);
-		mapPut(sb, "ceremonySession", ceremonySession != null ? ceremonySession.getName() : null);
-		mapPut(sb, "ceremonyCategory", ceremonyCategory != null ? ceremonyCategory.getDisplayName() : null);
+		mapPut(sb, "ceremonySession", this.ceremonySession != null ? this.ceremonySession.getName() : null);
+		mapPut(sb, "ceremonyCategory", this.ceremonyCategory != null ? this.ceremonyCategory.getDisplayName() : null);
 		mapPut(sb, "ceremonyType", ceremonyType != null ? ceremonyType.name() : null);
-		mapPut(sb, "ceremonyCategory", ceremonyCategory != null ? ceremonyCategory.getDisplayName() : null);
-		mapPut(sb, "ceremonyAgeGroup", ceremonyAgeGroup != null ? ceremonyAgeGroup.getName() : null);
-		mapPut(sb, "ceremonyChampionship", ceremonyChampionship != null ? ceremonyChampionship.getName() : null);
+		mapPut(sb, "ceremonyCategory", this.ceremonyCategory != null ? this.ceremonyCategory.getDisplayName() : null);
+		mapPut(sb, "ceremonyAgeGroup", this.ceremonyAgeGroup != null ? this.ceremonyAgeGroup.getName() : null);
+		mapPut(sb, "ceremonyChampionship", this.ceremonyChampionship != null ? this.ceremonyChampionship.getName() : null);
 
 		// current athlete & attempt
 		mapPut(sb, "startNumber", this.startNumber != null ? this.startNumber.toString() : null);
@@ -1128,9 +1102,6 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 		return sb;
 	}
 
-	private void recomputeRemainingTimes(Map<String, String> sb) {
-	}
-
 	private void doBreak(UIEvent e, Group g) {
 		OwlcmsSession.withFop(fop -> {
 			createUpdate(e);
@@ -1146,6 +1117,15 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 			pushUpdate(e);
 		});
 
+	}
+
+	private void doCeremony(CeremonyDone e) {
+		setCeremonyEventType("ceremonyDone");
+		setCeremonyType(null);
+		setCeremonySession(null);
+		setCeremonyCategory(null);
+		setCeremonyAgeGroup(null);
+		setCeremonyChampionship(null);
 	}
 
 	private void doDone(UIEvent e, Group g) {
@@ -1464,6 +1444,11 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 		return this.fop;
 	}
 
+	@SuppressWarnings("unused")
+	private String getForwardedFopName() {
+		return this.forwardedFopName;
+	}
+
 	private Map<String, String> getLastDecisionMap() {
 		return this.lastDecisionMap;
 	}
@@ -1570,6 +1555,9 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 		sendPost(updateUrl, current.getParamUpdateKey(), this.lastUpdate);
 	}
 
+	private void recomputeRemainingTimes(Map<String, String> sb) {
+	}
+
 	private void sendConfig(String url, String updateKey) {
 		if (url == null || updateKey == null) {
 			logger.error("cannot send config info, url or updateKey is null");
@@ -1629,16 +1617,13 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 		}
 	}
 
-	Map<String, Integer> debouncingHash = new HashMap<>();
-	Map<String, Long> debouncingMillis = new HashMap<>();
-
 	private void sendPost(String url, String updateKey, Map<String, String> parameters) {
 		if (url == null) {
 			return;
 		}
-		Integer previousDebounceHash = debouncingHash.get(url);
-		Long previousDebounceMillis = debouncingMillis.get(url);
-		Long deltaMillis = System.currentTimeMillis() - (previousDebounceMillis != null ? previousDebounceMillis : 0);
+		Integer previousDebounceHash = this.debouncingHash.get(url);
+		Long previousDebounceMillis = this.debouncingMillis.get(url);
+		long deltaMillis = System.currentTimeMillis() - (previousDebounceMillis != null ? previousDebounceMillis : 0);
 		Integer hashCode = parameters.hashCode();
 
 		// debounce, sometimes several identical updates in a rapid succession
@@ -1660,6 +1645,26 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 		this.categoryName = name;
 	}
 
+	private void setCeremonyAgeGroup(AgeGroup ceremonyAgeGroup) {
+		this.ceremonyAgeGroup = ceremonyAgeGroup;
+	}
+
+	private void setCeremonyCategory(Category ceremonyCategory) {
+		this.ceremonyCategory = ceremonyCategory;
+	}
+
+	private void setCeremonyChampionship(Championship ceremonyChampionship) {
+		this.ceremonyChampionship = ceremonyChampionship;
+	}
+
+	private void setCeremonyEventType(String ceremonyEventType) {
+		this.ceremonyEventType = ceremonyEventType;
+	}
+
+	private void setCeremonySession(Group ceremonySession) {
+		this.ceremonySession = ceremonySession;
+	}
+
 	private void setCeremonyType(CeremonyType ceremonyType) {
 		this.ceremonyType = ceremonyType;
 	}
@@ -1673,6 +1678,10 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 
 	private void setFopState(FOPState state) {
 		this.fopState = state;
+	}
+
+	private void setForwardedFopName(String name) {
+		this.forwardedFopName = name;
 	}
 
 	private void setGroupAthletes(JsonValue athletesJson) {
@@ -1771,15 +1780,6 @@ public class EventForwarder implements BreakDisplay, HasBoardMode, IUnregister {
 		setFopState(state);
 		setBreakType(breakType);
 		setCeremonyType(ceremonyType);
-	}
-
-	@SuppressWarnings("unused")
-	private String getForwardedFopName() {
-		return forwardedFopName;
-	}
-
-	private void setForwardedFopName(String name) {
-		this.forwardedFopName = name;
 	}
 
 }

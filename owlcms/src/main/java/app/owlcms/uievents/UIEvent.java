@@ -34,9 +34,8 @@ import app.owlcms.utils.StartupUtils;
 import ch.qos.logback.classic.Logger;
 
 /**
- * UIEvents are triggered in response to field of play events (FOPEvents). Each field of play has an associated
- * uiEventBus on which the user interface commands are posted. The various browsers subscribe to UIEvents and react
- * accordingly.
+ * UIEvents are triggered in response to field of play events (FOPEvents). Each field of play has an associated uiEventBus on which the user interface commands
+ * are posted. The various browsers subscribe to UIEvents and react accordingly.
  *
  * @author owlcms
  */
@@ -61,7 +60,7 @@ public class UIEvent {
 		 *
 		 * @param origin    the origin
 		 * @param breakType
-		 * @param fop originating field of play
+		 * @param fop       originating field of play
 		 */
 		public BreakDone(Object origin, BreakType breakType, FieldOfPlay fop) {
 			super(origin, fop);
@@ -168,7 +167,7 @@ public class UIEvent {
 		 * @param indefinite
 		 * @param origin
 		 * @param trace
-		 * @param fop originating field of play
+		 * @param fop           originating field of play
 		 */
 		public BreakSetTime(BreakType bt, CountdownType ct, Integer timeRemaining, LocalDateTime end,
 		        boolean indefinite, Object origin, String trace, FieldOfPlay fop) {
@@ -321,8 +320,9 @@ public class UIEvent {
 
 		/**
 		 * Instantiates a new break done.
+		 *
 		 * @param origin    the origin
-		 * @param fop originating field of play
+		 * @param fop       originating field of play
 		 * @param breakType
 		 */
 		public CeremonyDone(CeremonyType ceremonyType, Object origin, FieldOfPlay fop) {
@@ -369,14 +369,6 @@ public class UIEvent {
 			}
 		}
 
-		private void setCeremonyChampionship(Championship championship) {
-			this.championship=championship;
-		}
-
-		private void setCeremonyAgeGroup(AgeGroup ageGroup) {
-			this.setAgeGroup(ageGroup);
-		}
-
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj) {
@@ -391,6 +383,10 @@ public class UIEvent {
 			        && this.ceremonyType == other.ceremonyType;
 		}
 
+		public AgeGroup getAgeGroup() {
+			return this.ageGroup;
+		}
+
 		public Category getCeremonyCategory() {
 			return this.ceremonyCategory;
 		}
@@ -403,9 +399,17 @@ public class UIEvent {
 			return this.ceremonyType;
 		}
 
+		public Championship getChampionship() {
+			return this.championship;
+		}
+
 		@Override
 		public int hashCode() {
 			return Objects.hash(this.ceremonyCategory, this.ceremonySession, this.ceremonyType);
+		}
+
+		public void setAgeGroup(AgeGroup ageGroup) {
+			this.ageGroup = ageGroup;
 		}
 
 		public void setCeremonySession(Group ceremonyGroup2) {
@@ -416,30 +420,26 @@ public class UIEvent {
 			this.ceremonyType = ceremonyType;
 		}
 
+		public void setChampionship(Championship championship) {
+			this.championship = championship;
+		}
+
 		@Override
 		public String toString() {
 			return "CeremonyStarted [ceremonyType=" + this.ceremonyType + ", ceremonyCategory=" + this.ceremonyCategory
 			        + ", ceremonySession=" + this.ceremonySession + "]";
 		}
 
+		private void setCeremonyAgeGroup(AgeGroup ageGroup) {
+			this.setAgeGroup(ageGroup);
+		}
+
 		private void setCeremonyCategory(Category ceremonyCategory2) {
 			this.ceremonyCategory = ceremonyCategory2;
 		}
 
-		public Championship getChampionship() {
-			return championship;
-		}
-
-		public void setChampionship(Championship championship) {
+		private void setCeremonyChampionship(Championship championship) {
 			this.championship = championship;
-		}
-
-		public AgeGroup getAgeGroup() {
-			return ageGroup;
-		}
-
-		public void setAgeGroup(AgeGroup ageGroup) {
-			this.ageGroup = ageGroup;
 		}
 	}
 
@@ -505,7 +505,7 @@ public class UIEvent {
 		 * Instantiates a new down signal.
 		 *
 		 * @param origin the origin
-		 * @param fop originating field of play
+		 * @param fop    originating field of play
 		 */
 		public DownSignal(Object origin, FieldOfPlay fop) {
 			super(origin, fop);
@@ -530,8 +530,9 @@ public class UIEvent {
 
 		/**
 		 * Instantiates a new athlete announced.
+		 *
 		 * @param ui      the ui
-		 * @param fop originating field of play
+		 * @param fop     originating field of play
 		 * @param athlete the athlete
 		 */
 		public GroupDone(Group group, UI ui, String stackTrace, FieldOfPlay fop) {
@@ -575,8 +576,9 @@ public class UIEvent {
 
 		/**
 		 * Instantiates a new Notification.
+		 *
 		 * @param origin the origin
-		 * @param fop originating field of play
+		 * @param fop    originating field of play
 		 */
 		public JuryNotification(Athlete a, Object origin, String notificationString, String fopEventString, FieldOfPlay fop) {
 			super(a, origin, fop);
@@ -713,7 +715,7 @@ public class UIEvent {
 		 * @param displayToggle   if true, just update display according to lifting order.
 		 * @param origin          the origin
 		 * @param newWeight       newly requested weight, null if no change from previous
-		 * @param fop originating field of play
+		 * @param fop             originating field of play
 		 */
 		public LiftingOrderUpdated(Athlete athlete, Athlete nextAthlete, Athlete previousAthlete,
 		        Athlete changingAthlete, List<Athlete> liftingOrder, List<Athlete> displayOrder, Integer timeAllowed,
@@ -971,7 +973,7 @@ public class UIEvent {
 			if (this.trace == null || this.trace.isBlank()) {
 				this.setTrace(() -> LoggerUtils.stackTrace());
 			}
-			logger.debug("ref update for jury {} {} {}",ref1, ref2, ref3);
+			this.logger.debug("ref update for jury {} {} {}", ref1, ref2, ref3);
 		}
 	}
 
@@ -982,8 +984,9 @@ public class UIEvent {
 
 		/**
 		 * Instantiates a new decision reset.
+		 *
 		 * @param origin the origin
-		 * @param fop originating field of play
+		 * @param fop    originating field of play
 		 */
 		public ResetOnNewClock(Athlete a, Object origin, FieldOfPlay fop) {
 			super(a, origin, fop);
@@ -1002,7 +1005,7 @@ public class UIEvent {
 		 *
 		 * @param timeRemaining the time remaining
 		 * @param origin        the origin
-		 * @param fop originating field of play
+		 * @param fop           originating field of play
 		 */
 		public SetTime(Integer timeRemaining, Object origin, String trace, FieldOfPlay fop) {
 			super(origin, fop);
@@ -1030,8 +1033,9 @@ public class UIEvent {
 
 		/**
 		 * Instantiates a new athlete announced.
+		 *
 		 * @param ui      the ui
-		 * @param fop originating field of play
+		 * @param fop     originating field of play
 		 * @param athlete the athlete
 		 */
 		public SnatchDone(Group group, UI ui, String stackTrace, FieldOfPlay fop) {
@@ -1088,7 +1092,7 @@ public class UIEvent {
 		 * @param timeRemaining the time remaining
 		 * @param origin        the origin
 		 * @param serverSound
-		 * @param fop originating field of play
+		 * @param fop           originating field of play
 		 */
 		public StartTime(Integer timeRemaining, Object origin, boolean serverSound, FieldOfPlay fop) {
 			super(origin, fop);
@@ -1148,7 +1152,7 @@ public class UIEvent {
 		 *
 		 * @param timeRemaining the time remaining
 		 * @param origin        the origin
-		 * @param fop originating field of play
+		 * @param fop           originating field of play
 		 */
 		public StopTime(int timeRemaining, Object origin, FieldOfPlay fop) {
 			super(origin, fop);
@@ -1222,7 +1226,7 @@ public class UIEvent {
 		 * Instantiates a new break done.
 		 *
 		 * @param origin    the origin
-		 * @param fop originating field of play
+		 * @param fop       originating field of play
 		 * @param breakType
 		 */
 		public TimeRemaining(Object origin, int timeRemaining, FieldOfPlay fop) {
@@ -1278,7 +1282,7 @@ public class UIEvent {
 		public int ref;
 
 		public WakeUpRef(int lastRef, boolean b, Object origin, FieldOfPlay fop) {
-			super(origin,fop);
+			super(origin, fop);
 			this.ref = lastRef;
 			this.on = b;
 			if (this.trace == null || this.trace.isBlank()) {
@@ -1313,6 +1317,10 @@ public class UIEvent {
 		return this.athlete;
 	}
 
+	public FieldOfPlay getFop() {
+		return this.fop;
+	}
+
 	/**
 	 * Gets the origin.
 	 *
@@ -1330,6 +1338,10 @@ public class UIEvent {
 		this.athlete = athlete;
 	}
 
+	public void setFop(FieldOfPlay fop) {
+		this.fop = fop;
+	}
+
 	public void setOrigin(Object origin) {
 		this.origin = origin;
 	}
@@ -1338,14 +1350,6 @@ public class UIEvent {
 		if (StartupUtils.isTraceSetting()) {
 			this.trace = stackTrace.get();
 		}
-	}
-
-	public FieldOfPlay getFop() {
-		return fop;
-	}
-
-	public void setFop(FieldOfPlay fop) {
-		this.fop = fop;
 	}
 
 }

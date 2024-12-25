@@ -20,14 +20,20 @@ final class SessionGrid extends OwlcmsCrudGrid<Group> {
 		super(domainType, crudLayout, owlcmsCrudFormFactory, grid);
 	}
 
-	@Override
-	protected void updateButtons() {
+	public Set<Group> getSelectedItems() {
+		return this.grid.getSelectedItems();
 	}
 
-	public Set<Group> getSelectedItems() {
-		return grid.getSelectedItems();
+	@Override
+	protected void cancelCallback() {
+		this.getOwlcmsGridLayout().hideForm();
 	}
-	
+
+	@Override
+	protected void findAllButtonClicked() {
+		refreshGrid();
+	}
+
 	@Override
 	protected void initLayoutGrid() {
 		initToolbar();
@@ -39,10 +45,7 @@ final class SessionGrid extends OwlcmsCrudGrid<Group> {
 		// grid.addSelectionListener(e -> gridSelectionChanged());
 		this.grid.addItemClickListener((e) -> {
 			Column<Group> c = e.getColumn();
-			if (c == null) {
-				return;
-			}
-			if (!this.isClickable()) {
+			if ((c == null) || !this.isClickable()) {
 				return;
 			}
 			long delta = System.currentTimeMillis() - this.clicked;
@@ -58,26 +61,19 @@ final class SessionGrid extends OwlcmsCrudGrid<Group> {
 		this.crudLayout.setMainComponent(this.grid);
 	}
 
-	private void gridSelectionChanged(Group item) {
-		updateButtons();
-		Group domainObject = item;
-
-		if (domainObject != null) {
-			updateButtonClicked(item);
-		} else {
-			crudLayout.hideForm();
-		}
+	@Override
+	protected void updateButtons() {
 	}
 
 	void updateButtonClicked(Group domainObject) {
-		showForm(CrudOperation.UPDATE, domainObject, false, savedMessage, event -> {
+		showForm(CrudOperation.UPDATE, domainObject, false, this.savedMessage, event -> {
 			try {
-				Group updatedObject = updateOperation.perform(domainObject);
-				grid.asSingleSelect().clear();
+				Group updatedObject = this.updateOperation.perform(domainObject);
+				this.grid.asSingleSelect().clear();
 				refreshGrid();
-				grid.asSingleSelect().setValue(updatedObject);
-				grid.deselect(updatedObject);
-				showNotification(savedMessage);
+				this.grid.asSingleSelect().setValue(updatedObject);
+				this.grid.deselect(updatedObject);
+				showNotification(this.savedMessage);
 			} catch (IllegalArgumentException ignore) {
 			} catch (CrudOperationException e1) {
 				refreshGrid();
@@ -90,13 +86,14 @@ final class SessionGrid extends OwlcmsCrudGrid<Group> {
 		});
 	}
 
-	@Override
-	protected void findAllButtonClicked() {
-		refreshGrid();
-	}
+	private void gridSelectionChanged(Group item) {
+		updateButtons();
+		Group domainObject = item;
 
-	@Override
-	protected void cancelCallback() {
-		this.getOwlcmsGridLayout().hideForm();
+		if (domainObject != null) {
+			updateButtonClicked(item);
+		} else {
+			this.crudLayout.hideForm();
+		}
 	}
 }

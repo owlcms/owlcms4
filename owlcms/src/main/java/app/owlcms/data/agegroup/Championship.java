@@ -55,6 +55,17 @@ public class Championship implements Comparable<Championship> {
 		return compare;
 	};
 
+	public static Championship addChampionship(String nameString, ChampionshipType u2) {
+		Championship championship = allChampionshipsMap.get(nameString.toLowerCase());
+		if (championship == null) {
+			Championship newChampionship = new Championship(nameString, u2);
+			allChampionshipsMap.put(nameString.toLowerCase(),
+			        newChampionship);
+			return newChampionship;
+		}
+		return championship;
+	}
+
 	/**
 	 * Find all.
 	 *
@@ -105,17 +116,6 @@ public class Championship implements Comparable<Championship> {
 		return allChampionshipsList;
 	}
 
-	public static Championship addChampionship(String nameString, ChampionshipType u2) {
-		Championship championship = allChampionshipsMap.get(nameString.toLowerCase());
-		if (championship == null) {
-			Championship newChampionship = new Championship(nameString, u2);
-			allChampionshipsMap.put(nameString.toLowerCase(),
-			        newChampionship);
-			return newChampionship;
-		}
-		return championship;
-	}
-
 	public static List<Championship> findAllUsed(boolean activeOnly) {
 		var results = new ArrayList<Championship>();
 		findAll();
@@ -142,19 +142,37 @@ public class Championship implements Comparable<Championship> {
 		return value;
 	}
 
+	public static Map<String, Championship> getMap() {
+		return allChampionshipsMap;
+	}
+
 	public static Championship of(String championshipName) {
 		if (allChampionshipsMap == null) {
 			findAll();
 		}
 		if (championshipName == null) {
-			return new Championship("",ChampionshipType.U);
+			return new Championship("", ChampionshipType.U);
 		}
 		return allChampionshipsMap.get(championshipName.toLowerCase());
+	}
+
+	public static Championship ofType(ChampionshipType t) {
+		// return first championship of the type
+		// we use reverse order to get Open and Senior and U20 first.
+		Optional<Championship> found = allChampionshipsMap.values().stream().sorted(Comparator.reverseOrder()).filter(v -> v.getType() == t).findFirst();
+		return found.isPresent() ? found.get() : null;
+	}
+
+	public static void remove(Championship c) {
+		allChampionshipsMap.remove(c.name.toLowerCase());
 	}
 
 	public static void reset() {
 		allChampionshipsMap = null;
 		findAll();
+	}
+
+	public static void update(Championship c) {
 	}
 
 	private String name;
@@ -192,42 +210,24 @@ public class Championship implements Comparable<Championship> {
 		return this.getType() == ChampionshipType.DEFAULT;
 	}
 
-	public void setType(ChampionshipType type) {
-		this.type = type;
-	}
-
-	public String translate() {
-		String tr = Translator.translateOrElseNull("Championship." + getName(), OwlcmsSession.getLocale());
-		return tr != null ? tr : getName();
-	}
-
-	@Override
-	public String toString() {
-		return "Championship [name=" + name + ", type=" + type + "]";
-	}
-
-	public static Map<String, Championship> getMap() {
-		return allChampionshipsMap;
-	}
-
-	public static void update(Championship c) {
-	}
-
 	public void setName(String name) {
 		allChampionshipsMap.remove(this.name.toLowerCase());
 		this.name = name;
 		allChampionshipsMap.put(this.name.toLowerCase(), this);
 	}
 
-	public static void remove(Championship c) {
-		allChampionshipsMap.remove(c.name.toLowerCase());
+	public void setType(ChampionshipType type) {
+		this.type = type;
 	}
 
-	public static Championship ofType(ChampionshipType t) {
-		// return first championship of the type
-		// we use reverse order to get Open and Senior and U20 first.
-		Optional<Championship> found = allChampionshipsMap.values().stream().sorted(Comparator.reverseOrder()).filter(v -> v.getType() == t).findFirst();
-		return found.isPresent() ? found.get() : null;
+	@Override
+	public String toString() {
+		return "Championship [name=" + this.name + ", type=" + this.type + "]";
+	}
+
+	public String translate() {
+		String tr = Translator.translateOrElseNull("Championship." + getName(), OwlcmsSession.getLocale());
+		return tr != null ? tr : getName();
 	}
 
 }

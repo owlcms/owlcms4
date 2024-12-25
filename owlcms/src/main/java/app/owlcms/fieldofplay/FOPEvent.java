@@ -380,6 +380,10 @@ public class FOPEvent {
 			return this.isDecision() == other.isDecision() && this.getRefIndex() == other.getRefIndex();
 		}
 
+		public int getRefIndex() {
+			return this.refIndex;
+		}
+
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -388,25 +392,21 @@ public class FOPEvent {
 			return result;
 		}
 
-		@Override
-		public String toString() {
-			return "[decision=" + this.isDecision() + ", refIndex=" + this.getRefIndex() + "]";
+		public boolean isDecision() {
+			return this.decision;
 		}
 
-		public int getRefIndex() {
-			return refIndex;
+		public void setDecision(boolean decision) {
+			this.decision = decision;
 		}
 
 		public void setRefIndex(int refIndex) {
 			this.refIndex = refIndex;
 		}
 
-		public boolean isDecision() {
-			return decision;
-		}
-
-		public void setDecision(boolean decision) {
-			this.decision = decision;
+		@Override
+		public String toString() {
+			return "[decision=" + this.isDecision() + ", refIndex=" + this.getRefIndex() + "]";
 		}
 
 	}
@@ -705,10 +705,9 @@ public class FOPEvent {
 
 	protected Athlete athlete;
 	/**
-	 * When a FOPEvent (for example stopping the clock) is handled, it is often reflected as a series of UIEvents (for
-	 * example, all the displays running the clock get told to stop it). The user interface that gave the order doesn't
-	 * want to be notified again, so we memorize which user interface element created the original order so it can
-	 * ignore it.
+	 * When a FOPEvent (for example stopping the clock) is handled, it is often reflected as a series of UIEvents (for example, all the displays running the
+	 * clock get told to stop it). The user interface that gave the order doesn't want to be notified again, so we memorize which user interface element created
+	 * the original order so it can ignore it.
 	 */
 	protected Object origin;
 	final Logger logger = (Logger) LoggerFactory.getLogger(FOPEvent.class);

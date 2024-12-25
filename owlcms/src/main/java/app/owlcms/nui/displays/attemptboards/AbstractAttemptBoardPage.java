@@ -13,8 +13,7 @@ import app.owlcms.nui.shared.SafeEventBusRegistration;
 import ch.qos.logback.classic.Logger;
 
 /**
- * Wrapper class to wrap a board as navigable page, to store the board display options, and to present an option editing
- * dialog.
+ * Wrapper class to wrap a board as navigable page, to store the board display options, and to present an option editing dialog.
  *
  * @author jflamy
  *

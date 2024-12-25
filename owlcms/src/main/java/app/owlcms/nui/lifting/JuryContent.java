@@ -99,7 +99,7 @@ public class JuryContent extends AthleteGridContent implements HasDynamicTitle {
 		// all this does is call init() -- which we override.
 		// when navigating to the page, Vaadin will call setParameter+readParameters
 		// these parameters will be applied
-		
+
 		setDefaultParameters(QueryParameters.simple(Map.of(
 		        SoundParameters.SILENT, "true",
 		        SoundParameters.DOWNSILENT, "true",

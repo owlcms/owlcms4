@@ -181,7 +181,7 @@ public class Config {
 			return !trueIfPresent;
 		}
 		String[] switches = paramFeatureSwitches.toLowerCase().split("[,; ]");
-		//logger.debug("featureSwitches {}",Arrays.asList(switches));
+		// logger.debug("featureSwitches {}",Arrays.asList(switches));
 		boolean present = Arrays.asList(switches).contains(string.toLowerCase());
 		return trueIfPresent ? present : !present;
 	}

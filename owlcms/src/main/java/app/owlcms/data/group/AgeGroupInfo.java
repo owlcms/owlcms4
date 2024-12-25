@@ -17,6 +17,22 @@ import ch.qos.logback.classic.Logger;
 
 public class AgeGroupInfo implements Comparable<AgeGroupInfo> {
 	static Logger logger = (Logger) LoggerFactory.getLogger(AgeGroupInfo.class);
+	public static Comparator<AgeGroupInfo> ageComparator = (o1, o2) -> {
+		if (o1.ageGroup == null || o2.ageGroup == null) {
+			return ObjectUtils.compare(o1.ageGroup, o2.ageGroup, true);
+		}
+		int compare;
+		compare = ObjectUtils.compare(o1.ageGroup.getMaxAge(), o2.ageGroup.getMaxAge());
+		if (compare != 0) {
+			return compare;
+		}
+		compare = ObjectUtils.compare(o1.ageGroup.getMinAge(), o2.ageGroup.getMinAge());
+		if (compare != 0) {
+			return compare;
+		}
+		compare = ObjectUtils.compare(o1.ageGroup.getName(), o2.ageGroup.getName());
+		return compare;
+	};
 	AgeGroup ageGroup;
 	Double smallestWeightClass;
 	Double largestWeightClass;
@@ -36,27 +52,9 @@ public class AgeGroupInfo implements Comparable<AgeGroupInfo> {
 		this.subCats.put(key, info);
 	}
 
-	
-	public static Comparator<AgeGroupInfo> ageComparator = (o1, o2) -> {
-		if (o1.ageGroup == null || o2.ageGroup == null) {
-			return ObjectUtils.compare(o1.ageGroup, o2.ageGroup, true);
-		}
-		int compare;
-		compare = ObjectUtils.compare(o1.ageGroup.getMaxAge(), o2.ageGroup.getMaxAge());
-		if (compare != 0) {
-			return compare;
-		}
-		compare = ObjectUtils.compare(o1.ageGroup.getMinAge(), o2.ageGroup.getMinAge());
-		if (compare != 0) {
-			return compare;
-		}
-		compare = ObjectUtils.compare(o1.ageGroup.getName(), o2.ageGroup.getName());
-		return compare;
-	};
-	
 	@Override
 	public int compareTo(AgeGroupInfo o) {
-		return ageComparator.compare(this,o);
+		return ageComparator.compare(this, o);
 	}
 
 	public AgeGroup getAgeGroup() {

@@ -53,7 +53,7 @@ public class DemoData {
 	/**
 	 * Insert initial data if the database is empty.
 	 *
-	 * @param nbAthletes   how many athletes
+	 * @param nbAthletes      how many athletes
 	 * @param forcedInsertion
 	 */
 	public static void insertInitialData(int nbAthletes, EnumSet<ChampionshipType> forcedInsertion) {
@@ -137,8 +137,8 @@ public class DemoData {
 
 		competition.setCompetitionName("Spring Equinox Open");
 		competition.setCompetitionCity("Sometown, Lower Cascadia");
-		//competition.setCompetitionDate(LocalDate.of(2019, 03, 23));
-		
+		// competition.setCompetitionDate(LocalDate.of(2019, 03, 23));
+
 		// same reference year will be used for athlete creation
 		int referenceYear = LocalDate.now().getYear();
 		competition.setCompetitionDate(LocalDate.of(referenceYear, 03, 23));
@@ -203,11 +203,11 @@ public class DemoData {
 	 *
 	 * @param em
 	 *
-	 * @param competition   the competition
-	 * @param liftersToLoad the lifters to load
+	 * @param competition     the competition
+	 * @param liftersToLoad   the lifters to load
 	 * @param forcedInsertion
-	 * @param w             the w
-	 * @param c             the c
+	 * @param w               the w
+	 * @param c               the c
 	 */
 	protected static void setupDemoData(EntityManager em, int liftersToLoad, EnumSet<ChampionshipType> forcedInsertion) {
 

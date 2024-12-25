@@ -39,17 +39,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * A file servlet supporting resume of downloads and client-side caching and GZIP of text content. This servlet can also
- * be used for images, client-side caching would become more efficient. This servlet can also be used for text files,
- * GZIP would decrease network bandwidth.
+ * A file servlet supporting resume of downloads and client-side caching and GZIP of text content. This servlet can also be used for images, client-side caching
+ * would become more efficient. This servlet can also be used for text files, GZIP would decrease network bandwidth.
  *
  * @author BalusC
  * @link http://balusc.blogspot.com/2009/02/fileservlet-supporting-resume-and.html
  */
 @SuppressWarnings("serial")
 /**
- * Modified to fetch files under the ./local directory relative to the startup directory and, failing that, as a
- * resource on the classpath.
+ * Modified to fetch files under the ./local directory relative to the startup directory and, failing that, as a resource on the classpath.
  *
  * @author Jean-François Lamy
  *

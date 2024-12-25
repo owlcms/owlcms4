@@ -44,131 +44,6 @@ public class OwlcmsSession {
 		logger.setLevel(Level.INFO);
 	}
 
-	/**
-	 * Gets the attribute.
-	 *
-	 * @param s the s
-	 * @return the attribute
-	 */
-	public static Object getAttribute(String s) {
-		return getCurrent().getAttributes().get(s);
-	}
-
-	public static OwlcmsSession getCurrent() {
-		VaadinSession currentVaadinSession = VaadinSession.getCurrent();
-		if (currentVaadinSession != null) {
-			OwlcmsSession owlcmsSession = (OwlcmsSession) currentVaadinSession.getAttribute("owlcmsSession");
-			if (owlcmsSession == null) {
-				//logger.trace("creating new OwlcmsSession {}", LoggerUtils.whereFrom());
-				owlcmsSession = new OwlcmsSession();
-				currentVaadinSession.setAttribute("owlcmsSession", owlcmsSession);
-			}
-			return owlcmsSession;
-		} else {
-			// Used for testing, return a singleton
-			if (owlcmsSessionSingleton == null) {
-				owlcmsSessionSingleton = new OwlcmsSession();
-			}
-			return owlcmsSessionSingleton;
-		}
-	}
-
-	public static FieldOfPlay getFop() {
-		FieldOfPlay fop = (FieldOfPlay) getAttribute(FOP);
-//		if (fop == null) {
-//			//fop = OwlcmsFactory.getDefaultFOP();
-//			throw new RuntimeException("no fop set");
-//		}
-		return fop;
-	}
-
-	public static String getFopLoggingName() {
-		FieldOfPlay fop = getFop();
-		if (fop != null) {
-			return FieldOfPlay.getLoggingName(fop);
-		} else {
-			return "-";
-		}
-	}
-
-	public static String getFopNameIfMultiple() {
-		if (OwlcmsFactory.getFOPs().size() > 1) {
-			FieldOfPlay fop;
-			if ((fop = getFop()) != null) {
-				return " " + fop.getName();
-			} else {
-				return null;
-			}
-		} else {
-			return "";
-		}
-	}
-
-	public static Locale getLocale() {
-		return computeLocale();
-	}
-
-	public static QueryParameters getRequestedQueryParameters() {
-		return (QueryParameters) getAttribute(QUERY_PARAMETERS);
-	}
-
-	public static String getRequestedUrl() {
-		return (String) getAttribute(REQUESTED_URL);
-	}
-
-	public static boolean isAuthenticated() {
-		return Boolean.TRUE.equals(getAttribute(AUTHENTICATED));
-	}
-
-	public static boolean isDisplayAuthenticated() {
-		return isAuthenticated() || Boolean.TRUE.equals(getAttribute(DISPLAY_AUTHENTICATED));
-	}
-
-	/**
-	 * Sets the attribute.
-	 *
-	 * @param s the s
-	 * @param o the o
-	 */
-	public static void setAttribute(String s, Object o) {
-		if (o == null) {
-			getCurrent().getAttributes().remove(s);
-		} else {
-			getCurrent().getAttributes().put(s, o);
-		}
-	}
-
-	public static void setAuthenticated(boolean isAuthenticated) {
-		setAttribute(AUTHENTICATED, isAuthenticated);
-	}
-
-	public static void setDisplayAuthenticated(boolean b) {
-		setAttribute(DISPLAY_AUTHENTICATED, b);
-	}
-
-	public static void setFop(FieldOfPlay fop) {
-		//logger.debug("setFop {} from {}", (fop != null ? fop.getName() : null), LoggerUtils.whereFrom());
-		setAttribute(FOP, fop);
-	}
-
-	public static void setRequestedQueryParameters(QueryParameters queryParameters) {
-		setAttribute(QUERY_PARAMETERS, queryParameters);
-	}
-
-	public static void setRequestedUrl(String url) {
-		setAttribute(REQUESTED_URL, url);
-	}
-
-	public static void withFop(Consumer<FieldOfPlay> command) {
-		FieldOfPlay fop = getFop();
-		if (fop == null) {
-			fop = OwlcmsFactory.getDefaultFOP();
-		}
-		if (fop != null) {
-			command.accept(fop);
-		}
-	}
-
 	public static Locale computeLocale() {
 		Locale locale = (Locale) getAttribute(LOCALE);
 		if (locale != null) {
@@ -176,9 +51,9 @@ public class OwlcmsSession {
 		}
 		locale = Translator.getForcedLocale();
 		if (locale != null) {
-			//logger.debug("forced locale {}",locale);
+			// logger.debug("forced locale {}",locale);
 		}
-		
+
 		UI currentUi = UI.getCurrent();
 		if (locale == null && currentUi != null) {
 			locale = currentUi.getLocale();
@@ -221,10 +96,140 @@ public class OwlcmsSession {
 		}
 		if (currentUi != null) {
 			currentUi.setLocale(locale);
-			setAttribute(LOCALE,locale);
+			setAttribute(LOCALE, locale);
 		}
 
 		return locale;
+	}
+
+	/**
+	 * Gets the attribute.
+	 *
+	 * @param s the s
+	 * @return the attribute
+	 */
+	public static Object getAttribute(String s) {
+		return getCurrent().getAttributes().get(s);
+	}
+
+	public static OwlcmsSession getCurrent() {
+		VaadinSession currentVaadinSession = VaadinSession.getCurrent();
+		if (currentVaadinSession != null) {
+			OwlcmsSession owlcmsSession = (OwlcmsSession) currentVaadinSession.getAttribute("owlcmsSession");
+			if (owlcmsSession == null) {
+				// logger.trace("creating new OwlcmsSession {}", LoggerUtils.whereFrom());
+				owlcmsSession = new OwlcmsSession();
+				currentVaadinSession.setAttribute("owlcmsSession", owlcmsSession);
+			}
+			return owlcmsSession;
+		} else {
+			// Used for testing, return a singleton
+			if (owlcmsSessionSingleton == null) {
+				owlcmsSessionSingleton = new OwlcmsSession();
+			}
+			return owlcmsSessionSingleton;
+		}
+	}
+
+	public static FieldOfPlay getFop() {
+		FieldOfPlay fop = (FieldOfPlay) getAttribute(FOP);
+		// if (fop == null) {
+		// //fop = OwlcmsFactory.getDefaultFOP();
+		// throw new RuntimeException("no fop set");
+		// }
+		return fop;
+	}
+
+	public static String getFopLoggingName() {
+		FieldOfPlay fop = getFop();
+		if (fop != null) {
+			return FieldOfPlay.getLoggingName(fop);
+		} else {
+			return "-";
+		}
+	}
+
+	public static String getFopNameIfMultiple() {
+		if (OwlcmsFactory.getFOPs().size() > 1) {
+			FieldOfPlay fop;
+			if ((fop = getFop()) != null) {
+				return " " + fop.getName();
+			} else {
+				return null;
+			}
+		} else {
+			return "";
+		}
+	}
+
+	public static Locale getLocale() {
+		return computeLocale();
+	}
+
+	public static QueryParameters getRequestedQueryParameters() {
+		return (QueryParameters) getAttribute(QUERY_PARAMETERS);
+	}
+
+	public static String getRequestedUrl() {
+		return (String) getAttribute(REQUESTED_URL);
+	}
+
+	public static void invalidate() {
+		VaadinSession currentVaadinSession = VaadinSession.getCurrent();
+		currentVaadinSession.getSession().invalidate();
+	}
+
+	public static boolean isAuthenticated() {
+		return Boolean.TRUE.equals(getAttribute(AUTHENTICATED));
+	}
+
+	public static boolean isDisplayAuthenticated() {
+		return isAuthenticated() || Boolean.TRUE.equals(getAttribute(DISPLAY_AUTHENTICATED));
+	}
+
+	/**
+	 * Sets the attribute.
+	 *
+	 * @param s the s
+	 * @param o the o
+	 */
+	public static void setAttribute(String s, Object o) {
+		if (o == null) {
+			getCurrent().getAttributes().remove(s);
+		} else {
+			getCurrent().getAttributes().put(s, o);
+		}
+	}
+
+	public static void setAuthenticated(boolean isAuthenticated) {
+		setAttribute(AUTHENTICATED, isAuthenticated);
+	}
+
+	public static void setDisplayAuthenticated(boolean b) {
+		setAttribute(DISPLAY_AUTHENTICATED, b);
+	}
+
+	public static void setFop(FieldOfPlay fop) {
+		// logger.debug("setFop {} from {}", (fop != null ? fop.getName() : null), LoggerUtils.whereFrom());
+		setAttribute(FOP, fop);
+	}
+
+	public static void setRequestedQueryParameters(QueryParameters queryParameters) {
+		setAttribute(QUERY_PARAMETERS, queryParameters);
+	}
+
+	public static void setRequestedUrl(String url) {
+		setAttribute(REQUESTED_URL, url);
+	}
+
+	public static void withFop(Consumer<FieldOfPlay> command) {
+		FieldOfPlay fop = getFop();
+		if (fop == null) {
+			fop = OwlcmsFactory.getDefaultFOP();
+		}
+		if (fop != null) {
+			command.accept(fop);
+		}
 	}
 
 	private Properties attributes = new Properties();
@@ -242,11 +247,6 @@ public class OwlcmsSession {
 		} else {
 			setAttribute(LOCALE, locale);
 		}
-	}
-
-	public static void invalidate() {
-		VaadinSession currentVaadinSession = VaadinSession.getCurrent();
-		currentVaadinSession.getSession().invalidate();
 	}
 
 }

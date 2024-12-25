@@ -138,11 +138,9 @@ public class RefContent extends BaseContent implements FOPParametersReader, Safe
 	 * Note: because we have the @Route, the parameters are parsed *before* our parent layout is created.
 	 *
 	 * @param event     Vaadin navigation event
-	 * @param parameter null in this case -- we don't want a vaadin "/" parameter. This allows us to add query
-	 *                  parameters instead.
+	 * @param parameter null in this case -- we don't want a vaadin "/" parameter. This allows us to add query parameters instead.
 	 *
-	 * @see app.owlcms.apputils.queryparameters.FOPParameters#setParameter(com.vaadin.flow.router.BeforeEvent,
-	 *      java.lang.String)
+	 * @see app.owlcms.apputils.queryparameters.FOPParameters#setParameter(com.vaadin.flow.router.BeforeEvent, java.lang.String)
 	 */
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
@@ -180,8 +178,8 @@ public class RefContent extends BaseContent implements FOPParametersReader, Safe
 	}
 
 	/**
-	 * This must come from a timer on FieldOfPlay, because if we are using mobile devices there will not be a master
-	 * decision reset coming from the keypad-hosting device
+	 * This must come from a timer on FieldOfPlay, because if we are using mobile devices there will not be a master decision reset coming from the
+	 * keypad-hosting device
 	 *
 	 * @param e
 	 */

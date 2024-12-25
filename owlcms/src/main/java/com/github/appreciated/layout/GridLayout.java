@@ -24,12 +24,11 @@ import com.vaadin.flow.component.template.Id;
 import com.vaadin.flow.dom.Style;
 
 /**
- * GridLayout is a component container, which shows the subcomponents in the order of their addition. The
- * {@link GridLayout} does not have a predefined size - its size is either defined by the components inside it, or can
- * be set by using the <a href="https://developer.mozilla.org/de/docs/Web/CSS/CSS_Grid_Layout">css grid api</a>
- * Different to the {@link com.vaadin.flow.component.orderedlayout.VerticalLayout} and
- * {@link com.vaadin.flow.component.orderedlayout.HorizontalLayout} a {@link GridLayout} can span its elements over
- * multiple rows.
+ * GridLayout is a component container, which shows the subcomponents in the order of their addition. The {@link GridLayout} does not have a predefined size -
+ * its size is either defined by the components inside it, or can be set by using the
+ * <a href="https://developer.mozilla.org/de/docs/Web/CSS/CSS_Grid_Layout">css grid api</a> Different to the
+ * {@link com.vaadin.flow.component.orderedlayout.VerticalLayout} and {@link com.vaadin.flow.component.orderedlayout.HorizontalLayout} a {@link GridLayout} can
+ * span its elements over multiple rows.
  */
 @SuppressWarnings("serial")
 @Tag("grid-layout")
@@ -178,9 +177,8 @@ public class GridLayout extends LitTemplate implements GridLayoutComponent {
 	}
 
 	/**
-	 * Sets how the grid should behave weather keeping the order or filling up unused space with smaller elements using
-	 * this makes sense when adding differently sized elements
-	 * <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-flow">grid-auto-flow</a>
+	 * Sets how the grid should behave weather keeping the order or filling up unused space with smaller elements using this makes sense when adding differently
+	 * sized elements <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-flow">grid-auto-flow</a>
 	 *
 	 * @param autoFlow
 	 */
@@ -395,8 +393,7 @@ public class GridLayout extends LitTemplate implements GridLayoutComponent {
 	}
 
 	/**
-	 * Sets the column and row definition of your grid-layout. Instead of setting the sizes for rows and columns you
-	 * define areas by using custom keywords. <br>
+	 * Sets the column and row definition of your grid-layout. Instead of setting the sizes for rows and columns you define areas by using custom keywords. <br>
 	 * <p>
 	 * Example: <br>
 	 * 'header header header header header header' <br>
@@ -440,8 +437,7 @@ public class GridLayout extends LitTemplate implements GridLayoutComponent {
 	 * #Dynamic Number of rows <br>
 	 * Other: repeat(auto-fill, minmax(250px, 1fr)); <br>
 	 *
-	 * @param units "The row definition in your grid layout, can either be fixed or dynamic checkout the official css
-	 *              grid documentation for further details"
+	 * @param units "The row definition in your grid layout, can either be fixed or dynamic checkout the official css grid documentation for further details"
 	 */
 	public void setTemplateRows(TemplateRowsAndColsUnit... units) {
 		if (units == null) {

@@ -124,8 +124,7 @@ public class JXLSResultSheet extends JXLSWorkbookStreamSource {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource#
-	 * postProcess(org.apache.poi.ss.usermodel.Workbook)
+	 * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource# postProcess(org.apache.poi.ss.usermodel.Workbook)
 	 */
 	@Override
 	protected void postProcess(Workbook workbook) {

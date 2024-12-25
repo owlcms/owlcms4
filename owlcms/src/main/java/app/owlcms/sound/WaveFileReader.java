@@ -46,8 +46,7 @@ public final class WaveFileReader extends SunFileReader {
 	 *
 	 * @param file the File from which file format information should be extracted
 	 * @return an <code>AudioFileFormat</code> object describing the audio file format
-	 * @throws UnsupportedAudioFileException if the File does not point to valid audio file data recognized by the
-	 *                                       system
+	 * @throws UnsupportedAudioFileException if the File does not point to valid audio file data recognized by the system
 	 * @throws IOException                   if an I/O exception occurs
 	 */
 	@Override
@@ -65,16 +64,14 @@ public final class WaveFileReader extends SunFileReader {
 	}
 
 	/**
-	 * Obtains the audio file format of the input stream provided. The stream must point to valid audio file data. In
-	 * general, audio file providers may need to read some data from the stream before determining whether they support
-	 * it. These parsers must be able to mark the stream, read enough data to determine whether they support the stream,
-	 * and, if not, reset the stream's read pointer to its original position. If the input stream does not support this,
-	 * this method may fail with an IOException.
+	 * Obtains the audio file format of the input stream provided. The stream must point to valid audio file data. In general, audio file providers may need to
+	 * read some data from the stream before determining whether they support it. These parsers must be able to mark the stream, read enough data to determine
+	 * whether they support the stream, and, if not, reset the stream's read pointer to its original position. If the input stream does not support this, this
+	 * method may fail with an IOException.
 	 *
 	 * @param stream the input stream from which file format information should be extracted
 	 * @return an <code>AudioFileFormat</code> object describing the audio file format
-	 * @throws UnsupportedAudioFileException if the stream does not point to valid audio file data recognized by the
-	 *                                       system
+	 * @throws UnsupportedAudioFileException if the stream does not point to valid audio file data recognized by the system
 	 * @throws IOException                   if an I/O exception occurs
 	 * @see InputStream#markSupported
 	 * @see InputStream#mark
@@ -116,8 +113,7 @@ public final class WaveFileReader extends SunFileReader {
 	 *
 	 * @param file the File for which the <code>AudioInputStream</code> should be constructed
 	 * @return an <code>AudioInputStream</code> object based on the audio file data pointed to by the File
-	 * @throws UnsupportedAudioFileException if the File does not point to valid audio file data recognized by the
-	 *                                       system
+	 * @throws UnsupportedAudioFileException if the File does not point to valid audio file data recognized by the system
 	 * @throws IOException                   if an I/O exception occurs
 	 */
 	@Override
@@ -136,16 +132,14 @@ public final class WaveFileReader extends SunFileReader {
 	}
 
 	/**
-	 * Obtains an audio stream from the input stream provided. The stream must point to valid audio file data. In
-	 * general, audio file providers may need to read some data from the stream before determining whether they support
-	 * it. These parsers must be able to mark the stream, read enough data to determine whether they support the stream,
-	 * and, if not, reset the stream's read pointer to its original position. If the input stream does not support this,
-	 * this method may fail with an IOException.
+	 * Obtains an audio stream from the input stream provided. The stream must point to valid audio file data. In general, audio file providers may need to read
+	 * some data from the stream before determining whether they support it. These parsers must be able to mark the stream, read enough data to determine
+	 * whether they support the stream, and, if not, reset the stream's read pointer to its original position. If the input stream does not support this, this
+	 * method may fail with an IOException.
 	 *
 	 * @param stream the input stream from which the <code>AudioInputStream</code> should be constructed
 	 * @return an <code>AudioInputStream</code> object based on the audio file data contained in the input stream.
-	 * @throws UnsupportedAudioFileException if the stream does not point to valid audio file data recognized by the
-	 *                                       system
+	 * @throws UnsupportedAudioFileException if the stream does not point to valid audio file data recognized by the system
 	 * @throws IOException                   if an I/O exception occurs
 	 * @see InputStream#markSupported
 	 * @see InputStream#mark

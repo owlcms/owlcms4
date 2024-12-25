@@ -365,15 +365,15 @@ public class CompetitionEditingFormFactory
 		layout.addFormItem(scoringCombo, Translator.translate("Competition.scoringSystemTitle"));
 		this.binder.forField(scoringCombo).bind(Competition::getScoringSystem, Competition::setScoringSystem);
 
-//		Checkbox showScoressOnScoreboard = new Checkbox();
-//		layout.addFormItem(showScoressOnScoreboard, Translator.translate("Competition.showScoresOnScoreboard"));
-//		this.binder.forField(showScoressOnScoreboard)
-//		        .bind(Competition::isDisplayScores, Competition::setDisplayScores);
-//
-//		Checkbox showScoreRanksOnScoreboard = new Checkbox();
-//		layout.addFormItem(showScoreRanksOnScoreboard, Translator.translate("Competition.showScoreRanksOnScoreboard"));
-//		this.binder.forField(showScoreRanksOnScoreboard)
-//		        .bind(Competition::isDisplayScoreRanks, Competition::setDisplayScoreRanks);
+		// Checkbox showScoressOnScoreboard = new Checkbox();
+		// layout.addFormItem(showScoressOnScoreboard, Translator.translate("Competition.showScoresOnScoreboard"));
+		// this.binder.forField(showScoressOnScoreboard)
+		// .bind(Competition::isDisplayScores, Competition::setDisplayScores);
+		//
+		// Checkbox showScoreRanksOnScoreboard = new Checkbox();
+		// layout.addFormItem(showScoreRanksOnScoreboard, Translator.translate("Competition.showScoreRanksOnScoreboard"));
+		// this.binder.forField(showScoreRanksOnScoreboard)
+		// .bind(Competition::isDisplayScoreRanks, Competition::setDisplayScoreRanks);
 
 		RadioButtonGroup<Integer> sinclairYear = new RadioButtonGroup<>();
 		layout.addFormItem(sinclairYear, Translator.translate("sinclair"));
@@ -381,11 +381,11 @@ public class CompetitionEditingFormFactory
 		this.binder.forField(sinclairYear)
 		        .bind(Competition::getSinclairYear, Competition::setSinclairYear);
 
-//		Checkbox sinclairMeetField = new Checkbox();
-//		layout.addFormItem(sinclairMeetField,
-//		        labelWithHelp("Competition.SinclairMeet", "Competition.SinclairMeetExplanation"));
-//		this.binder.forField(sinclairMeetField)
-//		        .bind(Competition::isSinclair, Competition::setSinclair);
+		// Checkbox sinclairMeetField = new Checkbox();
+		// layout.addFormItem(sinclairMeetField,
+		// labelWithHelp("Competition.SinclairMeet", "Competition.SinclairMeetExplanation"));
+		// this.binder.forField(sinclairMeetField)
+		// .bind(Competition::isSinclair, Competition::setSinclair);
 
 		Checkbox customScoreField = new Checkbox();
 		layout.addFormItem(customScoreField,

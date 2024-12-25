@@ -108,13 +108,13 @@ public class JXLSExportRecords extends JXLSWorkbookStreamSource {
 		this.records = RecordRepository.findFiltered(null, null, null, groupName, !this.isAllRecords());
 		if (this.currentOnly) {
 			var recordMap = this.keepNewest();
-			this.records = new ArrayList<RecordEvent>(recordMap.values().stream().toList());
+			this.records = new ArrayList<>(recordMap.values().stream().toList());
 			this.records.sort(sortRecords());
 		} else {
 			this.records.sort(sortRecords());
 		}
 		Map<String, List<RecordEvent>> grouped = groupByAgeGroup(this.records);
-		List<Entry<String, List<RecordEvent>>> list = new ArrayList<Entry<String, List<RecordEvent>>>();
+		List<Entry<String, List<RecordEvent>>> list = new ArrayList<>();
 		for (Entry<String, List<RecordEvent>> v : grouped.entrySet()) {
 			list.add(v);
 		}
@@ -122,16 +122,47 @@ public class JXLSExportRecords extends JXLSWorkbookStreamSource {
 		reportingBeans.put("records", this.records);
 		return athletes;
 	}
-	
-    private Map<String, List<RecordEvent>> groupByAgeGroup(List<RecordEvent> events) {
-        Map<String, List<RecordEvent>> groupedEvents = new LinkedHashMap<>();
-        for (RecordEvent record : events) {
-            String ageGroup = record.getAgeGrp();
-            boolean masters = record.getAgeGrpLower() >= 30 && (record.getAgeGrp().startsWith("W") || record.getAgeGrp().startsWith("M"));
-            groupedEvents.computeIfAbsent(masters ? ageGroup : ageGroup+" "+record.getTranslatedGender(), k -> new ArrayList<>()).add(record);
-        }
-        return groupedEvents;
-    }
+
+	@Override
+	public InputStream getTemplate(Locale locale) throws IOException {
+		if (this.inputStream != null) {
+			this.logger.debug("explicitly set template {}", this.inputStream);
+			return new BufferedInputStream(this.inputStream);
+		}
+		this.logger.debug("getTemplate {}", LoggerUtils.whereFrom());
+		return getLocalizedTemplate("/templates/records/exportRecords", ".xls", locale);
+	}
+
+	public Map<String, RecordEvent> keepNewest() {
+		return this.records.stream()
+		        .collect(Collectors.groupingBy(
+		                RecordEvent::getKey,
+		                Collectors.collectingAndThen(
+		                        Collectors.maxBy((r1, r2) -> r1.getRecordLift().compareTo(r2.getRecordLift())),
+		                        record -> record.orElseThrow(() -> new IllegalStateException("No record found")))));
+	}
+
+	@Override
+	public void setGroup(Group group) {
+		this.group = group;
+	}
+
+	public Comparator<RecordEvent> sortRecords() {
+		return Comparator
+		        .comparing(RecordEvent::getRecordFederation) // all records for a federation go together (masters are
+		                                                     // separate)
+		        .thenComparing(RecordEvent::getRecordName) // sometimes several record names for same federation
+		                                                   // (example: event-specific)
+		        .thenComparing(RecordEvent::getGender) // all women, then all men
+		        .thenComparing(RecordEvent::getAgeGrpUpper) // U13 U15 U17 U20 U23 SR
+		        // open has biggest age gap, goes after masters M85 and W85
+		        .thenComparing((a, b) -> ObjectUtils.compare((a.getAgeGrpUpper() - a.getAgeGrpLower()), (b.getAgeGrpUpper() - b.getAgeGrpLower())))
+		        .thenComparing(RecordEvent::getAgeGrpLower) // increasing age groups for masters (35, 40, 45...)
+		        .thenComparing(RecordEvent::getBwCatUpper) // increasing body weights
+		        .thenComparing((r) -> r.getRecordLift().ordinal()) // SNATCH, CJ, TOTAL
+		        .thenComparing(RecordEvent::getRecordValue) // increasing records
+		;
+	}
 
 	@Override
 	protected void setReportingInfo() {
@@ -149,11 +180,11 @@ public class JXLSExportRecords extends JXLSWorkbookStreamSource {
 		// reuse existing logic for processing records
 		JXLSExportRecords jxlsExportRecords = this;
 		// jxlsExportRecords.setGroup(getGroup());
-		logger.debug("fetching records for session {} category {}", getGroup(), getCategory());
+		this.logger.debug("fetching records for session {} category {}", getGroup(), getCategory());
 		try {
 			// Must be called as soon as possible after getSortedAthletes()
 			List<RecordEvent> records = jxlsExportRecords.getRecords(getCategory());
-			logger.debug("{} records found", records.size());
+			this.logger.debug("{} records found", records.size());
 			for (RecordEvent e : records) {
 				if (e.getBwCatUpper() > 250) {
 					e.setBwCatString(">" + e.getBwCatLower());
@@ -161,7 +192,6 @@ public class JXLSExportRecords extends JXLSWorkbookStreamSource {
 					e.setBwCatString(Integer.toString(e.getBwCatUpper()));
 				}
 			}
-			;
 			getReportingBeans().put("records", records);
 		} catch (Exception e) {
 			// no records
@@ -179,53 +209,22 @@ public class JXLSExportRecords extends JXLSWorkbookStreamSource {
 		getReportingBeans().put("sessions", sessions);
 	}
 
-	@Override
-	public InputStream getTemplate(Locale locale) throws IOException {
-		if (this.inputStream != null) {
-			logger.debug("explicitly set template {}", this.inputStream);
-			return new BufferedInputStream(this.inputStream);
+	private Map<String, List<RecordEvent>> groupByAgeGroup(List<RecordEvent> events) {
+		Map<String, List<RecordEvent>> groupedEvents = new LinkedHashMap<>();
+		for (RecordEvent record : events) {
+			String ageGroup = record.getAgeGrp();
+			boolean masters = record.getAgeGrpLower() >= 30 && (record.getAgeGrp().startsWith("W") || record.getAgeGrp().startsWith("M"));
+			groupedEvents.computeIfAbsent(masters ? ageGroup : ageGroup + " " + record.getTranslatedGender(), k -> new ArrayList<>()).add(record);
 		}
-		logger.debug("getTemplate {}", LoggerUtils.whereFrom());
-		return getLocalizedTemplate("/templates/records/exportRecords", ".xls", locale);
-	}
-
-	@Override
-	public void setGroup(Group group) {
-		this.group = group;
-	}
-
-	public Comparator<RecordEvent> sortRecords() {
-		return Comparator
-		        .comparing(RecordEvent::getRecordFederation) // all records for a federation go together (masters are
-		                                                     // separate)
-		        .thenComparing(RecordEvent::getRecordName) // sometimes several record names for same federation
-		                                                   // (example: event-specific)
-		        .thenComparing(RecordEvent::getGender) // all women, then all men
-		        .thenComparing(RecordEvent::getAgeGrpUpper) // U13 U15 U17 U20 U23 SR
-		        // open has biggest age gap, goes after masters M85 and W85
-		        .thenComparing((a,b) -> ObjectUtils.compare((a.getAgeGrpUpper() - a.getAgeGrpLower()), (b.getAgeGrpUpper() - b.getAgeGrpLower())))
-		        .thenComparing(RecordEvent::getAgeGrpLower) // increasing age groups for masters (35, 40, 45...)
-		        .thenComparing(RecordEvent::getBwCatUpper) // increasing body weights
-		        .thenComparing((r) -> r.getRecordLift().ordinal()) // SNATCH, CJ, TOTAL
-		        .thenComparing(RecordEvent::getRecordValue) // increasing records
-		;
-	}
-
-	public Map<String, RecordEvent> keepNewest() {
-		return records.stream()
-		        .collect(Collectors.groupingBy(
-		                RecordEvent::getKey,
-		                Collectors.collectingAndThen(
-		                        Collectors.maxBy((r1, r2) -> r1.getRecordLift().compareTo(r2.getRecordLift())),
-		                        record -> record.orElseThrow(() -> new IllegalStateException("No record found")))));
+		return groupedEvents;
 	}
 
 	private boolean isAllRecords() {
-		return allRecords;
+		return this.allRecords;
 	}
 
 	private void setAllRecords(boolean allRecords) {
-		//logger.debug("***** allRecords = {} {}", allRecords, LoggerUtils.whereFrom());
+		// logger.debug("***** allRecords = {} {}", allRecords, LoggerUtils.whereFrom());
 		this.allRecords = allRecords;
 	}
 

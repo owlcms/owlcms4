@@ -30,7 +30,7 @@ public class WarmupScoreboardPage extends AbstractResultsDisplayPage {
 	Map<String, List<String>> urlParameterMap = new HashMap<>();
 
 	public WarmupScoreboardPage() {
-		// intentionally empty.  init() will be called as required.
+		// intentionally empty. init() will be called as required.
 	}
 
 	@Override
@@ -40,9 +40,9 @@ public class WarmupScoreboardPage extends AbstractResultsDisplayPage {
 
 	@Override
 	protected void init() {
-		logger = (Logger) LoggerFactory.getLogger(WarmupScoreboardPage.class);
-		uiEventLogger = (Logger) LoggerFactory.getLogger("UI" + this.logger.getName());
-		
+		this.logger = (Logger) LoggerFactory.getLogger(WarmupScoreboardPage.class);
+		this.uiEventLogger = (Logger) LoggerFactory.getLogger("UI" + this.logger.getName());
+
 		// each subclass must define this routine.
 		// otherwise we end up with multiple instances of the Results board.
 		var board = new Results();
@@ -72,7 +72,7 @@ public class WarmupScoreboardPage extends AbstractResultsDisplayPage {
 		fullMap.putAll(additionalMap);
 		setDefaultParameters(QueryParameters.simple(fullMap));
 	}
-	
+
 	@Override
 	protected void onAttach(AttachEvent attachEvent) {
 		DisplayParameters board = (DisplayParameters) this.getBoard();

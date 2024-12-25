@@ -26,6 +26,14 @@ import ch.qos.logback.classic.Logger;
 public interface IFilterCascade {
 
 	final static Logger logger = (Logger) LoggerFactory.getLogger(IFilterCascade.class);
+
+	default public void clearFilters() {
+		this.getAgeGroupFilter().clear();
+		this.getChampionshipFilter().clear();
+		this.getCategoryFilter().clear();
+		this.getGenderFilter().clear();
+	}
+
 	default public void defineFilterCascade(GridCrud<Athlete> crud) {
 
 		if (this.getChampionshipFilter() == null) {
@@ -43,7 +51,7 @@ public interface IFilterCascade {
 			this.setAgeGroupFilter(new ComboBox<>());
 		}
 		this.getAgeGroupFilter().setPlaceholder(Translator.translate("AgeGroup"));
-		//this.getAgeGroupFilter().setEnabled(false);
+		// this.getAgeGroupFilter().setEnabled(false);
 		this.getAgeGroupFilter().setVisible(false);
 		this.getAgeGroupFilter().setClearButtonVisible(true);
 		this.getAgeGroupFilter().setValue(null);
@@ -85,13 +93,6 @@ public interface IFilterCascade {
 			this.getGenderFilter().setWidth("10em");
 			getCrudLayout(crud).addFilterComponent(this.getGenderFilter());
 		}
-	}
-
-	default public void clearFilters() {
-		this.getAgeGroupFilter().clear();
-		this.getChampionshipFilter().clear();
-		this.getCategoryFilter().clear();
-		this.getGenderFilter().clear();
 	}
 
 	default public void defineSelectionListeners() {
@@ -205,9 +206,9 @@ public interface IFilterCascade {
 			this.setChampionshipAgeGroupPrefixes(AgeGroupRepository.findActiveAndUsedAgeGroupNames(championshipValue));
 			List<String> championshipAgeGroupPrefixes = this.getChampionshipAgeGroupPrefixes();
 			this.getAgeGroupFilter().setItems(championshipAgeGroupPrefixes);
-			
+
 			boolean notEmpty = championshipAgeGroupPrefixes.size() > 0;
-			//this.getAgeGroupFilter().setEnabled(notEmpty);
+			// this.getAgeGroupFilter().setEnabled(notEmpty);
 			this.getAgeGroupFilter().setVisible(championshipAgeGroupPrefixes.size() > 1);
 			String first = (notEmpty && championshipValue.getType() == ChampionshipType.IWF)
 			        || (championshipAgeGroupPrefixes.size() == 1)

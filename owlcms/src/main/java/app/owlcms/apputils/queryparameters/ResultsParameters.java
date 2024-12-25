@@ -17,23 +17,23 @@ public interface ResultsParameters {
 	DecimalFormatSymbols symbolsEN_US = DecimalFormatSymbols.getInstance(Locale.US);
 	DecimalFormat formatEN_US = new DecimalFormat("0.000", symbolsEN_US);
 
-	public Championship getChampionship();
-
 	public AgeGroup getAgeGroup();
 
 	public String getAgeGroupPrefix();
 
 	public Category getCategory();
 
-	public boolean isVideo();
+	public Championship getChampionship();
 
-	public void setChampionship(Championship ad);
+	public boolean isVideo();
 
 	public void setAgeGroup(AgeGroup ag);
 
 	public void setAgeGroupPrefix(String agp);
 
 	public void setCategory(Category cat);
+
+	public void setChampionship(Championship ad);
 
 	public void setVideo(boolean video);
 }

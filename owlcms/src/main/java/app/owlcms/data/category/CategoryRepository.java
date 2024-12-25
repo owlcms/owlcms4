@@ -41,6 +41,12 @@ public class CategoryRepository {
 		logger.setLevel(Level.INFO);
 	}
 
+	public static Category codeFromName(String catName) {
+		synchronized (allCategories) {
+			return allCategories.get(catName.trim());
+		}
+	}
+
 	/**
 	 * Count filtered.
 	 *
@@ -110,7 +116,7 @@ public class CategoryRepository {
 
 	public static List<Category> doFindEligibleCategories(Athlete a, Gender gender, Integer ageFromFields, Double bw,
 	        int qualifyingTotal) {
-		
+
 		List<Category> allEligible = CategoryRepository.findByGenderAgeBW(gender, ageFromFields, null);
 		if (logger.isEnabledFor(Level.TRACE) && a.getLastName().contentEquals("Molnar")) {
 			logger.trace("allEligible bw={} {} -- {}", bw, allEligible.size(), LoggerUtils.whereFrom());
@@ -124,24 +130,6 @@ public class CategoryRepository {
 		        .filter(c -> (qualifyingTotal >= c.getQualifyingTotal()))
 		        .filter(c -> (bw == null || (bw > c.getMinimumWeight() && bw <= c.getMaximumWeight())))
 		        .collect(Collectors.toList());
-		return allEligible;
-	}
-
-	private static List<Category> checkMultipleBWClasses(Gender gender, Integer ageFromFields, Double bw,
-	        List<Category> allEligible) {
-		// > 998 is our signal for max weight in category
-		if ((bw != null && bw > 998) && !allEligible.isEmpty()) {
-			double bodyWeight = allEligible.get(0).getMinimumWeight() + 1;
-			List<Category> otherEligibles = CategoryRepository.findByGenderAgeBW(gender, ageFromFields, bodyWeight);
-			HashSet<Category> allEligibleSet = new HashSet<>(allEligible);
-			for (Category otherEligible : otherEligibles) {
-				if (!otherEligible.sameAsAny(allEligibleSet)) {
-					allEligible.add(otherEligible);
-				}
-			}
-			allEligible = allEligible.stream()
-			        .collect(Collectors.toList());
-		}
 		return allEligible;
 	}
 
@@ -174,8 +162,8 @@ public class CategoryRepository {
 		List<Category> findFiltered = findFiltered((String) null, (Gender) null, (Championship) null, (AgeGroup) null,
 		        (Integer) null, (Double) null,
 		        true, -1, -1);
-		
-		//logger.debug("findActive **** {} {}", findFiltered.size(), LoggerUtils.stackTrace());
+
+		// logger.debug("findActive **** {} {}", findFiltered.size(), LoggerUtils.stackTrace());
 		findFiltered.sort(new RegistrationPreferenceComparator());
 		return findFiltered;
 	}
@@ -310,6 +298,17 @@ public class CategoryRepository {
 		return (Category) query.getResultList().stream().findFirst().orElse(null);
 	}
 
+	public static void resetCodeMap() {
+		synchronized (allCategories) {
+			findActive().stream()
+			        // .peek(c -> logger.debug("============ adding {} ; {} : {}", c.getDisplayName(), c.getNameWithAgeGroup(), c.getCode()))
+			        .forEach(c -> {
+				        allCategories.put(c.getDisplayName(), c);
+				        allCategories.put(c.getNameWithAgeGroup(), c);
+			        });
+		}
+	}
+
 	/**
 	 * Save.
 	 *
@@ -323,6 +322,24 @@ public class CategoryRepository {
 			category.setName(category.getDisplayName());
 			return em.merge(category);
 		});
+	}
+
+	private static List<Category> checkMultipleBWClasses(Gender gender, Integer ageFromFields, Double bw,
+	        List<Category> allEligible) {
+		// > 998 is our signal for max weight in category
+		if ((bw != null && bw > 998) && !allEligible.isEmpty()) {
+			double bodyWeight = allEligible.get(0).getMinimumWeight() + 1;
+			List<Category> otherEligibles = CategoryRepository.findByGenderAgeBW(gender, ageFromFields, bodyWeight);
+			HashSet<Category> allEligibleSet = new HashSet<>(allEligible);
+			for (Category otherEligible : otherEligibles) {
+				if (!otherEligible.sameAsAny(allEligibleSet)) {
+					allEligible.add(otherEligible);
+				}
+			}
+			allEligible = allEligible.stream()
+			        .collect(Collectors.toList());
+		}
+		return allEligible;
 	}
 
 	private static String filteringJoins(AgeGroup ag, Integer age) {
@@ -407,23 +424,6 @@ public class CategoryRepository {
 		}
 		if (gender != null) {
 			query.setParameter("gender", gender);
-		}
-	}
-
-	public static void resetCodeMap() {
-		synchronized (allCategories) {
-			findActive().stream()
-			//.peek(c -> logger.debug("============ adding {} ; {}  : {}", c.getDisplayName(), c.getNameWithAgeGroup(), c.getCode()))
-			.forEach(c -> {
-				allCategories.put(c.getDisplayName(), c);
-				allCategories.put(c.getNameWithAgeGroup(), c);
-			});
-		}
-	}
-
-	public static Category codeFromName(String catName) {
-		synchronized (allCategories) {
-			return allCategories.get(catName.trim());
 		}
 	}
 }
