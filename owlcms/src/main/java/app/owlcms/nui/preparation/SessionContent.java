@@ -278,7 +278,7 @@ public class SessionContent extends BaseContent implements CrudListener<Group>, 
 			};
 			Button editDetails = new Button(Translator.translate("Sessions.EditDetails"), clickListener);
 			editDetails.addThemeVariants(ButtonVariant.LUMO_SMALL);
-
+			
 			Button technical = openInNewTab(RegistrationContent.class, translation, p != null ? p.getName() : "?");
 			// prevent grid row selection from triggering
 			technical.getElement().addEventListener("click", ignore -> {

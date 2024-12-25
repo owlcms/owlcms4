@@ -15,7 +15,8 @@ import com.vaadin.flow.component.Composite;
 public class AreaLayout extends Composite<GridLayout> implements FluentGridLayoutComponent<AreaLayout> {
 
 	/**
-	 * Shorthand to allow setting the <a href="https://developer.mozilla.org/de/docs/Web/CSS/grid-template-areas">grid-template-areas</a>
+	 * Shorthand to allow setting the
+	 * <a href="https://developer.mozilla.org/de/docs/Web/CSS/grid-template-areas">grid-template-areas</a>
 	 *
 	 * @param areas
 	 */
@@ -25,7 +26,8 @@ public class AreaLayout extends Composite<GridLayout> implements FluentGridLayou
 	}
 
 	/**
-	 * Short hand to add an item and set its <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-area">grid-area</a>
+	 * Short hand to add an item and set its
+	 * <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-area">grid-area</a>
 	 *
 	 * @param component
 	 * @param area

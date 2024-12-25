@@ -235,15 +235,6 @@ public class XAthlete extends Athlete {
 
 	/**
 	 * @return
-	 * @see app.owlcms.data.athlete.Athlete#computedCategoryScore()
-	 */
-	@Override
-	public Double getCategoryScore() {
-		return this.a.getCategoryScore();
-	}
-
-	/**
-	 * @return
 	 * @see app.owlcms.data.athlete.Athlete#getCategorySinclair()
 	 */
 	@Override
@@ -575,6 +566,15 @@ public class XAthlete extends Athlete {
 
 	/**
 	 * @return
+	 * @see app.owlcms.data.athlete.Athlete#computedCategoryScore()
+	 */
+	@Override
+	public Double getCategoryScore() {
+		return this.a.getCategoryScore();
+	}
+
+	/**
+	 * @return
 	 * @see app.owlcms.data.athlete.Athlete#getDisplayCategory()
 	 */
 	@Override
@@ -806,16 +806,6 @@ public class XAthlete extends Athlete {
 		return this.a.getPreviousLiftTime();
 	}
 
-	@Override
-	public Double getQAge() {
-		return this.a.getQAge();
-	}
-
-	@Override
-	public int getqAgeRank() {
-		return this.a.getqAgeRank();
-	}
-
 	/**
 	 * @return
 	 * @see app.owlcms.data.athlete.Athlete#getQualifyingTotal()
@@ -941,6 +931,11 @@ public class XAthlete extends Athlete {
 		return this.a.getSinclairRank();
 	}
 
+	@Override
+	public Double getSmhfForDelta() {
+		return this.a.getSmhfForDelta();
+	}
+
 	/**
 	 * @return
 	 * @see app.owlcms.data.athlete.Athlete#getSmhf()
@@ -949,17 +944,22 @@ public class XAthlete extends Athlete {
 	public Double getSmhf() {
 		return this.a.getSmhf();
 	}
-
+	
 	@Override
-	public Double getSmhfForDelta() {
-		return this.a.getSmhfForDelta();
+	public Double getQAge() {
+		return this.a.getQAge();
 	}
 
 	@Override
 	public int getSmhfRank() {
 		return this.a.getSmhfRank();
 	}
-
+	
+	@Override
+	public int getqAgeRank() {
+		return this.a.getqAgeRank();
+	}
+	
 	/**
 	 * @return
 	 * @see app.owlcms.data.athlete.Athlete#getSnatch1ActualLift()
@@ -1799,11 +1799,6 @@ public class XAthlete extends Athlete {
 		super.setPresumedCategory(category);
 	}
 
-	@Override
-	public void setqAgeRank(int i) {
-		this.a.setqAgeRank(i);
-	}
-
 	/**
 	 * @param qualifyingTotal
 	 * @see app.owlcms.data.athlete.Athlete#setQualifyingTotal(java.lang.Integer)
@@ -1834,6 +1829,11 @@ public class XAthlete extends Athlete {
 	@Override
 	public void setSmhfRank(int i) {
 		this.a.setSmhfRank(i);
+	}
+	
+	@Override
+	public void setqAgeRank(int i) {
+		this.a.setqAgeRank(i);
 	}
 
 	/**
@@ -2236,7 +2236,8 @@ public class XAthlete extends Athlete {
 	 * @param change1
 	 * @param change2
 	 * @param actualLift
-	 * @see app.owlcms.data.athlete.Athlete#validateActualLift(int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 * @see app.owlcms.data.athlete.Athlete#validateActualLift(int, java.lang.String, java.lang.String,
+	 *      java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void validateActualLift(int curLift, String automaticProgression, String declaration, String change1,

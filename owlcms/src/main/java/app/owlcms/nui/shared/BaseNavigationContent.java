@@ -63,7 +63,8 @@ public abstract class BaseNavigationContent extends BaseContent
 	private String pageTitle;
 
 	/**
-	 * Instantiates a new announcer content. Content is created in {@link #setParameter(BeforeEvent, String)} after URL parameters are parsed.
+	 * Instantiates a new announcer content. Content is created in {@link #setParameter(BeforeEvent, String)} after URL
+	 * parameters are parsed.
 	 */
 	public BaseNavigationContent() {
 		OwlcmsFactory.waitDBInitialized();
@@ -81,9 +82,10 @@ public abstract class BaseNavigationContent extends BaseContent
 	}
 
 	/**
-	 * The top bar is logically is the master part of a master-detail In the current implementation, the most convenient place to put it is in the top bar which
-	 * is managed by the layout, but this could change. So we change the surrounding layout from this class. In this way, only one class (the content) listens
-	 * for events. Doing it the other way around would require multiple layouts, which breaks the idea of a single page app.
+	 * The top bar is logically is the master part of a master-detail In the current implementation, the most convenient
+	 * place to put it is in the top bar which is managed by the layout, but this could change. So we change the
+	 * surrounding layout from this class. In this way, only one class (the content) listens for events. Doing it the
+	 * other way around would require multiple layouts, which breaks the idea of a single page app.
 	 *
 	 * @return
 	 */
@@ -138,7 +140,8 @@ public abstract class BaseNavigationContent extends BaseContent
 	/**
 	 * Process URL parameters, including query parameters
 	 *
-	 * @see app.owlcms.apputils.queryparameters.FOPParameters#setParameter(com.vaadin.flow.router.BeforeEvent, java.lang.String)
+	 * @see app.owlcms.apputils.queryparameters.FOPParameters#setParameter(com.vaadin.flow.router.BeforeEvent,
+	 *      java.lang.String)
 	 */
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
@@ -170,8 +173,8 @@ public abstract class BaseNavigationContent extends BaseContent
 			params.remove("group");
 		}
 		Location location2 = new Location(location.getPath(), new QueryParameters(URLUtils.cleanParams(params)));
-		// ui.getPage().getHistory().replaceState(null, location2);
-		logger.debug("new location {}", location2.getPathWithQueryParameters());
+		//ui.getPage().getHistory().replaceState(null, location2);
+		logger.debug("new location {}",location2.getPathWithQueryParameters());
 		ui.getPage().setLocation(location2.getPathWithQueryParameters());
 
 	}
@@ -220,12 +223,12 @@ public abstract class BaseNavigationContent extends BaseContent
 	 *
 	 * @see com.vaadin.flow.component.Component#onAttach(com.vaadin.flow.component. AttachEvent)
 	 */
-	// @Override
-	// protected void onAttach(AttachEvent attachEvent) {
-	// OwlcmsSession.withFop(fop -> {
-	// // we listen on uiEventBus.
-	// this.uiEventBus = uiEventBusRegister(this, fop);
-	// });
-	// }
+//	@Override
+//	protected void onAttach(AttachEvent attachEvent) {
+//		OwlcmsSession.withFop(fop -> {
+//			// we listen on uiEventBus.
+//			this.uiEventBus = uiEventBusRegister(this, fop);
+//		});
+//	}
 
 }

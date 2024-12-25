@@ -119,7 +119,8 @@ public class TeamSelectionContent extends BaseContent
 	private JXLSCompetitionBook xlsWriter;
 
 	/**
-	 * Instantiates a new announcer content. Does nothing. Content is created in {@link #setParameter(BeforeEvent, String)} after URL parameters are parsed.
+	 * Instantiates a new announcer content. Does nothing. Content is created in
+	 * {@link #setParameter(BeforeEvent, String)} after URL parameters are parsed.
 	 */
 	public TeamSelectionContent() {
 		OwlcmsFactory.waitDBInitialized();
@@ -155,15 +156,15 @@ public class TeamSelectionContent extends BaseContent
 
 		this.topBar.getStyle().set("flex", "100 1");
 		this.topBar.removeAll();
-		// this.topBar.add(this.topBarAgeDivisionSelect, this.topBarAgeGroupPrefixSelect);
+		//this.topBar.add(this.topBarAgeDivisionSelect, this.topBarAgeGroupPrefixSelect);
 		this.topBar.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
 		this.topBar.setAlignItems(FlexComponent.Alignment.CENTER);
 		return this.topBar;
 	}
 
 	/**
-	 * Get the content of the crudGrid. Invoked by refreshGrid. Not currently used because we are using instead a TreeGrid and a
-	 * LazyCrudListener<TeamTreeItem>()
+	 * Get the content of the crudGrid. Invoked by refreshGrid. Not currently used because we are using instead a
+	 * TreeGrid and a LazyCrudListener<TeamTreeItem>()
 	 *
 	 * @see TreeDataProvider
 	 * @see org.vaadin.crudui.crud.CrudListener#findAll()
@@ -245,9 +246,11 @@ public class TeamSelectionContent extends BaseContent
 	 * Note: because we have the @Route, the parameters are parsed *before* our parent layout is created.
 	 *
 	 * @param event     Vaadin navigation event
-	 * @param parameter null in this case -- we don't want a vaadin "/" parameter. This allows us to add query parameters instead.
+	 * @param parameter null in this case -- we don't want a vaadin "/" parameter. This allows us to add query
+	 *                  parameters instead.
 	 *
-	 * @see app.owlcms.apputils.queryparameters.FOPParameters#setParameter(com.vaadin.flow.router.BeforeEvent, java.lang.String)
+	 * @see app.owlcms.apputils.queryparameters.FOPParameters#setParameter(com.vaadin.flow.router.BeforeEvent,
+	 *      java.lang.String)
 	 */
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
@@ -330,6 +333,7 @@ public class TeamSelectionContent extends BaseContent
 		})).setHeader(Translator.translate("Name")).setWidth("32ch");
 		grid.addColumn(TeamTreeItem::getCategory).setHeader(Translator.translate("Category"))
 		        .setTextAlign(ColumnTextAlign.CENTER);
+
 
 		ComponentRenderer<Component, TeamTreeItem> warningRenderer = new ComponentRenderer<>(p -> {
 			if (p.isWarning()) {

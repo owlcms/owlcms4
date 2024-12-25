@@ -60,7 +60,7 @@ public class PublicFacingAttemptBoardPage extends AbstractAttemptBoardPage {
 		fullMap.putAll(initialMap);
 		fullMap.putAll(additionalMap);
 		setDefaultParameters(QueryParameters.simple(fullMap));
-
+		
 		AbstractAttemptBoard board = (AbstractAttemptBoard) getBoard();
 		board.setPublicFacing(true);
 		this.addComponent(board);

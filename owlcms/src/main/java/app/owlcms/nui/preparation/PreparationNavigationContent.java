@@ -82,11 +82,10 @@ public class PreparationNavigationContent extends BaseNavigationContent implemen
 		Notification notification = new Notification(Translator.translate("Processing"));
 		notification.setPosition(Position.TOP_END);
 		notification.addThemeVariants(NotificationVariant.LUMO_WARNING);
-		emptyRegistrationWriter.setDoneCallback((s) -> this.getUI().get().access(() -> {
+		emptyRegistrationWriter.setDoneCallback((s) -> this.getUI().get().access(() ->  {
 			notification.close();
 		}));
-		Div downloadDiv = DownloadButtonFactory.createDynamicJXLSDownloadButton("Registration", Translator.translate("DownloadRegistrationTemplate"),
-		        emptyRegistrationWriter,
+		Div downloadDiv = DownloadButtonFactory.createDynamicJXLSDownloadButton("Registration", Translator.translate("DownloadRegistrationTemplate"), emptyRegistrationWriter,
 		        notification);
 		downloadDiv.setWidthFull();
 
@@ -99,10 +98,10 @@ public class PreparationNavigationContent extends BaseNavigationContent implemen
 		Notification notification1 = new Notification(Translator.translate("LongProcessing"));
 		notification1.setPosition(Position.TOP_END);
 		notification1.addThemeVariants(NotificationVariant.LUMO_WARNING);
-		registrationWriter.setDoneCallback((s) -> this.getUI().get().access(() -> {
+		registrationWriter.setDoneCallback((s) -> this.getUI().get().access(() ->  {
 			notification1.close();
 		}));
-
+		
 		Div sbdeDiv = DownloadButtonFactory.createDynamicJXLSDownloadButton("SBDE", Translator.translate("AdvancedPreparation.Export"), registrationWriter,
 		        notification1);
 		sbdeDiv.setWidthFull();
@@ -118,10 +117,10 @@ public class PreparationNavigationContent extends BaseNavigationContent implemen
 		Button uploadJson = new Button(Translator.translate("ExportDatabase.UploadJson"),
 		        new Icon(VaadinIcon.UPLOAD_ALT),
 		        buttonClickEvent -> new JsonUploadDialog(UI.getCurrent()).open());
-
+		
 		Notification notification2 = new Notification(Translator.translate("LongProcessing"));
 		notification2.setPosition(Position.TOP_END);
-		// notification2.addThemeVariants(NotificationVariant.LUMO_WARNING);
+		//notification2.addThemeVariants(NotificationVariant.LUMO_WARNING);
 		Div exportJsonDiv = DownloadButtonFactory.createDynamicJsonDownloadButton("owlcmsDatabase",
 		        Translator.translate("ExportDatabase.DownloadJson"), notification2);
 		Optional<Component> exportJsonButton = exportJsonDiv.getChildren().findFirst();

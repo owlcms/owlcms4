@@ -27,7 +27,6 @@ public class RCompetition {
 	static Map<String, Group> activeGroups = new HashMap<>();
 	static Map<Long, Set<Category>> athleteToEligibles = new HashMap<>();
 	static Map<Long, Set<Category>> athleteToTeams = new HashMap<>();
-	static Logger logger = (Logger) LoggerFactory.getLogger(RCompetition.class);
 
 	public static Map<String, Category> getActiveCategories() {
 		return activeCategories;
@@ -55,7 +54,7 @@ public class RCompetition {
 	public static void resetActiveGroups() {
 		activeGroups.clear();
 		GroupRepository.findAll().forEach(g -> {
-			// logger.debug("adding group {}",g.getName());
+			//logger.debug("adding group {}",g.getName());
 			activeGroups.put(g.getName(), g);
 		});
 	}
@@ -69,6 +68,7 @@ public class RCompetition {
 	}
 
 	Competition c = new Competition();
+	static Logger logger = (Logger) LoggerFactory.getLogger(RCompetition.class);
 
 	public void addGroup(Group g) {
 		activeGroups.put(g.getName(), g);

@@ -242,14 +242,6 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 		return this.ageDivision;
 	}
 
-	@Transient
-	@JsonIgnore
-	public String getAgeFirstSortCode() {
-		String core = scoreCodeCore();
-		String result = core + "_" + this.gender.ordinal();
-		return result;
-	}
-
 	@JsonIgnore
 	public List<Category> getAllCategories() {
 		return this.categories;
@@ -324,15 +316,6 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 
 	public Gender getGender() {
 		return this.gender;
-	}
-
-	@Transient
-	@JsonIgnore
-	public String getGenderFirstSortCode() {
-		// all women before all men
-		String core = scoreCodeCore();
-		String result = this.gender.ordinal() + "_" + core;
-		return result;
 	}
 
 	public Long getId() {
@@ -441,30 +424,12 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 		}
 	}
 
-	public String scoreCodeCore() {
-		// younger group firsts (max age)
-		// 15-20 should come before 17-20 (min age)
-		// but 85-999 must come before 0-999
-		// then with categories before no categories (score medals last within an age range)
-		Integer maxAge2 = this.getMaxAge();
-		Integer minAge2 = this.getMinAge();
-		String core = String.format("%03d", maxAge2)
-		        + "_" + String.format("%03d", maxAge2 >= 900 ? maxAge2 : minAge2)
-		        + "_" + String.format("%03d", 999 - this.getCategories().size());
-		return core;
-	}
-
 	public void setActive(boolean active) {
 		this.active = active;
 	}
 
 	public void setAgeDivision(String ageDivision) {
 		this.ageDivision = ageDivision;
-	}
-
-	@Transient
-	@JsonIgnore
-	public void setAgeFirstSortCode(String ignored) {
 	}
 
 	public void setAlreadyGendered(boolean b) {
@@ -496,11 +461,6 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 
 	public void setGender(Gender gender) {
 		this.gender = gender;
-	}
-
-	@Transient
-	@JsonIgnore
-	public void setGenderFirstSortCode(String ignored) {
 	}
 
 	public void setKey(String key) {
@@ -537,5 +497,45 @@ public class AgeGroup implements Comparable<AgeGroup>, Serializable {
 		// OwlcmsSession.getLocale());
 		// return translatedCode != null ? translatedCode : code2;
 		return code2;
+	}
+
+	@Transient
+	@JsonIgnore
+	public String getAgeFirstSortCode() {
+		String core = scoreCodeCore();
+		String result = core + "_" + gender.ordinal();
+		return result;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setAgeFirstSortCode(String ignored) {
+	}
+
+	@Transient
+	@JsonIgnore
+	public String getGenderFirstSortCode() {
+		// all women before all men
+		String core = scoreCodeCore();
+		String result = gender.ordinal() + "_" + core;
+		return result;
+	}
+
+	public String scoreCodeCore() {
+		// younger group firsts (max age)
+		// 15-20 should come before 17-20 (min age)
+		// but 85-999 must come before 0-999
+		// then with categories before no categories (score medals last within an age range)
+		Integer maxAge2 = this.getMaxAge();
+		Integer minAge2 = this.getMinAge();
+		String core = String.format("%03d", maxAge2)
+		        + "_" + String.format("%03d", maxAge2 >= 900 ? maxAge2 : minAge2)
+		        + "_" + String.format("%03d", 999-this.getCategories().size());
+		return core;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setGenderFirstSortCode(String ignored) {
 	}
 }

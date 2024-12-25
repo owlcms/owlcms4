@@ -85,6 +85,18 @@ public class AthleteSorter implements Serializable {
 		return impactedAthletes;
 	}
 
+	public static List<Athlete> fetchForCategoryRanks(EntityManager em, Group g) {
+		List<Athlete> impactedAthletes;
+		if (g != null) {
+			impactedAthletes = AthleteRepository.findAthletesForGlobalRanking(em, g);
+			// logger.debug"all athletes in group's categories {}", impactedAthletes);
+		} else {
+			impactedAthletes = AthleteRepository.doFindAllByGroupAndWeighIn(em, null, true, null);
+			// logger.debug("all athletes in all groups {}", impactedAthletes);
+		}
+		return impactedAthletes;
+	}
+
 	/**
 	 * Assign ranks within each category, for all athletes in categories present in group. Returns the list of these athletes (i.e. not only these in group g)
 	 *
@@ -181,6 +193,24 @@ public class AthleteSorter implements Serializable {
 	}
 
 	/**
+	 * Assign start numbers to athletes.
+	 *
+	 * @param sortedList the sorted list
+	 */
+	public static void doAssignStartNumbers(List<Athlete> sortedList) {
+		int rank = 1;
+		for (Athlete curLifter : sortedList) {
+			Double bodyWeight = curLifter.getBodyWeight();
+			if (bodyWeight != null && bodyWeight > 0.0D) {
+				curLifter.setStartNumber(rank);
+				rank++;
+			} else {
+				curLifter.setStartNumber(0);
+			}
+		}
+	}
+
+	/**
 	 * Compute the number of lifts already done. During snatch, exclude cj
 	 *
 	 * @param lifters the athletes in the group
@@ -234,24 +264,6 @@ public class AthleteSorter implements Serializable {
 	}
 
 	/**
-	 * Assign start numbers to athletes.
-	 *
-	 * @param sortedList the sorted list
-	 */
-	public static void doAssignStartNumbers(List<Athlete> sortedList) {
-		int rank = 1;
-		for (Athlete curLifter : sortedList) {
-			Double bodyWeight = curLifter.getBodyWeight();
-			if (bodyWeight != null && bodyWeight > 0.0D) {
-				curLifter.setStartNumber(rank);
-				rank++;
-			} else {
-				curLifter.setStartNumber(0);
-			}
-		}
-	}
-
-	/**
 	 * Assign lot numbers at random.
 	 *
 	 * @param toBeShuffled the to be shuffled
@@ -262,18 +274,6 @@ public class AthleteSorter implements Serializable {
 		Collections.shuffle(shuffled, new Random());
 		assignLotNumbers(shuffled);
 		return shuffled;
-	}
-
-	public static List<Athlete> fetchForCategoryRanks(EntityManager em, Group g) {
-		List<Athlete> impactedAthletes;
-		if (g != null) {
-			impactedAthletes = AthleteRepository.findAthletesForGlobalRanking(em, g);
-			// logger.debug"all athletes in group's categories {}", impactedAthletes);
-		} else {
-			impactedAthletes = AthleteRepository.doFindAllByGroupAndWeighIn(em, null, true, null);
-			// logger.debug("all athletes in all groups {}", impactedAthletes);
-		}
-		return impactedAthletes;
 	}
 
 	/**
@@ -648,22 +648,6 @@ public class AthleteSorter implements Serializable {
 		}
 	}
 
-	public static List<Athlete> updateEligibleCategoryRanks(List<Athlete> absoluteOrderList, Ranking rankingType, Category category) {
-		List<Athlete> newList = new ArrayList<>();
-		MultiCategoryRankSetter rt = new MultiCategoryRankSetter();
-		for (Athlete curLifter : absoluteOrderList) {
-			final double rankingValue = Ranking.getRankingValue(curLifter, rankingType);
-			// we must update the original participations attached to the original athlete, on all updates.
-			Athlete realAthlete = ((PAthlete) curLifter)._getAthlete();
-			Participation participation = rt.increment(realAthlete, rankingType, rankingValue, category);
-			PAthlete e = new PAthlete(participation);
-			// logger.debug("new PAthlete realAthlete={} _getAthlete={}", System.identityHashCode(realAthlete), System.identityHashCode(e._getAthlete()));
-			// Competition.dumpAthlete("realAthlete", realAthlete);
-			newList.add(e);
-		}
-		return newList;
-	}
-
 	/**
 	 * Assign ranks, sequentially.
 	 *
@@ -679,6 +663,22 @@ public class AthleteSorter implements Serializable {
 			rt.increment(curLifter, rankingType, rankingValue, null);
 			// }
 		}
+	}
+
+	public static List<Athlete> updateEligibleCategoryRanks(List<Athlete> absoluteOrderList, Ranking rankingType, Category category) {
+		List<Athlete> newList = new ArrayList<Athlete>();
+		MultiCategoryRankSetter rt = new MultiCategoryRankSetter();
+		for (Athlete curLifter : absoluteOrderList) {
+			final double rankingValue = Ranking.getRankingValue(curLifter, rankingType);
+			// we must update the original participations attached to the original athlete, on all updates.
+			Athlete realAthlete = ((PAthlete) curLifter)._getAthlete();
+			Participation participation = rt.increment(realAthlete, rankingType, rankingValue, category);
+			PAthlete e = new PAthlete(participation);
+			// logger.debug("new PAthlete realAthlete={} _getAthlete={}", System.identityHashCode(realAthlete), System.identityHashCode(e._getAthlete()));
+			// Competition.dumpAthlete("realAthlete", realAthlete);
+			newList.add(e);
+		}
+		return newList;
 	}
 
 	/**

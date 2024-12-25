@@ -23,15 +23,11 @@ public class JXLSCardsDocs extends JXLSWorkbookStreamSource {
 	public JXLSCardsDocs() {
 	}
 
-	@Override
-	public int getSizeLimit() {
-		return 200;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource# postProcess(org.apache.poi.ss.usermodel.Workbook)
+	 * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource#
+	 * postProcess(org.apache.poi.ss.usermodel.Workbook)
 	 */
 	@Override
 	protected void postProcess(Workbook workbook) {
@@ -39,7 +35,7 @@ public class JXLSCardsDocs extends JXLSWorkbookStreamSource {
 			setPageBreaks(workbook, 1, this.getPageLength());
 			return;
 		}
-
+		
 		if (Competition.getCurrent().getComputedCardsTemplateFileName().contains("IWF-")) {
 			setPageBreaks(workbook, 1, 17);
 		} else if (Competition.getCurrent().getComputedCardsTemplateFileName().contains("SmallCards")) {
@@ -47,6 +43,11 @@ public class JXLSCardsDocs extends JXLSWorkbookStreamSource {
 		} else if (Competition.getCurrent().getComputedCardsTemplateFileName().contains("Challenge")) {
 			setPageBreaks(workbook, 1, 7);
 		}
+	}
+	
+	@Override
+	public int getSizeLimit() {
+		return 200;
 	}
 
 	protected void setPageBreaks(Workbook workbook, int cardsPerPage, int linesPerCard) {

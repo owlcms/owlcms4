@@ -227,7 +227,8 @@ public class BenchmarkData {
 	/**
 	 * Setup benchmark data.
 	 *
-	 * 4 groups A-D, 14 athletes per session, all IWF and IMWA age groups. 81 sessions required to produce 1134 athletes (target size of benchmark).
+	 * 4 groups A-D, 14 athletes per session, all IWF and IMWA age groups. 81 sessions required to produce 1134 athletes
+	 * (target size of benchmark).
 	 *
 	 * @param sessionsPerDay
 	 *

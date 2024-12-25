@@ -54,9 +54,9 @@ public class OverallRankSetter {
 	}
 
 	private int incrementRank(Ranking ranking) {
-		this.rank++;
-		// logger.debug("incrementing ranking {} to {}", ranking, rank);
-		return this.rank;
+		rank++;
+		//logger.debug("incrementing ranking {} to {}", ranking, rank);
+		return rank;
 	}
 
 }

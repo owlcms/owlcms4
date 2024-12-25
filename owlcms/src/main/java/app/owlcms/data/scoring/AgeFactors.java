@@ -23,7 +23,8 @@ import ch.qos.logback.classic.Logger;
 
 /**
  *
- * Compute Q Points according to https://osf.io/8x3nb/ (formulas in https://osf.io/download/r2gxa/ and https://osf.io/download/bmctw/)
+ * Compute Q Points according to https://osf.io/8x3nb/ (formulas in https://osf.io/download/r2gxa/ and
+ * https://osf.io/download/bmctw/)
  *
  * This class keeps the code for applying an age factor like SMF/SMHF even though this has not been discussed.
  */
@@ -31,8 +32,8 @@ public class AgeFactors {
 
 	private static final int STARTING_AGE = 8;
 	private static final int STARTING_BW = 30;
-	private static final int NB_AGE = 20 - STARTING_AGE + 1;
-	private static final int NB_BW = 115 - STARTING_BW + 1;
+	private static final int NB_AGE = 20-STARTING_AGE+1;
+	private static final int NB_BW = 115-STARTING_BW+1;
 	final static float[][][] z = new float[2][NB_BW][NB_AGE];
 	private static boolean loaded = false;
 	static Logger logger = (Logger) LoggerFactory.getLogger(AgeFactors.class);
@@ -44,12 +45,12 @@ public class AgeFactors {
 
 		dBW = Math.max(STARTING_BW, Math.min(190.0D, dBW));
 		float floorScore = zCoefficient(gender, (int) Math.floor(dBW), age) * liftedWeight;
-		float ceilingScore = zCoefficient(gender, (int) Math.ceil(dBW), age) * liftedWeight;
+		float ceilingScore = zCoefficient(gender, (int) Math.ceil(dBW), age)  * liftedWeight;
 		double interpolated = floorScore + ((dBW - Math.floor(dBW)) * (ceilingScore - floorScore));
 
-		// logger.debug("doGetScore gender={} bw={} total={} floor={} ceil={} score={}", gender, dBW, liftedWeight,
-		// floorScore,
-		// ceilingScore, interpolated);
+//		logger.debug("doGetScore gender={} bw={} total={} floor={} ceil={} score={}", gender, dBW, liftedWeight,
+//		        floorScore,
+//		        ceilingScore, interpolated);
 
 		return (float) interpolated;
 	}
@@ -58,7 +59,7 @@ public class AgeFactors {
 		if (liftedWeight == null || a == null || a.getAge() == null || a.getBodyWeight() == null) {
 			return 0.0F;
 		}
-
+		
 		Gender gender = a.getGender();
 		Double dBW = a.getBodyWeight();
 		Integer age = a.getAge();
@@ -72,7 +73,7 @@ public class AgeFactors {
 	}
 
 	public static int kgTarget(Gender gender, double targetScore, double bw, int age) {
-		var coef = zCoefficient(gender, (int) bw, age);
+		var coef = zCoefficient(gender, (int)bw, age);
 		return (int) Math.ceil(targetScore / coef);
 	}
 

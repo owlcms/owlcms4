@@ -56,35 +56,34 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 
 	@Override
 	public List<Athlete> getSortedAthletes() {
-		// Championship championship = getChampionship();
+//		Championship championship = getChampionship();
 		if (this.sortedAthletes != null) {
-			// logger.debug("%%% sorterdAthletes.size()={}",sortedAthletes.size());
+//			logger.debug("%%% sorterdAthletes.size()={}",sortedAthletes.size());
 			// we are provided with an externally computed list.
 			if (this.resultsByCategory) {
 				Ranking rankingOrder = Ranking.CATEGORY_SCORE;
-				// if (championship != null && sortedAthletes.size() > 0) {
-				// Athlete athlete = sortedAthletes.get(0);
-				// rankingOrder = athlete.getAgeGroup().getComputedScoringSystem();
-				// logger.debug("--- athlete {} scoring {}", athlete, rankingOrder);
-				// if (rankingOrder == null) {
-				// rankingOrder = Ranking.TOTAL;
-				// }
-				// }
-
+//				if (championship != null && sortedAthletes.size() > 0) {
+//					Athlete athlete = sortedAthletes.get(0);
+//					rankingOrder = athlete.getAgeGroup().getComputedScoringSystem();
+//					logger.debug("--- athlete {} scoring {}", athlete, rankingOrder);
+//					if (rankingOrder == null) {
+//						rankingOrder = Ranking.TOTAL;
+//					}
+//				}
+				
 				AthleteSorter.resultsOrder(this.sortedAthletes, rankingOrder, ORDER_BY_CATEGORIES);
 				return this.sortedAthletes;
 			} else {
 				// logger.debug("YYYYYYYYYYYY unique athletes");
 				// we need to expand all the participations before we filter down.
-				List<Athlete> allParticipations = Competition.getCurrent().mapToParticipations(this.sortedAthletes, this.resultsByCategory);
+				List<Athlete> allParticipations = Competition.getCurrent().mapToParticipations(this.sortedAthletes, resultsByCategory);
 
 				// keep the the most specific category from the championship
 				List<Athlete> uniqueAthletes = allParticipations.stream()
 				        .sorted((a, b) -> {
 					        int compare = ObjectUtils.compare(a.getLotNumber(), b.getLotNumber(), true);
-					        if (compare != 0) {
+					        if (compare != 0)
 						        return compare;
-					        }
 					        return Category.specificityComparator.compare(a.getCategory(), b.getCategory());
 				        })
 				        .filter(p -> {
@@ -119,7 +118,7 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 
 		// get all the PAthletes for the current group - athletes show as many times as
 		// they have participations.
-		List<Athlete> pAthletes = Competition.getCurrent().mapToParticipations(rankedAthletes, this.resultsByCategory);
+		List<Athlete> pAthletes = Competition.getCurrent().mapToParticipations(rankedAthletes, resultsByCategory);
 
 		// unfinished categories need to be computed using all relevant athletes, including not weighed-in yet
 		@SuppressWarnings("unchecked")
@@ -178,6 +177,10 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
         // @formatter:on
 	}
 
+	private Ranking rankingOrder() {
+		return Ranking.CUSTOM;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -203,8 +206,6 @@ public class JXLSWinningSheet extends JXLSWorkbookStreamSource {
 		createStandardFooter(workbook);
 	}
 
-	private Ranking rankingOrder() {
-		return Ranking.CUSTOM;
-	}
+
 
 }

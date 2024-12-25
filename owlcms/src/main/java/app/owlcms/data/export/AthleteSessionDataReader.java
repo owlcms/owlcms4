@@ -26,9 +26,9 @@ import ch.qos.logback.classic.Logger;
 
 /**
  * Read athlete information from a json export, updating the lifting data for a list of sessions
- *
+ * 
  * Used when the sessions were recorded off line.
- *
+ * 
  * @author jf@jflamy.dev
  */
 public class AthleteSessionDataReader {
@@ -41,30 +41,6 @@ public class AthleteSessionDataReader {
 		doImportAthletes(is, sessionIds);
 	}
 
-	private static void copyAttributes(Athlete source, Athlete target, String[] attributesToRead) {
-		boolean validating = Athlete.isSkipValidationsDuringImport();
-		try {
-			logger.info("importing results for {} {} (session {})", target.getFullName(), target.getId(), target.getGroup());
-			Athlete.setSkipValidationsDuringImport(true);
-			for (String attribute : attributesToRead) {
-				if (attribute.equals("id") || attribute.equals("group")) {
-					continue;
-				}
-				try {
-					PropertyDescriptor pd = new PropertyDescriptor(attribute, Athlete.class);
-					Method getter = pd.getReadMethod();
-					Method setter = pd.getWriteMethod();
-					Object value = getter.invoke(source);
-					setter.invoke(target, value);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		} finally {
-			Athlete.setSkipValidationsDuringImport(validating);
-		}
-	}
-
 	private static void doImportAthletes(InputStream is, List<Long> sessionIds) throws IOException, JsonParseException {
 		JsonFactory factory = JsonFactory.builder()
 		        .enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION)
@@ -75,7 +51,7 @@ public class AthleteSessionDataReader {
 		        "id",
 		        "lotNumber",
 		        "group",
-
+		        
 		        "bodyWeight",
 
 		        "snatch1AutomaticProgression",
@@ -124,6 +100,23 @@ public class AthleteSessionDataReader {
 			jsonAthletes = readAthletes(parser, athletes, attributesToRead, sessionIds);
 		}
 		updateAthletes(jsonAthletes, attributesToRead);
+	}
+
+	private static void updateAthletes(List<Athlete> jsonAthletes, String[] attributesToRead) {
+		// Find existing athlete with the same id and lot
+		JPAService.runInTransaction(em -> {
+			for (Athlete jsonAthlete : jsonAthletes) {
+				Long id = jsonAthlete.getId();
+				Athlete existingAthlete = AthleteRepository.findById(id);
+				if (existingAthlete != null) {
+					copyAttributes(jsonAthlete, existingAthlete, attributesToRead);
+					em.merge(existingAthlete);
+				} else {
+					logger.error("did not find athlete {}", id);
+				}
+			}
+			return null;
+		});
 	}
 
 	private static List<Athlete> readAthletes(JsonParser parser,
@@ -195,20 +188,27 @@ public class AthleteSessionDataReader {
 		return athletes;
 	}
 
-	private static void updateAthletes(List<Athlete> jsonAthletes, String[] attributesToRead) {
-		// Find existing athlete with the same id and lot
-		JPAService.runInTransaction(em -> {
-			for (Athlete jsonAthlete : jsonAthletes) {
-				Long id = jsonAthlete.getId();
-				Athlete existingAthlete = AthleteRepository.findById(id);
-				if (existingAthlete != null) {
-					copyAttributes(jsonAthlete, existingAthlete, attributesToRead);
-					em.merge(existingAthlete);
-				} else {
-					logger.error("did not find athlete {}", id);
+	private static void copyAttributes(Athlete source, Athlete target, String[] attributesToRead) {
+		boolean validating = Athlete.isSkipValidationsDuringImport();
+		try {
+			logger.info("importing results for {} {} (session {})", target.getFullName(), target.getId(), target.getGroup());
+			Athlete.setSkipValidationsDuringImport(true);
+			for (String attribute : attributesToRead) {
+				if (attribute.equals("id") || attribute.equals("group")) {
+					continue;
+				}
+				try {
+					PropertyDescriptor pd = new PropertyDescriptor(attribute, Athlete.class);
+					Method getter = pd.getReadMethod();
+					Method setter = pd.getWriteMethod();
+					Object value = getter.invoke(source);
+					setter.invoke(target, value);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
-			return null;
-		});
+		} finally {
+			Athlete.setSkipValidationsDuringImport(validating);
+		}
 	}
 }

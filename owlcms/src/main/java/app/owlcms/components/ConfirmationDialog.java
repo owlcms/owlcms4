@@ -41,8 +41,8 @@ public class ConfirmationDialog extends Dialog {
 		Button confirmButton = new Button(Translator.translate("Confirm"), event -> {
 			if (pAction != null) {
 				pAction.run();
-			} else if (this.action != null) {
-				this.action.run();
+			} else if (action != null) {
+				action.run();
 			}
 			if (confirmation != null) {
 				Notification.show(confirmation);
@@ -65,7 +65,7 @@ public class ConfirmationDialog extends Dialog {
 	}
 
 	public Runnable getAction() {
-		return this.action;
+		return action;
 	}
 
 	public void setAction(Runnable action) {

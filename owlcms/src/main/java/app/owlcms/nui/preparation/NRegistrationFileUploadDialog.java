@@ -56,10 +56,10 @@ public class NRegistrationFileUploadDialog extends Dialog {
 		ta.setVisible(false);
 
 		upload.addSucceededListener(event -> {
-			this.processor = this.sbdeFormat // (buffer.getInputStream())
+			processor = this.sbdeFormat // (buffer.getInputStream())
 			        ? new ORegistrationFileProcessor()
 			        : new NRegistrationFileProcessor();
-			this.fileName = event.getFileName();
+			fileName = event.getFileName();
 			// try {
 			// buffer.getInputStream().reset();
 			processInput(buffer.getInputStream(), ta);
@@ -102,10 +102,7 @@ public class NRegistrationFileUploadDialog extends Dialog {
 		// process athletes now that groups have been adjusted
 		processAthletes(inputStream, ta, false);
 		this.processor.adjustParticipations();
-	}
-
-	private boolean eraseAthletes() {
-		return this.fileName != null && !this.fileName.contains("_add");
+		return;
 	}
 
 	private int processAthletes(InputStream inputStream, TextArea ta, boolean dryRun) {
@@ -113,6 +110,10 @@ public class NRegistrationFileUploadDialog extends Dialog {
 		Consumer<String> errorConsumer = str -> sb.append(str);
 		Runnable displayUpdater = () -> updateDisplay(ta, sb);
 		return this.processor.doProcessAthletes(inputStream, dryRun, errorConsumer, displayUpdater, eraseAthletes());
+	}
+
+	private boolean eraseAthletes() {
+		return fileName != null && !fileName.contains("_add");
 	}
 
 	private int processGroups(InputStream inputStream, TextArea ta, boolean dryRun) {

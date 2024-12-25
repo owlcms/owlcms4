@@ -26,8 +26,8 @@ import ch.qos.logback.classic.Logger;
 /**
  * Read federation structure from an Excel file
  *
- * Example: qc < ca < panam < iwf but also ca < commonwealth < iwf and qc < francophonie At a competition, qc can break all these records (if included in the
- * records file). but usa would not.
+ * Example: qc < ca < panam < iwf but also ca < commonwealth < iwf and qc < francophonie At a competition, qc can break
+ * all these records (if included in the records file). but usa would not.
  *
  * @author Jean-François Lamy
  *

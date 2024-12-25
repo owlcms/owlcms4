@@ -43,8 +43,7 @@ public class MultiCategoryRankSetter {
 
 		Participation participation = a.getMainRankings();
 		int rank = eligible ? (rankingValue == 0 ? 0 : ++this.rank) : -1;
-		// logger.debug("c {} r {} -- a {}/{} v {} z {} e {} rank={} {}", participationCategory, r, a.getAbbreviatedName(), System.identityHashCode(a),
-		// rankingValue, zero, eligible, rank, ""); // LoggerUtils.stackTrace());
+		// logger.debug("c {} r {} -- a {}/{} v {} z {} e {} rank={} {}", participationCategory, r, a.getAbbreviatedName(), System.identityHashCode(a), rankingValue, zero, eligible, rank, ""); // LoggerUtils.stackTrace());
 		switch (r) {
 			case SNATCH:
 			case CLEANJERK:
@@ -107,8 +106,7 @@ public class MultiCategoryRankSetter {
 							this.snatchRank = this.snatchRank + 1;
 							p.setSnatchRank(this.snatchRank);
 							curRankings.setSnatchRank(this.snatchRank);
-							// logger.debug("setting snatch rank {} {} {} p={} a={}", a, curCat, snatchRank, System.identityHashCode(p),
-							// System.identityHashCode(p.getAthlete()));
+							// logger.debug("setting snatch rank {} {} {} p={} a={}", a, curCat, snatchRank, System.identityHashCode(p), System.identityHashCode(p.getAthlete()));
 						} else {
 							p.setSnatchRank(a.isEligibleForIndividualRanking() ? 0 : -1);
 							// logger.debug("skipping snatch rank {} {} {}", a, curCat, this.snatchRank);
@@ -122,8 +120,7 @@ public class MultiCategoryRankSetter {
 							this.cjRank = this.cjRank + 1;
 							p.setCleanJerkRank(this.cjRank);
 							curRankings.setCleanJerkRank(this.cjRank);
-							// logger.debug("setting clean&jerk rank {} {} {} p {} a {}", a, curCat, cjRank, System.identityHashCode(p), //
-							// System.identityHashCode(p.getAthlete()));
+							// logger.debug("setting clean&jerk rank {} {} {} p {} a {}", a, curCat, cjRank, System.identityHashCode(p), // System.identityHashCode(p.getAthlete()));
 						} else {
 							p.setCleanJerkRank(a.isEligibleForIndividualRanking() ? 0 : -1);
 							// logger.debug("skipping clean&jerk rank {} {} {}", a, curCat, 0);
@@ -137,8 +134,7 @@ public class MultiCategoryRankSetter {
 							this.totalRank = this.totalRank + 1;
 							p.setTotalRank(this.totalRank);
 							curRankings.setTotalRank(this.totalRank);
-							// logger.debug("setting total rank {} {} {} p {} a {}", a, curCat, totalRank, System.identityHashCode(p), //
-							// System.identityHashCode(p.getAthlete()));
+							// logger.debug("setting total rank {} {} {} p {} a {}", a, curCat, totalRank, System.identityHashCode(p), // System.identityHashCode(p.getAthlete()));
 
 						} else {
 							p.setTotalRank(a.isEligibleForIndividualRanking() ? 0 : -1);

@@ -131,7 +131,7 @@ public class AgeGroupEditingFormFactory
 
 		ComboBox<Championship> championshipField = new ComboBox<>();
 		List<Championship> list = Championship.getMap().values().stream().sorted().toList();
-		championshipField.setItems(new ListDataProvider<>(list));
+		championshipField.setItems(new ListDataProvider<Championship>(list));
 		championshipField.setItemLabelGenerator((ad) -> ad.getName());
 		championshipField.setRequired(true);
 		championshipField.setRequiredIndicatorVisible(false);
@@ -142,7 +142,7 @@ public class AgeGroupEditingFormFactory
 		medalScoreSystemField.setClearButtonVisible(true);
 		List<Ranking> rankings = Arrays.asList(Ranking.values());
 		List<Ranking> medalScoreRankings = rankings.stream().filter(r -> r.isMedalScore()).toList();
-		medalScoreSystemField.setItems(new ListDataProvider<>(medalScoreRankings));
+		medalScoreSystemField.setItems(new ListDataProvider<Ranking>(medalScoreRankings));
 		medalScoreSystemField.setItemLabelGenerator((ad) -> Translator.translate("Ranking." + ad.name()));
 		// logger.debug("***** scoring system {}", aFromDb.getMedalScoringSystem());
 		this.binder.forField(medalScoreSystemField).bind(AgeGroup::getMedalScoringSystem, AgeGroup::setScoringSystem);
@@ -205,19 +205,20 @@ public class AgeGroupEditingFormFactory
 		this.binder.forField(this.catField).bind(AgeGroup::getCategories, AgeGroup::setCategories);
 		formLayout.addFormItem(this.catField, createLabel(Translator.translate("BodyWeightCategories")));
 
-		// if (minAgeField.getValue().isEmpty()) {
-		// minAgeField.setValue("0");
-		// }
-		// if (maxAgeField.getValue().isEmpty()) {
-		// maxAgeField.setValue("999");
-		// }
-		// if (genderField.getValue() == null) {
-		// genderField.setValue(Gender.F);
-		// }
-		// if (championshipField.getValue() == null) {
-		// championshipField.setValue(Championship.ofType(ChampionshipType.U));
-		// }
 
+//		if (minAgeField.getValue().isEmpty()) {
+//			minAgeField.setValue("0");
+//		}
+//		if (maxAgeField.getValue().isEmpty()) {
+//			maxAgeField.setValue("999");
+//		}
+//		if (genderField.getValue() == null) {
+//			genderField.setValue(Gender.F);
+//		}
+//		if (championshipField.getValue() == null) {
+//			championshipField.setValue(Championship.ofType(ChampionshipType.U));
+//		}
+		
 		this.binder.readBean(aFromDb);
 
 		Component footerLayout = this.buildFooter(operation, aFromDb, cancelButtonClickListener,
@@ -230,15 +231,15 @@ public class AgeGroupEditingFormFactory
 		return mainLayout;
 	}
 
+	private Component createLabel(String translate) {
+		Div label = new Div(translate);
+		return label;
+	}
+
 	@Override
 	public Button buildOperationButton(CrudOperation operation, AgeGroup domainObject,
 	        ComponentEventListener<ClickEvent<Button>> gridCallBackAction) {
 		return super.buildOperationButton(operation, domainObject, gridCallBackAction);
-	}
-
-	@Override
-	public void delete(AgeGroup ageGroup) {
-		AgeGroupRepository.delete(ageGroup);
 	}
 
 	// @Override
@@ -246,6 +247,11 @@ public class AgeGroupEditingFormFactory
 	// ComponentEventListener<ClickEvent<Button>> action) {
 	// return super.defineOperationTrigger(operation, domainObject, action);
 	// }
+
+	@Override
+	public void delete(AgeGroup ageGroup) {
+		AgeGroupRepository.delete(ageGroup);
+	}
 
 	@Override
 	public Collection<AgeGroup> findAll() {
@@ -296,11 +302,6 @@ public class AgeGroupEditingFormFactory
 	protected void bindField(HasValue field, String property, Class<?> propertyType, CrudFormConfiguration c) {
 		this.binder.forField(field);
 		super.bindField(field, property, propertyType, c);
-	}
-
-	private Component createLabel(String translate) {
-		Div label = new Div(translate);
-		return label;
 	}
 
 }

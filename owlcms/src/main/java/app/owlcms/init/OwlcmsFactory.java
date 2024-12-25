@@ -33,8 +33,9 @@ import ch.qos.logback.classic.Logger;
 /**
  * Singleton, one per running JVM (i.e. one instance of owlcms, or one unit test)
  *
- * This class allows a web session to locate the event bus on which information will be broacast. All web pages talk to one another via the event bus. The
- * {@link OwlcmsSession} class is used to remember the current field of play for the user.
+ * This class allows a web session to locate the event bus on which information will be broacast. All web pages talk to
+ * one another via the event bus. The {@link OwlcmsSession} class is used to remember the current field of play for the
+ * user.
  *
  * @author owlcms
  */
@@ -48,16 +49,6 @@ public class OwlcmsFactory {
 	final private static Logger logger = (Logger) LoggerFactory.getLogger(OwlcmsFactory.class);
 	static {
 		logger.setLevel(Level.INFO);
-	}
-
-	public static void awaitLatch() throws InterruptedException {
-		// logger.debug("***** awaitLatch {} {}",latch.getCount(), LoggerUtils.whereFrom());
-		latch.await();
-	}
-
-	public static void countDownLatch() throws InterruptedException {
-		// logger.debug("***** countDownLatch {} {}",latch.getCount(), LoggerUtils.whereFrom());
-		latch.countDown();
 	}
 
 	public static EventBus getAppUIBus() {
@@ -108,6 +99,22 @@ public class OwlcmsFactory {
 	public static Collection<FieldOfPlay> getFOPs() {
 		Collection<FieldOfPlay> values = getFopByName().values();
 		return values;
+	}
+
+	private static CountDownLatch getInitializationLatch() {
+		//logger.debug("***** getInitializationLatch {} {}",latch.getCount(), LoggerUtils.whereFrom());
+		return latch;
+	}
+	
+	public static void awaitLatch() throws InterruptedException {
+		//logger.debug("***** awaitLatch {} {}",latch.getCount(), LoggerUtils.whereFrom());
+		latch.await();
+	}
+	
+	
+	public static void countDownLatch() throws InterruptedException {
+		//logger.debug("***** countDownLatch {} {}",latch.getCount(), LoggerUtils.whereFrom());
+		latch.countDown();
 	}
 
 	public static String getVersion() {
@@ -195,7 +202,7 @@ public class OwlcmsFactory {
 	public static void waitDBInitialized() {
 		try {
 			CountDownLatch initializationLatch = OwlcmsFactory.getInitializationLatch();
-			logger.debug("******** latch.getCount() {}", latch.getCount());
+			logger.debug("******** latch.getCount() {}",latch.getCount());
 			initializationLatch.await();
 		} catch (InterruptedException e) {
 		}
@@ -203,11 +210,6 @@ public class OwlcmsFactory {
 
 	static void setFopByName(Map<String, FieldOfPlay> fopByName) {
 		OwlcmsFactory.fopByName = fopByName;
-	}
-
-	private static CountDownLatch getInitializationLatch() {
-		// logger.debug("***** getInitializationLatch {} {}",latch.getCount(), LoggerUtils.whereFrom());
-		return latch;
 	}
 
 	/**

@@ -24,7 +24,8 @@ import ch.qos.logback.classic.Logger;
 
 /**
  *
- * Compute Q Points according to https://osf.io/8x3nb/ (formulas in https://osf.io/download/r2gxa/ and https://osf.io/download/bmctw/)
+ * Compute Q Points according to https://osf.io/8x3nb/ (formulas in https://osf.io/download/r2gxa/ and
+ * https://osf.io/download/bmctw/)
  *
  * This class keeps the code for applying an age factor like SMF/SMHF even though this has not been discussed.
  */
@@ -51,9 +52,9 @@ public class GAMX {
 		float ceilingScore = M_CONSTANT + zCoefficient(gender, (int) Math.ceil(dBW), liftedWeight) * SD_CONSTANT;
 		double interpolated = floorScore + ((dBW - Math.floor(dBW)) * (ceilingScore - floorScore));
 
-		// logger.debug("doGetGamx gender={} bw={} total={} floor={} ceil={} score={}", gender, dBW, liftedWeight,
-		// floorScore,
-		// ceilingScore, interpolated);
+//		logger.debug("doGetGamx gender={} bw={} total={} floor={} ceil={} score={}", gender, dBW, liftedWeight,
+//		        floorScore,
+//		        ceilingScore, interpolated);
 
 		return (float) interpolated;
 	}

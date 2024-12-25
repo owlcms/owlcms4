@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Logger;
 
 /**
- * Navigating to a component that implements this interface will trigger the setParameter method. The setParameter method will invoke readParams method to
- * actually process the query parameter.
+ * Navigating to a component that implements this interface will trigger the setParameter method. The setParameter
+ * method will invoke readParams method to actually process the query parameter.
  *
  * Display pages extend an abstract class that stores all the options.
  *

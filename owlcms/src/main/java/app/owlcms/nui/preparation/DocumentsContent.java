@@ -863,7 +863,7 @@ public class DocumentsContent extends BaseContent implements CrudListener<Group>
 			        JXLSStartingListDocs xlsWriter = new JXLSStartingListDocs();
 			        xlsWriter.setPostProcessor((w) -> {
 				        if (xlsWriter.getFirstMergeLine() != null) {
-					        logger.debug("merging {} {}", xlsWriter.getFirstMergeLine(), xlsWriter.getMergeColumnList());
+				        	logger.debug("merging {} {}", xlsWriter.getFirstMergeLine(), xlsWriter.getMergeColumnList());
 					        // merged columns
 					        fixMerges(w, xlsWriter.getFirstMergeLine(), xlsWriter.getMergeColumnList());
 					        fixLastLine(w);
@@ -876,6 +876,27 @@ public class DocumentsContent extends BaseContent implements CrudListener<Group>
 
 			        return xlsWriter;
 		        });
+	}
+
+	private void fixLastLine(Workbook w) {
+		Sheet sheet = w.getSheetAt(0);
+		// Define the border style properties
+		Map<String, Object> properties = new HashMap<>();
+		properties.put(CellUtil.BORDER_BOTTOM, BorderStyle.THIN);
+		properties.put(CellUtil.BOTTOM_BORDER_COLOR, IndexedColors.BLACK.getIndex());
+
+		// Retrieve the last row
+		int lastRowNum = sheet.getLastRowNum();
+		Row lastRow = sheet.getRow(lastRowNum);
+
+		// Apply the border style to the cells in the last row
+		for (int i = 0; i < lastRow.getLastCellNum(); i++) {
+			Cell cell = lastRow.getCell(i);
+			if (cell == null) {
+				cell = lastRow.createCell(i);
+			}
+			CellUtil.setCellStyleProperties(cell, properties);
+		}
 	}
 
 	private KitElement doElementStartList(PreCompetitionTemplates templateDefinition, BiConsumer<Throwable, String> errorProcessor) {
@@ -1043,27 +1064,6 @@ public class DocumentsContent extends BaseContent implements CrudListener<Group>
 		        groupCategoryComparator())
 		        .collect(Collectors.toList());
 		return found;
-	}
-
-	private void fixLastLine(Workbook w) {
-		Sheet sheet = w.getSheetAt(0);
-		// Define the border style properties
-		Map<String, Object> properties = new HashMap<>();
-		properties.put(CellUtil.BORDER_BOTTOM, BorderStyle.THIN);
-		properties.put(CellUtil.BOTTOM_BORDER_COLOR, IndexedColors.BLACK.getIndex());
-
-		// Retrieve the last row
-		int lastRowNum = sheet.getLastRowNum();
-		Row lastRow = sheet.getRow(lastRowNum);
-
-		// Apply the border style to the cells in the last row
-		for (int i = 0; i < lastRow.getLastCellNum(); i++) {
-			Cell cell = lastRow.getCell(i);
-			if (cell == null) {
-				cell = lastRow.createCell(i);
-			}
-			CellUtil.setCellStyleProperties(cell, properties);
-		}
 	}
 
 	private void fixMerges(Workbook workbook, Integer startRowNum, List<Integer> columns) {

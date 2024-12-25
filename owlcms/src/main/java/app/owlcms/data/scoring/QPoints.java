@@ -24,7 +24,8 @@ import ch.qos.logback.classic.Logger;
 
 /**
  *
- * Compute Q Points according to https://osf.io/8x3nb/ (formulas in https://osf.io/download/r2gxa/ and https://osf.io/download/bmctw/)
+ * Compute Q Points according to https://osf.io/8x3nb/ (formulas in https://osf.io/download/r2gxa/ and
+ * https://osf.io/download/bmctw/)
  *
  * The age coefficients are the 2025 coefficients for QMasters
  */
@@ -193,6 +194,20 @@ public class QPoints {
 	}
 
 	/**
+	 * @throws IOException
+	 */
+	private void loadProps() {
+		this.props = new Properties();
+		String name = "/qpoints/qpoints" + this.qpointsYear + ".properties";
+		try {
+			InputStream stream = ResourceWalker.getResourceAsStream(name);
+			this.props.load(stream);
+		} catch (Exception e) {
+			this.logger.error("could not load {} because {}\n{}", name, e, LoggerUtils.stackTrace(e));
+		}
+	}
+
+	/**
 	 * @return
 	 * @throws IOException
 	 */
@@ -214,20 +229,6 @@ public class QPoints {
 			}
 		}
 		return this.men;
-	}
-
-	/**
-	 * @throws IOException
-	 */
-	private void loadProps() {
-		this.props = new Properties();
-		String name = "/qpoints/qpoints" + this.qpointsYear + ".properties";
-		try {
-			InputStream stream = ResourceWalker.getResourceAsStream(name);
-			this.props.load(stream);
-		} catch (Exception e) {
-			this.logger.error("could not load {} because {}\n{}", name, e, LoggerUtils.stackTrace(e));
-		}
 	}
 
 	private void setMenBeta0(Double menBeta0) {

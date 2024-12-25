@@ -86,7 +86,7 @@ public class CompetitionData {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	public InputStream exportData(UI ui, Notification notification) {
 		if (ui != null) {
 			ui.access(() -> notification.open());
@@ -227,8 +227,8 @@ public class CompetitionData {
 				CompetitionData updated = this.importData(inputStream);
 				Config config = updated.getConfig();
 				byte[] blob = config.getLocalZipBlob();
-
-				if (blob != null) {
+				
+				if ( blob != null) {
 					logger.info("override zip found {} bytes", blob.length);
 				}
 				Config.setCurrent(config);
@@ -266,7 +266,7 @@ public class CompetitionData {
 				}
 
 				if (updated.getRecordConfig() != null) {
-					em.merge(updated.getRecordConfig());
+						em.merge(updated.getRecordConfig());
 				}
 
 				em.merge(competition);
@@ -298,8 +298,8 @@ public class CompetitionData {
 	}
 
 	/**
-	 * When importing data, set the imported Competition instance as the current instance. This is required because it affects how some objects are processed
-	 * (e.g., birth dates).
+	 * When importing data, set the imported Competition instance as the current instance. This is required because it
+	 * affects how some objects are processed (e.g., birth dates).
 	 *
 	 * @param competition the competition to set
 	 */
@@ -311,8 +311,8 @@ public class CompetitionData {
 	}
 
 	/**
-	 * When importing data, set the imported Competition instance as the current instance. This is prudent in case the configuration might affect further
-	 * processing.
+	 * When importing data, set the imported Competition instance as the current instance. This is prudent in case the
+	 * configuration might affect further processing.
 	 *
 	 * @param config the config to set
 	 */

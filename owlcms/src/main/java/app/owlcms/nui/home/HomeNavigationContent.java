@@ -154,27 +154,6 @@ public class HomeNavigationContent extends BaseNavigationContent implements Navi
 		DebugUtils.gc();
 	}
 
-	@Override
-	public String getMenuTitle() {
-		return Translator.translate("OWLCMS_Top");
-	}
-
-	/**
-	 * @see app.owlcms.nui.shared.BaseNavigationContent#getPageTitle()
-	 */
-	@Override
-	public String getPageTitle() {
-		return Translator.translate("OWLCMS_Top");
-	}
-
-	/**
-	 * @see app.owlcms.apputils.queryparameters.FOPParameters#isIgnoreFopFromURL()
-	 */
-	@Override
-	public boolean isIgnoreFopFromURL() {
-		return true;
-	}
-
 	public void owlcmsManagementTwister() {
 		if (Config.getCurrent().featureSwitch("manageOwlcms")) {
 			ConfirmationDialog cdRestart = new ConfirmationDialog(
@@ -221,6 +200,27 @@ public class HomeNavigationContent extends BaseNavigationContent implements Navi
 			doHiddenGroup(Translator.translate("ManageOwlcms.Title"),
 			        explanation, grid2, this, true);
 		}
+	}
+
+	@Override
+	public String getMenuTitle() {
+		return Translator.translate("OWLCMS_Top");
+	}
+
+	/**
+	 * @see app.owlcms.nui.shared.BaseNavigationContent#getPageTitle()
+	 */
+	@Override
+	public String getPageTitle() {
+		return Translator.translate("OWLCMS_Top");
+	}
+
+	/**
+	 * @see app.owlcms.apputils.queryparameters.FOPParameters#isIgnoreFopFromURL()
+	 */
+	@Override
+	public boolean isIgnoreFopFromURL() {
+		return true;
 	}
 
 	/**

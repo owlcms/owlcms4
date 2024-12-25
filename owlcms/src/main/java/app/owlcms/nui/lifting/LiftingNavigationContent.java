@@ -56,6 +56,43 @@ public class LiftingNavigationContent extends BaseNavigationContent implements N
 	public LiftingNavigationContent() {
 		DebugUtils.gc();
 	}
+	
+	@Override
+	protected void onAttach(AttachEvent attachEvent) {
+
+		super.onAttach(attachEvent);
+		
+		logger.trace("LiftingNavigationContent onAttach start");
+
+		Button weighIn = openInNewTabNoParam(WeighinContent.class, Translator.translate("WeighIn_Title"));
+		weighIn.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+		weighIn.setIcon(new Icon(VaadinIcon.SCALE));
+		// weighIn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		FlexibleGridLayout grid3 = HomeNavigationContent.navigationGrid(weighIn);
+		doGroup(Translator.translate("WeighIn_Title"), grid3, this);
+
+		Button announcer = openInNewTab(AnnouncerContent.class, Translator.translate("Announcer"));
+		announcer.setIcon(new Icon(VaadinIcon.MICROPHONE));
+		announcer.setTabIndex(2);
+		announcer.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+		announcer.setThemeName(FOP, isAttached());
+		Button marshall = openInNewTab(MarshallContent.class, Translator.translate("Marshall"));
+		Button timekeeper = openInNewTab(TimekeeperContent.class, Translator.translate("Timekeeper"));
+		Button technical = openInNewTab(TCContent.class, Translator.translate("PlatesCollarBarbell"));
+
+		VerticalLayout intro = new VerticalLayout();
+		addP(intro, Translator.translate("AnnouncerSelectsGroup") + Translator.translate("ChangesGroupEverywhere")
+		        + Translator.translate("AnnouncerEtc"));
+		intro.getStyle().set("margin-bottom", "0");
+
+		FlexibleGridLayout grid1 = HomeNavigationContent.navigationGrid(announcer, marshall, timekeeper, technical);
+		doGroup(Translator.translate("Scoreboard.LiftingOrder"), intro, grid1, this);
+
+		Button referee = openInNewTab(RefContent.class, Translator.translate("Referee_Mobile_Device"));
+		Button jury = openInNewTab(JuryContent.class, Translator.translate("Jury_Console"));
+		FlexibleGridLayout grid2 = HomeNavigationContent.navigationGrid(referee, jury);
+		doGroup(Translator.translate("Referees_Jury"), grid2, this);
+	}
 
 	@Override
 	public String getMenuTitle() {
@@ -90,42 +127,5 @@ public class LiftingNavigationContent extends BaseNavigationContent implements N
 		HorizontalLayout fopField = new HorizontalLayout(fopLabel, fopSelect);
 		fopField.setAlignItems(Alignment.CENTER);
 		return fopField;
-	}
-
-	@Override
-	protected void onAttach(AttachEvent attachEvent) {
-
-		super.onAttach(attachEvent);
-
-		logger.trace("LiftingNavigationContent onAttach start");
-
-		Button weighIn = openInNewTabNoParam(WeighinContent.class, Translator.translate("WeighIn_Title"));
-		weighIn.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
-		weighIn.setIcon(new Icon(VaadinIcon.SCALE));
-		// weighIn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		FlexibleGridLayout grid3 = HomeNavigationContent.navigationGrid(weighIn);
-		doGroup(Translator.translate("WeighIn_Title"), grid3, this);
-
-		Button announcer = openInNewTab(AnnouncerContent.class, Translator.translate("Announcer"));
-		announcer.setIcon(new Icon(VaadinIcon.MICROPHONE));
-		announcer.setTabIndex(2);
-		announcer.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
-		announcer.setThemeName(FOP, isAttached());
-		Button marshall = openInNewTab(MarshallContent.class, Translator.translate("Marshall"));
-		Button timekeeper = openInNewTab(TimekeeperContent.class, Translator.translate("Timekeeper"));
-		Button technical = openInNewTab(TCContent.class, Translator.translate("PlatesCollarBarbell"));
-
-		VerticalLayout intro = new VerticalLayout();
-		addP(intro, Translator.translate("AnnouncerSelectsGroup") + Translator.translate("ChangesGroupEverywhere")
-		        + Translator.translate("AnnouncerEtc"));
-		intro.getStyle().set("margin-bottom", "0");
-
-		FlexibleGridLayout grid1 = HomeNavigationContent.navigationGrid(announcer, marshall, timekeeper, technical);
-		doGroup(Translator.translate("Scoreboard.LiftingOrder"), intro, grid1, this);
-
-		Button referee = openInNewTab(RefContent.class, Translator.translate("Referee_Mobile_Device"));
-		Button jury = openInNewTab(JuryContent.class, Translator.translate("Jury_Console"));
-		FlexibleGridLayout grid2 = HomeNavigationContent.navigationGrid(referee, jury);
-		doGroup(Translator.translate("Referees_Jury"), grid2, this);
 	}
 }

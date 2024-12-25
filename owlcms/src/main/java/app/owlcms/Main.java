@@ -97,23 +97,6 @@ public class Main {
 	private static InitialData initialData;
 	public static String mqttStartup;
 	private static Integer demoResetDelay;
-	private static Server mqttBroker;
-
-	public static EmbeddedJetty doRun() {
-		EmbeddedJetty embeddedJetty = new EmbeddedJetty(null, "owlcms")
-		        .setStartLogger(logger)
-		        .setInitConfig(Main::initConfig)
-		        .setInitData(Main::initData);
-		Thread server = new Thread(() -> {
-			try {
-				embeddedJetty.run(serverPort, "/");
-			} catch (Exception e) {
-				logger.error("cannot start server {}\\n{}", e, LoggerUtils.stackTrace(e));
-			}
-		});
-		server.start();
-		return embeddedJetty;
-	}
 
 	public static Logger getStartupLogger() {
 		String name = Main.class.getName() + ".startup";
@@ -152,8 +135,17 @@ public class Main {
 		}
 		// initialization, don't push out to browsers
 		OwlcmsFactory.initDefaultFOP();
-
+		
 		signalDatabaseReady();
+	}
+
+	private static void signalDatabaseReady() {
+		try {
+			logger.info("Data initialized.");
+			OwlcmsFactory.countDownLatch();
+		} catch (InterruptedException e) {
+			LoggerUtils.logError(logger, e, false);
+		}
 	}
 
 	public static void injectSuppliers() {
@@ -166,8 +158,9 @@ public class Main {
 	/**
 	 * The main method.
 	 *
-	 * Start a web server and do all the required initializations for the application If running normally, we run until killed. If running as a public demo, we
-	 * sleep for awhile, and then exit. Some external mechanism such as Kubernetes will notice and restart another instance.
+	 * Start a web server and do all the required initializations for the application If running normally, we run until
+	 * killed. If running as a public demo, we sleep for awhile, and then exit. Some external mechanism such as
+	 * Kubernetes will notice and restart another instance.
 	 *
 	 * @param args the arguments
 	 * @throws Exception the exception
@@ -180,7 +173,7 @@ public class Main {
 		}
 
 		init();
-		// CountDownLatch latch = OwlcmsFactory.getInitializationLatch();
+		//CountDownLatch latch = OwlcmsFactory.getInitializationLatch();
 
 		// restart automatically forever if running as public demo
 		while (true) {
@@ -194,76 +187,27 @@ public class Main {
 
 	}
 
-	@SuppressWarnings("deprecation")
-	public static void startMQTT() {
-		Config conf = Config.getCurrent();
-		Boolean mqttInternal = conf.getMqttInternal();
-		if (mqttInternal == null) {
-			conf.setMqttInternal(true);
-			Config.setCurrent(conf);
-		} else {
-			// conf.setMqttInternal(true);
-			// Config.setCurrent(conf);
-			if (!mqttInternal) {
-				logger.info("MQTT server disabled using database configuration");
-				return;
+	public static EmbeddedJetty doRun() {
+		EmbeddedJetty embeddedJetty = new EmbeddedJetty(null, "owlcms")
+		        .setStartLogger(logger)
+		        .setInitConfig(Main::initConfig)
+		        .setInitData(Main::initData);
+		Thread server = new Thread(() -> {
+			try {
+				embeddedJetty.run(serverPort, "/");
+			} catch (Exception e) {
+				logger.error("cannot start server {}\\n{}", e, LoggerUtils.stackTrace(e));
 			}
-		}
-
-		mqttStartup = Long.toString(System.currentTimeMillis());
-		final IConfig mqttConfig = new MemoryConfig(new Properties());
-		Config.getCurrent().setMqttConfig(mqttConfig);
-		mqttConfig.setProperty(IConfig.ALLOW_ANONYMOUS_PROPERTY_NAME,
-		        Boolean.toString(Config.getCurrent().getParamMqttUserName() == null));
-		mqttConfig.setProperty(IConfig.AUTHENTICATOR_CLASS_NAME, "app.owlcms.init.MoquetteAuthenticator");
-		mqttConfig.setProperty(IConfig.PORT_PROPERTY_NAME, Config.getCurrent().getParamMqttPort());
-		mqttConfig.setProperty(IConfig.BUFFER_FLUSH_MS_PROPERTY_NAME, Integer.toString(0));
-		mqttConfig.setProperty(IConfig.PERSISTENCE_ENABLED_PROPERTY_NAME, Boolean.FALSE.toString());
-		// this should be in memory, but the DATA_PATH_PROPERTY_NAME does not work with a virtual file system
-		mqttConfig.setProperty(IConfig.DATA_PATH_PROPERTY_NAME, "mqttData");
-		new File(mqttConfig.getProperty(IConfig.DATA_PATH_PROPERTY_NAME)).mkdirs();
-
-		mqttBroker = new Server();
-		List<? extends InterceptHandler> userHandlers = Collections.singletonList(new PublisherListener());
-
-		if (Config.getCurrent().getParamMqttServer() != null && !Config.getCurrent().getParamMqttServer().isBlank()) {
-			logger.info("MQTT Server overridden by environment or system parameter, not starting embedded MQTT");
-			return;
-		}
-		if (!Config.getCurrent().getParamMqttInternal()) {
-			logger.info("Internal MQTT server not enabled, skipping");
-			return;
-		}
-		if (Config.getCurrent().getMqttInternal() == null) {
-			// default should be true if not set previously
-			Config.getCurrent().setMqttInternal(true);
-		}
-
-		try {
-			long now = System.currentTimeMillis();
-			logger.info("starting MQTT broker.");
-			mqttBroker.startServer(mqttConfig, userHandlers);
-			logger.info("started MQTT broker ({} ms).", System.currentTimeMillis() - now);
-
-			// Bind a shutdown hook
-			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-				logger.info("Stopping broker");
-				mqttBroker.stopServer();
-				logger.info("Broker stopped");
-			}));
-		} catch (Exception e) {
-			logger.error("could not start server", e.toString(), e.getCause());
-		}
-	}
-
-	public static void stopMQTT() {
-		mqttBroker.stopServer();
+		});
+		server.start();
+		return embeddedJetty;
 	}
 
 	/**
 	 * Prepare owlcms
 	 *
-	 * Reads configuration options, injects data, initializes singletons and configurations. The embedded web server can then be started.
+	 * Reads configuration options, injects data, initializes singletons and configurations. The embedded web server can
+	 * then be started.
 	 *
 	 * Sample command line to run on port 80 and in demo mode (automatically generated fake data, in-memory database)
 	 *
@@ -280,13 +224,13 @@ public class Main {
 		SLF4JBridgeHandler.install();
 		// disable poixml warning
 		StartupUtils.disableWarning();
-
+		
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-			@Override
-			public void uncaughtException(Thread t, Throwable e) {
-				System.out.println("Caught " + e);
-				e.printStackTrace();
-			}
+		    @Override
+		    public void uncaughtException(Thread t, Throwable e) {
+		        System.out.println("Caught " + e);
+		        e.printStackTrace();
+		    }
 		});
 
 		// read command-line and environment variable parameters
@@ -346,7 +290,7 @@ public class Main {
 						break;
 					case BENCHMARK:
 						BenchmarkData.insertInitialData(
-						        EnumSet.of(ChampionshipType.IWF, ChampionshipType.MASTERS));
+								EnumSet.of(ChampionshipType.IWF, ChampionshipType.MASTERS));
 						break;
 				}
 			} else {
@@ -476,14 +420,73 @@ public class Main {
 
 		masters = StartupUtils.getBooleanParam("masters");
 	}
+	
+	private static Server mqttBroker;
 
-	private static void signalDatabaseReady() {
-		try {
-			logger.info("Data initialized.");
-			OwlcmsFactory.countDownLatch();
-		} catch (InterruptedException e) {
-			LoggerUtils.logError(logger, e, false);
+	@SuppressWarnings("deprecation")
+	public static void startMQTT() {
+		Config conf = Config.getCurrent();
+		Boolean mqttInternal = conf.getMqttInternal();
+		if (mqttInternal == null) {
+			conf.setMqttInternal(true);
+			Config.setCurrent(conf);
+		} else {
+			// conf.setMqttInternal(true);
+			// Config.setCurrent(conf);
+			if (!mqttInternal) {
+				logger.info("MQTT server disabled using database configuration");
+				return;
+			}
 		}
+
+		mqttStartup = Long.toString(System.currentTimeMillis());
+		final IConfig mqttConfig = new MemoryConfig(new Properties());
+		Config.getCurrent().setMqttConfig(mqttConfig);
+		mqttConfig.setProperty(IConfig.ALLOW_ANONYMOUS_PROPERTY_NAME,
+		        Boolean.toString(Config.getCurrent().getParamMqttUserName() == null));
+		mqttConfig.setProperty(IConfig.AUTHENTICATOR_CLASS_NAME, "app.owlcms.init.MoquetteAuthenticator");
+		mqttConfig.setProperty(IConfig.PORT_PROPERTY_NAME, Config.getCurrent().getParamMqttPort());
+		mqttConfig.setProperty(IConfig.BUFFER_FLUSH_MS_PROPERTY_NAME, Integer.toString(0));
+		mqttConfig.setProperty(IConfig.PERSISTENCE_ENABLED_PROPERTY_NAME, Boolean.FALSE.toString());
+		// this should be in memory, but the DATA_PATH_PROPERTY_NAME does not work with a virtual file system
+		mqttConfig.setProperty(IConfig.DATA_PATH_PROPERTY_NAME, "mqttData");
+		new File(mqttConfig.getProperty(IConfig.DATA_PATH_PROPERTY_NAME)).mkdirs();
+
+		mqttBroker = new Server();
+		List<? extends InterceptHandler> userHandlers = Collections.singletonList(new PublisherListener());
+
+		if (Config.getCurrent().getParamMqttServer() != null && !Config.getCurrent().getParamMqttServer().isBlank()) {
+			logger.info("MQTT Server overridden by environment or system parameter, not starting embedded MQTT");
+			return;
+		}
+		if (!Config.getCurrent().getParamMqttInternal()) {
+			logger.info("Internal MQTT server not enabled, skipping");
+			return;
+		}
+		if (Config.getCurrent().getMqttInternal() == null) {
+			// default should be true if not set previously
+			Config.getCurrent().setMqttInternal(true);
+		}
+
+		try {
+			long now = System.currentTimeMillis();
+			logger.info("starting MQTT broker.");
+			mqttBroker.startServer(mqttConfig, userHandlers);
+			logger.info("started MQTT broker ({} ms).", System.currentTimeMillis() - now);
+
+			// Bind a shutdown hook
+			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+				logger.info("Stopping broker");
+				mqttBroker.stopServer();
+				logger.info("Broker stopped");
+			}));
+		} catch (Exception e) {
+			logger.error("could not start server", e.toString(), e.getCause());
+		}
+	}
+	
+	public static void stopMQTT() {
+		mqttBroker.stopServer();
 	}
 
 	private static void warnAndExit(Integer demoResetDelay, EmbeddedJetty server)

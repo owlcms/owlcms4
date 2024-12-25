@@ -90,9 +90,9 @@ public class ResultsNavigationContent extends BaseNavigationContent implements N
 		        // template name used only to generate the results file name. Localized template determined by
 		        // JXLSTimingStats
 		        Competition::getComputedMedalScheduleTemplateFileName,
-		        Competition::setMedalScheduleTemplateFileName,
+				Competition::setMedalScheduleTemplateFileName,
 		        Translator.translate("Results.MedalSchedule"),
-		        Translator.translate("Download"));
+				Translator.translate("Download"));
 		Div medalScheduleDiv = new Div();
 		medalScheduleDiv.add(dd2.createDownloadButton());
 		Optional<Component> medalScheduleButton = medalScheduleDiv.getChildren().findFirst();
@@ -120,11 +120,11 @@ public class ResultsNavigationContent extends BaseNavigationContent implements N
 		doGroup(Translator.translate("ForEachCompetitionGroup"), grid1, this);
 		doGroup(Translator.translate("TeamResults.Title"), grid2, this);
 		doGroup(Translator.translate("Results.EndOfCompetition"), grid3, this);
-
+		
 		Button importSessions = openInNewTabNoParam(SessionImportContent.class, Translator.translate("ImportSessions.PageTitle"));
 		doHiddenGroup(Translator.translate("ImportSessions.PageTitle"),
-		        new Div(Translator.translate("ImportSessions.Explanation")),
-		        HomeNavigationContent.navigationGrid(importSessions), this);
+				new Div(Translator.translate("ImportSessions.Explanation")),
+				HomeNavigationContent.navigationGrid(importSessions), this);
 
 		DebugUtils.gc();
 	}

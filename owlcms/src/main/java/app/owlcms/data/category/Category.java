@@ -69,47 +69,6 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 	public final static Double ROBI_B = 3.321928095;
 	@Transient
 	final private static Logger logger = (Logger) LoggerFactory.getLogger(Category.class);
-	public static Comparator<Category> specificityComparator = (a, b) -> {
-		if (a == null || b == null) {
-			return ObjectUtils.compare(a, b, true);
-		}
-		var aAgeGroup = a.getAgeGroup();
-		var bAgeGroup = b.getAgeGroup();
-		if (aAgeGroup == null || bAgeGroup == null) {
-			return ObjectUtils.compare(aAgeGroup, bAgeGroup, true);
-		}
-		int compare;
-
-		compare = ObjectUtils.compare(aAgeGroup.getGender(), bAgeGroup.getGender());
-		if (compare != 0) {
-			return compare;
-		}
-
-		int aDelta = aAgeGroup.getMaxAge() - aAgeGroup.getMinAge();
-		int bDelta = bAgeGroup.getMaxAge() - bAgeGroup.getMinAge();
-		compare = Integer.compare(aDelta, bDelta);
-		if (compare != 0) {
-			return compare;
-		}
-
-		// military masters 35-39 with no bw categories will be less specific than masters 35-39
-		int aCatNum = aAgeGroup.getCategories().size();
-		int bCatNum = bAgeGroup.getCategories().size();
-		// more categories comes first
-		compare = -Integer.compare(aCatNum, bCatNum);
-
-		return compare;
-	};
-
-	public static String codeFromName(String catName) {
-		Category cat = CategoryRepository.codeFromName(catName);
-		return cat != null ? cat.getCode() : null;
-	}
-
-	public static Comparator<Category> medalingComparator() {
-		return (a, b) -> ObjectUtils.compare(a.getMedalingSortCode(), b.getMedalingSortCode());
-	}
-
 	/** The maximum weight. */
 	Double maximumWeight; // exclusive
 	/** The minimum weight. */
@@ -120,6 +79,7 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 	@JoinColumn(name = "agegroup_id")
 	@JsonIdentityReference(alwaysAsId = true)
 	private AgeGroup ageGroup;
+
 	// combines age group and bw category (which includes gender).
 	private String code;
 	@Enumerated(EnumType.STRING)
@@ -210,6 +170,34 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		return compare;
 	}
 
+	public static Comparator<Category> specificityComparator = (a, b) -> {
+		if (a == null || b == null)
+			return ObjectUtils.compare(a, b, true);
+		var aAgeGroup = a.getAgeGroup();
+		var bAgeGroup = b.getAgeGroup();
+		if (aAgeGroup == null || bAgeGroup == null)
+			return ObjectUtils.compare(aAgeGroup, bAgeGroup, true);
+		int compare;
+
+		compare = ObjectUtils.compare(aAgeGroup.getGender(), bAgeGroup.getGender());
+		if (compare != 0)
+			return compare;
+
+		int aDelta = aAgeGroup.getMaxAge() - aAgeGroup.getMinAge();
+		int bDelta = bAgeGroup.getMaxAge() - bAgeGroup.getMinAge();
+		compare = Integer.compare(aDelta, bDelta);
+		if (compare != 0)
+			return compare;
+		
+		// military masters 35-39 with no bw categories will be less specific than masters 35-39
+		int aCatNum = aAgeGroup.getCategories().size();
+		int bCatNum = bAgeGroup.getCategories().size();
+		// more categories comes first
+		compare = -Integer.compare(aCatNum, bCatNum);
+		
+		return compare;
+	};
+
 	public String dump() {
 		return "Category [code=" + this.code + ", name=" + getSafeName() + ", minimumWeight=" + this.minimumWeight
 		        + ", maximumWeight="
@@ -283,6 +271,62 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		}
 	}
 
+	@Transient
+	@JsonIgnore
+	public String getSortCodeLimitString() {
+		if (this.id == null || this.maximumWeight == null
+		        || this.maximumWeight - Math.round(this.maximumWeight) > 0.1) {
+			String val = "temp_" + this.minimumWeight + "_" + this.maximumWeight;
+			return val;
+		}
+		if (this.maximumWeight > 130) {
+			return "999";
+		} else {
+			return String.format("%03d", (int) (Math.round(this.maximumWeight)));
+		}
+	}
+
+	@JsonIgnore
+	@Transient
+	public String getSortCode() {
+		String agName = (this.ageGroup != null ? this.ageGroup.getName() : "");
+
+		String result;
+		if (agName == null || agName.isEmpty()) {
+			String catName = "zzzz" + "_" + getGender() + getSortCodeLimitString();
+			result = catName;
+		} else {
+			result = this.ageGroup.getCode() + "_" + getGender() + getSortCodeLimitString();
+		}
+		// logger.debug("Category {} sort code {}", this, result);
+		return result;
+	}
+
+	@JsonIgnore
+	@Transient
+	public String getMedalingSortCode() {
+		String agName = (this.ageGroup != null ? this.ageGroup.getName() : "");
+
+		String result;
+		if (agName == null || agName.isEmpty()) {
+			String catName = "zzzz" + "_" + getGender() + getSortCodeLimitString();
+			result = catName;
+		} else {
+			result = this.ageGroup.getAgeFirstSortCode() + "_" + getSortCodeLimitString();
+		}
+		//logger.debug("Category {} sort code {}", this, result);
+		return result;
+	}
+	
+	public static Comparator<Category> medalingComparator() {
+		return (a,b) -> ObjectUtils.compare(a.getMedalingSortCode(), b.getMedalingSortCode());
+	}
+
+	@JsonIgnore
+	@Transient
+	public void setMedalingSortCode() {
+	}
+
 	@JsonIgnore
 	@Transient
 	public String getComputedCode() {
@@ -312,6 +356,20 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 			result = agName + " " + catName;
 		}
 		return result.trim();
+	}
+
+	@JsonIgnore
+	@Transient
+	ChampionshipType getChampionshipType() {
+		ChampionshipType championshipType = this.ageGroup != null ? ageGroup.getChampionshipType() : null;
+		return championshipType;
+	}
+
+	@JsonIgnore
+	@Transient
+	private boolean isAlreadyGendered() {
+		boolean alreadyGendered = this.ageGroup != null ? ageGroup.isAlreadyGendered() : false;
+		return alreadyGendered;
 	}
 
 	/**
@@ -364,22 +422,6 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		return this.maximumWeight;
 	}
 
-	@JsonIgnore
-	@Transient
-	public String getMedalingSortCode() {
-		String agName = (this.ageGroup != null ? this.ageGroup.getName() : "");
-
-		String result;
-		if (agName == null || agName.isEmpty()) {
-			String catName = "zzzz" + "_" + getGender() + getSortCodeLimitString();
-			result = catName;
-		} else {
-			result = this.ageGroup.getAgeFirstSortCode() + "_" + getSortCodeLimitString();
-		}
-		// logger.debug("Category {} sort code {}", this, result);
-		return result;
-	}
-
 	/**
 	 * Gets the minimum weight.
 	 *
@@ -387,36 +429,6 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 	 */
 	public Double getMinimumWeight() {
 		return this.minimumWeight;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	@JsonIgnore
-	@Transient
-	public String getNameWithAgeGroup() {
-		String agName = (this.ageGroup != null ? this.ageGroup.getName() : "");
-		String catName = getLimitString();
-		String result;
-		if (agName == null || agName.isEmpty()) {
-			result = getTranslatedGender() + " " + catName;
-		} else {
-			result = agName + " " + catName;
-		}
-		return result.trim();
-	}
-
-	@JsonIgnore
-	public List<Participation> getParticipations() {
-		return this.participations;
-	}
-
-	/**
-	 * @return the qualifyingTotal
-	 */
-	public int getQualifyingTotal() {
-		return this.qualifyingTotal;
 	}
 
 	/**
@@ -434,38 +446,19 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 	}
 
 	@JsonIgnore
-	@Transient
-	public String getSortCode() {
-		String agName = (this.ageGroup != null ? this.ageGroup.getName() : "");
-
-		String result;
-		if (agName == null || agName.isEmpty()) {
-			String catName = "zzzz" + "_" + getGender() + getSortCodeLimitString();
-			result = catName;
-		} else {
-			result = this.ageGroup.getCode() + "_" + getGender() + getSortCodeLimitString();
-		}
-		// logger.debug("Category {} sort code {}", this, result);
-		return result;
+	public List<Participation> getParticipations() {
+		return this.participations;
 	}
 
-	@Transient
-	@JsonIgnore
-	public String getSortCodeLimitString() {
-		if (this.id == null || this.maximumWeight == null
-		        || this.maximumWeight - Math.round(this.maximumWeight) > 0.1) {
-			String val = "temp_" + this.minimumWeight + "_" + this.maximumWeight;
-			return val;
-		}
-		if (this.maximumWeight > 130) {
-			return "999";
-		} else {
-			return String.format("%03d", (int) (Math.round(this.maximumWeight)));
-		}
+	/**
+	 * @return the qualifyingTotal
+	 */
+	public int getQualifyingTotal() {
+		return this.qualifyingTotal;
 	}
 
 	public String getTranslatedGender() {
-		if (this.gender == null) {
+		if (gender == null) {
 			return "";
 		}
 		switch (getGender()) {
@@ -476,6 +469,20 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 			default:
 				throw new IllegalStateException();
 		}
+	}
+
+	@JsonIgnore
+	@Transient
+	public String getNameWithAgeGroup() {
+		String agName = (this.ageGroup != null ? this.ageGroup.getName() : "");
+		String catName = getLimitString();
+		String result;
+		if (agName == null || agName.isEmpty()) {
+			result = getTranslatedGender() + " " + catName;
+		} else {
+			result = agName + " " + catName;
+		}
+		return result.trim();
 	}
 
 	public String getUpperBound() {
@@ -546,6 +553,13 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		return this.wrYth;
 	}
 
+	/**
+	 * @return a code that changes if the category was edited in a way that requires reassigning athletes
+	 */
+	public int reassignmentHashCode() {
+		return Objects.hash(code, gender, maximumWeight, minimumWeight, qualifyingTotal);
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(getSafeName());
@@ -572,13 +586,6 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		        + ", qualifying=" + this.qualifyingTotal
 		        + ", wr=" + getWrSr()
 		        + ", code=" + this.code + "]";
-	}
-
-	/**
-	 * @return a code that changes if the category was edited in a way that requires reassigning athletes
-	 */
-	public int reassignmentHashCode() {
-		return Objects.hash(this.code, this.gender, this.maximumWeight, this.minimumWeight, this.qualifyingTotal);
 	}
 
 	public boolean sameAs(Category prevCat) {
@@ -630,11 +637,6 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 	 */
 	public void setMaximumWeight(Double maximumWeight) {
 		this.maximumWeight = maximumWeight;
-	}
-
-	@JsonIgnore
-	@Transient
-	public void setMedalingSortCode() {
 	}
 
 	/**
@@ -694,18 +696,13 @@ public class Category implements Serializable, Comparable<Category>, Cloneable {
 		return getDisplayName();
 	}
 
-	@JsonIgnore
-	@Transient
-	ChampionshipType getChampionshipType() {
-		ChampionshipType championshipType = this.ageGroup != null ? this.ageGroup.getChampionshipType() : null;
-		return championshipType;
+	public String getName() {
+		return name;
 	}
 
-	@JsonIgnore
-	@Transient
-	private boolean isAlreadyGendered() {
-		boolean alreadyGendered = this.ageGroup != null ? this.ageGroup.isAlreadyGendered() : false;
-		return alreadyGendered;
+	public static String codeFromName(String catName) {
+		Category cat = CategoryRepository.codeFromName(catName);
+		return cat != null ? cat.getCode() : null;
 	}
 
 }

@@ -220,7 +220,7 @@ public class ProxyBreakTimer implements IProxyTimer, IBreakTimer {
 	@Override
 	public void start() {
 		BreakType breakType = getFop().getBreakType();
-		// logger.debug("{}****** starting break with breakType = {} from={}", FieldOfPlay.getLoggingName(fop), breakType, LoggerUtils.whereFrom());
+		//logger.debug("{}****** starting break with breakType = {} from={}", FieldOfPlay.getLoggingName(fop), breakType, LoggerUtils.whereFrom());
 		if (breakType == null) {
 			this.logger.error("null breaktype {}", LoggerUtils.stackTrace());
 		}
@@ -236,20 +236,31 @@ public class ProxyBreakTimer implements IProxyTimer, IBreakTimer {
 		// logger.debug("posting {}", event);
 		getFop().pushOutUIEvent(event);
 		setRunning(true);
-
+		
 		if (Config.getCurrent().featureSwitch("oldTimers")) {
 			return;
 		}
-
+		
 		// if a break is running, need to stop it before starting another.
 		if (this.serverTimer != null) {
-			// logger.debug("Cancelling running timer");
-			this.serverTimer.cancel();
+			//logger.debug("Cancelling running timer");
+			serverTimer.cancel();
 		}
 		this.serverTimer = new Timer();
-		TimerTask timerTask = computeTask(this.timeRemaining);
-		this.serverTimer.schedule(timerTask, this.timeRemaining);
+		TimerTask timerTask = computeTask(timeRemaining);
+		serverTimer.schedule(timerTask, timeRemaining);
 
+	}
+
+	private TimerTask computeTask(int timeRemaining2) {
+		logger.info("{}+++++ scheduling serverTimer break over {}", FieldOfPlay.getLoggingName(fop), timeRemaining);
+		return new TimerTask() {
+			@Override
+			public void run() {
+				logger.info("{}+++++ running break over", FieldOfPlay.getLoggingName(fop));
+				timeOver(this);
+			}
+		};
 	}
 
 	/**
@@ -307,17 +318,6 @@ public class ProxyBreakTimer implements IProxyTimer, IBreakTimer {
 		return this.fop;
 	}
 
-	private TimerTask computeTask(int timeRemaining2) {
-		this.logger.info("{}+++++ scheduling serverTimer break over {}", FieldOfPlay.getLoggingName(this.fop), this.timeRemaining);
-		return new TimerTask() {
-			@Override
-			public void run() {
-				ProxyBreakTimer.this.logger.info("{}+++++ running break over", FieldOfPlay.getLoggingName(ProxyBreakTimer.this.fop));
-				timeOver(this);
-			}
-		};
-	}
-
 	/**
 	 * Compute time elapsed since start and adjust time remaining accordingly.
 	 */
@@ -337,12 +337,12 @@ public class ProxyBreakTimer implements IProxyTimer, IBreakTimer {
 		        : getTimeRemaining());
 	}
 
+	private void setRunning(boolean running) {
+		this.running = running;
+	}
+
 	private void setIndefinite(boolean indefinite) {
 		// logger.debug("breakTimer setIndefinite {} {}",indefinite, LoggerUtils.whereFrom());
 		this.indefinite = indefinite;
-	}
-
-	private void setRunning(boolean running) {
-		this.running = running;
 	}
 }

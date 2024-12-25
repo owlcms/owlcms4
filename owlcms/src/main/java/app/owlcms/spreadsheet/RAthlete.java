@@ -49,8 +49,8 @@ public class RAthlete {
 	}
 
 	public RAthlete() {
-		this.a = new Athlete();
-		this.a.setCategoryFinished(false);
+		a = new Athlete();
+		a.setCategoryFinished(false);
 	}
 
 	public Athlete getAthlete() {
@@ -90,6 +90,80 @@ public class RAthlete {
 			getPartsWithSeparator(s);
 		}
 
+	}
+
+	private void doLegacyParts(String s, String[] parts) throws Exception {
+		if (parts.length >= 1) {
+			boolean teamMember = false;
+			String catName = parts[0].trim();
+			if (!Config.getCurrent().featureSwitch("explicitTeams")) {
+				// teams are implicitly selected, check for team exclusion marker.
+				teamMember = true;
+				if (catName.endsWith(NoTeamMarker)) {
+					catName = catName.substring(0, s.length() - NoTeamMarker.length());
+					teamMember = false;
+				} else if (catName.endsWith("/")) {
+					catName = catName.substring(0, s.length() - "/".length());
+					teamMember = false;
+				}
+			}
+
+			Category c;
+			String catCode = Category.codeFromName(catName);
+			// logger.debug("catCode {} active {}",catCode,RCompetition.getActiveCategories().keySet());
+			if ((c = RCompetition.getActiveCategories().get(catCode)) != null) {
+				// exact match for a category. This is the athlete's registration category.
+				processEligibilityAndTeams(parts, c, teamMember);
+			} else {
+				if (parts.length == 1) {
+					// we have a short form category. infer from age and category limit
+					setCategoryHeuristics(catName);
+					final var tm = teamMember;
+					this.a.getParticipations().stream().forEach(p -> p.setTeamMember(tm));
+				} else {
+					throw new Exception(
+					        Translator.translate("Upload.CategoryNotFoundByName", catName.trim()));
+				}
+
+			}
+		}
+	}
+
+	private void getPartsWithSeparator(String s) throws Exception {
+		if (s == null || s.isBlank()) {
+			return;
+		}
+		// create a parts as in the legacy
+		if (Config.getCurrent().featureSwitch("usawSessionBlocks")) {
+			s = s.replaceAll("(\\d+)\\s?kg", "$1");
+		}
+
+		String[] allParts = s.split(",|;|\\/");
+		List<String> partsList = Arrays.asList(allParts).stream()
+		        .filter(s1 -> (s1 != null && !s1.isBlank()))
+		        .map(s1 -> s1.trim())
+		        .toList();
+		// logger.debug("partsList {}",partsList);
+
+		String[] parts;
+		if (partsList.size() == 1) {
+			parts = new String[1];
+			parts[0] = partsList.get(0);
+			doLegacyParts(s, parts);
+		} else if (partsList.size() >= 1) {
+			parts = new String[2];
+			parts[0] = partsList.get(0);
+			// brain-dead logic to reuse existing code. Should fix old to use new instead...
+			StringBuffer sb = new StringBuffer();
+			for (int i = 1; i < partsList.size(); i++) {
+				if (i > 1) {
+					sb.append(";");
+				}
+				sb.append(partsList.get(i).trim());
+			}
+			parts[1] = sb.toString();
+			doLegacyParts(s, parts);
+		}
 	}
 
 	/**
@@ -314,43 +388,6 @@ public class RAthlete {
 		return added;
 	}
 
-	private void doLegacyParts(String s, String[] parts) throws Exception {
-		if (parts.length >= 1) {
-			boolean teamMember = false;
-			String catName = parts[0].trim();
-			if (!Config.getCurrent().featureSwitch("explicitTeams")) {
-				// teams are implicitly selected, check for team exclusion marker.
-				teamMember = true;
-				if (catName.endsWith(NoTeamMarker)) {
-					catName = catName.substring(0, s.length() - NoTeamMarker.length());
-					teamMember = false;
-				} else if (catName.endsWith("/")) {
-					catName = catName.substring(0, s.length() - "/".length());
-					teamMember = false;
-				}
-			}
-
-			Category c;
-			String catCode = Category.codeFromName(catName);
-			// logger.debug("catCode {} active {}",catCode,RCompetition.getActiveCategories().keySet());
-			if ((c = RCompetition.getActiveCategories().get(catCode)) != null) {
-				// exact match for a category. This is the athlete's registration category.
-				processEligibilityAndTeams(parts, c, teamMember);
-			} else {
-				if (parts.length == 1) {
-					// we have a short form category. infer from age and category limit
-					setCategoryHeuristics(catName);
-					final var tm = teamMember;
-					this.a.getParticipations().stream().forEach(p -> p.setTeamMember(tm));
-				} else {
-					throw new Exception(
-					        Translator.translate("Upload.CategoryNotFoundByName", catName.trim()));
-				}
-
-			}
-		}
-	}
-
 	private Category findByAgeBW(Matcher legacyResult, double searchBodyWeight, int age, int qualifyingTotal)
 	        throws Exception {
 		// List<Category> found = CategoryRepository.findByGenderAgeBW(a.getGender(), age, searchBodyWeight);
@@ -396,43 +433,6 @@ public class RAthlete {
 			setLegacyPattern(Pattern.compile(regex));
 		}
 		return this.legacyPattern;
-	}
-
-	private void getPartsWithSeparator(String s) throws Exception {
-		if (s == null || s.isBlank()) {
-			return;
-		}
-		// create a parts as in the legacy
-		if (Config.getCurrent().featureSwitch("usawSessionBlocks")) {
-			s = s.replaceAll("(\\d+)\\s?kg", "$1");
-		}
-
-		String[] allParts = s.split(",|;|\\/");
-		List<String> partsList = Arrays.asList(allParts).stream()
-		        .filter(s1 -> (s1 != null && !s1.isBlank()))
-		        .map(s1 -> s1.trim())
-		        .toList();
-		// logger.debug("partsList {}",partsList);
-
-		String[] parts;
-		if (partsList.size() == 1) {
-			parts = new String[1];
-			parts[0] = partsList.get(0);
-			doLegacyParts(s, parts);
-		} else if (partsList.size() >= 1) {
-			parts = new String[2];
-			parts[0] = partsList.get(0);
-			// brain-dead logic to reuse existing code. Should fix old to use new instead...
-			StringBuffer sb = new StringBuffer();
-			for (int i = 1; i < partsList.size(); i++) {
-				if (i > 1) {
-					sb.append(";");
-				}
-				sb.append(partsList.get(i).trim());
-			}
-			parts[1] = sb.toString();
-			doLegacyParts(s, parts);
-		}
 	}
 
 	private void processEligibilityAndTeams(String[] parts, Category c, boolean mainCategoryTeamMember)
@@ -493,7 +493,7 @@ public class RAthlete {
 			}
 			this.a.setCategory(category);
 			return;
-		} else {
+		} else 	{
 			fixLegacyGender(legacyResult);
 			if (!legacyResult.group(2).isEmpty() || !legacyResult.group(4).isEmpty()) {
 				// > or +

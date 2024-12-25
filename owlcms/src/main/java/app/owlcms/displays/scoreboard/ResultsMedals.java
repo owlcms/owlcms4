@@ -96,6 +96,15 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		OwlcmsSession.withFop(fop -> doBreak(fop));
 	}
 
+	private void doBreak(FieldOfPlay fop) {
+		this.getElement().setProperty("fullName",
+		        inferGroupName() + " &ndash; " + inferMessage(fop.getBreakType(), fop.getCeremonyType(), true));
+		this.getElement().setProperty("teamName", "");
+		this.getElement().setProperty("attempt", "");
+		setDisplay();
+		updateDisplay(computeLiftType(fop.getCurAthlete()), fop);
+	}
+
 	@Override
 	public void doCeremony(UIEvent.CeremonyStarted e) {
 		this.setCeremony(true);
@@ -119,6 +128,11 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	}
 
 	@Override
+	public Championship getChampionship() {
+		return this.ageDivision;
+	}
+
+	@Override
 	public AgeGroup getAgeGroup() {
 		return this.ageGroup;
 	}
@@ -134,17 +148,13 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	}
 
 	@Override
-	public Championship getChampionship() {
-		return this.ageDivision;
-	}
-
-	public boolean isCeremony() {
-		return this.ceremony;
+	public boolean isShowInitialDialog() {
+		return false;
 	}
 
 	@Override
-	public boolean isShowInitialDialog() {
-		return false;
+	public void setChampionship(Championship ageDivision) {
+		this.ageDivision = ageDivision;
 	}
 
 	@Override
@@ -162,39 +172,8 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		this.category = category;
 	}
 
-	public void setCeremony(boolean ceremony) {
-		this.ceremony = ceremony;
-	}
-
-	@Override
-	public void setChampionship(Championship ageDivision) {
-		this.ageDivision = ageDivision;
-	}
-
-	public void setScoreRanks(boolean scoreNeeded) {
-		this.getElement().setProperty("showSinclair", scoreNeeded);
-		this.getElement().setProperty("showSinclairRank", scoreNeeded);
-	}
-
 	@Override
 	public void setSilenced(boolean silent) {
-	}
-
-	public void setTitles(JsonObject jMC, Category cat) {
-		jMC.put("categoryName", cat.getDisplayName());
-		Ranking scoringSystem = cat.getAgeGroup().getScoringSystem();
-		String rankingTitle = Translator.translate("Rank");
-		if (scoringSystem != null && scoringSystem != Ranking.TOTAL) {
-			String scoreScoringTitle = Translator.translate("Score");
-			scoreScoringTitle = Ranking.getScoringTitle(scoringSystem);
-			jMC.put("rankingTitle", "");
-			jMC.put("scoreScoringTitle", scoreScoringTitle);
-			jMC.put("scoreRankingTitle", rankingTitle);
-		} else {
-			jMC.put("rankingTitle", rankingTitle);
-			jMC.put("scoreScoringTitle", "");
-			jMC.put("scoreRankingTitle", "");
-		}
 	}
 
 	@Subscribe
@@ -307,29 +286,6 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 			this.setCategory(fop.getVideoCategory());
 			doRefresh(e);
 		});
-	}
-
-	public void syncWithFOP(FieldOfPlay fop) {
-		// logger.debug("syncWithFOP");
-		switch (fop.getState()) {
-			case INACTIVE:
-				this.setGroup(null);
-				this.setCategory(null);
-				doEmpty();
-				break;
-			// case BREAK:
-			default:
-				setCeremony(fop.getCeremonyType() == CeremonyType.MEDALS);
-				if (!this.isCeremony()) {
-					this.setGroup(fop.getGroup());
-					this.setCategory(null);
-					doRefresh(new UIEvent.SwitchGroup(fop.getGroup(), FOPState.BREAK, fop.getCurAthlete(), this, fop));
-				}
-				break;
-			// default:
-			// setDisplay();
-			// updateDisplay(null, fop);
-		}
 	}
 
 	@Override
@@ -494,13 +450,6 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 	}
 
 	@Override
-	protected void uiLog(UIEvent e) {
-		// this.logger./**/warn(">>>>> {} {} {} {}",
-		// this.getClass().getSimpleName(), e.getClass().getSimpleName(), e.getOrigin(),
-		// LoggerUtils.whereFrom());
-	}
-
-	@Override
 	protected void updateDisplay(String liftType, FieldOfPlay fop) {
 		// logger.debug("updateBottom");
 		this.getElement().setProperty("groupInfo", "");
@@ -578,6 +527,28 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		}
 	}
 
+	public void setScoreRanks(boolean scoreNeeded) {
+		this.getElement().setProperty("showSinclair", scoreNeeded);
+		this.getElement().setProperty("showSinclairRank", scoreNeeded);
+	}
+
+	public void setTitles(JsonObject jMC, Category cat) {
+		jMC.put("categoryName", cat.getDisplayName());
+		Ranking scoringSystem = cat.getAgeGroup().getScoringSystem();
+		String rankingTitle = Translator.translate("Rank");
+		if (scoringSystem != null && scoringSystem != Ranking.TOTAL) {
+			String scoreScoringTitle = Translator.translate("Score");
+			scoreScoringTitle = Ranking.getScoringTitle(scoringSystem);
+			jMC.put("rankingTitle", "");
+			jMC.put("scoreScoringTitle", scoreScoringTitle);
+			jMC.put("scoreRankingTitle", rankingTitle);
+		} else {
+			jMC.put("rankingTitle", rankingTitle);
+			jMC.put("scoreScoringTitle", "");
+			jMC.put("scoreRankingTitle", "");
+		}
+	}
+
 	private String computeLiftType(Athlete a) {
 		if (a == null || a.getAttemptsDone() > 6) {
 			return null;
@@ -595,19 +566,22 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		}
 	}
 
-	private void doBreak(FieldOfPlay fop) {
-		this.getElement().setProperty("fullName",
-		        inferGroupName() + " &ndash; " + inferMessage(fop.getBreakType(), fop.getCeremonyType(), true));
-		this.getElement().setProperty("teamName", "");
-		this.getElement().setProperty("attempt", "");
-		setDisplay();
-		updateDisplay(computeLiftType(fop.getCurAthlete()), fop);
+	private void doMedalsDisplay() {
+		medalsInit();
+		checkVideo(this);
+		this.teamFlags = URLUtils.checkFlags();
+		doMedals(this.getFop());
+
+		if (!Competition.getCurrent().isSnatchCJTotalMedals()) {
+			getElement().setProperty("noLiftRanks", "noranks");
+		}
+		this.getElement().setProperty("displayTitle", Translator.translate("CeremonyType.MEDALS"));
 	}
 
-	// private void retrieveFromSessionStorage(String key, SerializableConsumer<String> resultHandler) {
-	// getElement().executeJs("return window.sessionStorage.getItem($0);", key)
-	// .then(String.class, resultHandler);
-	// }
+	private void doRefresh(UIEvent e) {
+		FieldOfPlay fop2 = e.getFop();
+		doMedals(fop2);
+	}
 
 	private void doMedals(FieldOfPlay fop2) {
 		if (this.getCategory() == null) {
@@ -631,27 +605,15 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		computeMedalsJson(this.getMedals());
 	}
 
-	private void doMedalsDisplay() {
-		medalsInit();
-		checkVideo(this);
-		this.teamFlags = URLUtils.checkFlags();
-		doMedals(this.getFop());
-
-		if (!Competition.getCurrent().isSnatchCJTotalMedals()) {
-			getElement().setProperty("noLiftRanks", "noranks");
-		}
-		this.getElement().setProperty("displayTitle", Translator.translate("CeremonyType.MEDALS"));
-	}
-
-	private void doRefresh(UIEvent e) {
-		FieldOfPlay fop2 = e.getFop();
-		doMedals(fop2);
-	}
-
 	private String formatKg(String total) {
 		return (total == null || total.trim().isEmpty()) ? "-"
 		        : (total.startsWith("-") ? "(" + total.substring(1) + ")" : total);
 	}
+
+	// private void retrieveFromSessionStorage(String key, SerializableConsumer<String> resultHandler) {
+	// getElement().executeJs("return window.sessionStorage.getItem($0);", key)
+	// .then(String.class, resultHandler);
+	// }
 
 	/**
 	 * Compute Json string ready to be used by web component template
@@ -713,14 +675,6 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		}
 	}
 
-	private TreeMap<String, List<Athlete>> getMedals() {
-		return this.medals;
-	}
-
-	private UI getUi() {
-		return this.ui;
-	}
-
 	private boolean isMedalist(Athlete a) {
 		if (a.getGroup() == null) {
 			return false;
@@ -764,14 +718,6 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 		});
 	}
 
-	private void setMedals(TreeMap<String, List<Athlete>> medals) {
-		this.medals = medals;
-	}
-
-	private void setUi(UI ui) {
-		this.ui = ui;
-	}
-
 	private void syncWithFOP(UIEvent.SwitchGroup e) {
 		switch (e.getState()) {
 			case INACTIVE:
@@ -797,6 +743,60 @@ public class ResultsMedals extends Results implements ResultsParameters, Display
 			// setDisplay();
 			// doUpdate(e);
 		}
+	}
+
+	public void syncWithFOP(FieldOfPlay fop) {
+		// logger.debug("syncWithFOP");
+		switch (fop.getState()) {
+			case INACTIVE:
+				this.setGroup(null);
+				this.setCategory(null);
+				doEmpty();
+				break;
+			// case BREAK:
+			default:
+				setCeremony(fop.getCeremonyType() == CeremonyType.MEDALS);
+				if (!this.isCeremony()) {
+					this.setGroup(fop.getGroup());
+					this.setCategory(null);
+					doRefresh(new UIEvent.SwitchGroup(fop.getGroup(), FOPState.BREAK, fop.getCurAthlete(), this, fop));
+				}
+				break;
+			// default:
+			// setDisplay();
+			// updateDisplay(null, fop);
+		}
+	}
+
+	@Override
+	protected void uiLog(UIEvent e) {
+		// this.logger./**/warn(">>>>> {} {} {} {}",
+		// this.getClass().getSimpleName(), e.getClass().getSimpleName(), e.getOrigin(),
+		// LoggerUtils.whereFrom());
+	}
+
+	private TreeMap<String, List<Athlete>> getMedals() {
+		return medals;
+	}
+
+	private void setMedals(TreeMap<String, List<Athlete>> medals) {
+		this.medals = medals;
+	}
+
+	private UI getUi() {
+		return ui;
+	}
+
+	private void setUi(UI ui) {
+		this.ui = ui;
+	}
+
+	public boolean isCeremony() {
+		return ceremony;
+	}
+
+	public void setCeremony(boolean ceremony) {
+		this.ceremony = ceremony;
 	}
 
 }

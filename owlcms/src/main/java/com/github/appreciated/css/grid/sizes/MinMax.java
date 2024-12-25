@@ -5,7 +5,8 @@ import com.github.appreciated.css.grid.interfaces.MinMaxUnit;
 import com.github.appreciated.css.grid.interfaces.TemplateRowsAndColsUnit;
 
 /**
- * A class which is supposed to mimic the minmax <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/minmax">minmax</a> css function
+ * A class which is supposed to mimic the minmax
+ * <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/minmax">minmax</a> css function
  */
 public class MinMax implements AutoRowAndColUnit, TemplateRowsAndColsUnit {
 

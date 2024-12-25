@@ -585,14 +585,14 @@ public abstract class AbstractAttemptBoard extends LitTemplate implements
 			this.getElement().setProperty("nameSizeOverride",
 			        "font-size: 8vh; line-height: 8vh; text-wrap: balance; text-overflow: hidden");
 		}
-
+		
 		String lFirst = a.getFirstName();
 		// add the out-of-competition marker if defined in the translation file.
 		if (!a.isEligibleForIndividualRanking() && lFirst != null && !lFirst.isBlank()) {
 			lFirst = Translator.translate("Attempt.Extra/Invited", lFirst);
 		}
 		this.getElement().setProperty("firstName", lFirst);
-
+		
 		this.getElement().setProperty("decisionVisible", false);
 		Category category2 = a.getCategory();
 		this.getElement().setProperty("category", category2 != null ? category2.getDisplayName() : "");
@@ -830,6 +830,7 @@ public abstract class AbstractAttemptBoard extends LitTemplate implements
 
 		OwlcmsSession.withFop(fop -> {
 			n.open();
+			return;
 		});
 	}
 

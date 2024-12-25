@@ -42,7 +42,6 @@ public class AgeGroupDefinitionReader {
 
 	private static final String AGE_GROUP_SCORING_HEADER = "agegroupscoring";
 	private static Logger logger = (Logger) LoggerFactory.getLogger(AgeGroupDefinitionReader.class);
-	static DataFormatter formatter = new DataFormatter();
 
 	public static void doInsertRobiAndAgeGroups(InputStream ageGroupStream) {
 		Logger mainLogger = Main.getStartupLogger();
@@ -227,6 +226,46 @@ public class AgeGroupDefinitionReader {
 		});
 	}
 
+	private static void reportError(int iRow, int iColumn, String cellValue, Exception e) {
+		String msg = MessageFormat.format(
+		        "cannot process cell {0} (content = \"{1}\") {2}",
+		        cellName(iColumn, iRow), cellValue, e);
+		logger.error(msg);
+		if (UI.getCurrent() != null) {
+			NotificationUtils.errorNotification(msg);
+		}
+	}
+
+	static DataFormatter formatter = new DataFormatter();
+
+	private static boolean getSafeBooleanValue(Cell cell) {
+		try {
+			return cell.getBooleanCellValue();
+		} catch (IllegalStateException e) {
+			if (cell.getCellType() == CellType.NUMERIC) {
+				String strValue = formatter.formatCellValue(cell);
+				return strValue.equalsIgnoreCase("true");
+			} else {
+				logger.error("cannot extract string from cell {}", cell.getAddress());
+				throw new IllegalStateException("cannot extract boolean from cell " + cell.getAddress());
+			}
+		}
+	}
+
+	private static String safeGetTextValue(Cell cell) {
+		try {
+			return cell.getStringCellValue();
+		} catch (IllegalStateException e) {
+			if (cell.getCellType() == CellType.NUMERIC) {
+				String strValue = formatter.formatCellValue(cell);
+				return strValue;
+			} else {
+				logger.error("cannot extract string from cell {}", cell.getAddress());
+				throw new IllegalStateException("cannot extract string from cell " + cell.getAddress());
+			}
+		}
+	}
+
 	static void doInsertRobiAndAgeGroups(EnumSet<ChampionshipType> forcedInsertion, String localizedFileName) {
 		Logger mainLogger = Main.getStartupLogger();
 		Map<String, Category> templates = loadRobi(mainLogger);
@@ -247,20 +286,6 @@ public class AgeGroupDefinitionReader {
 			mainLogger.error("could not find ageGroup configuration. See logs for details");
 		}
 		return ageGroupStream;
-	}
-
-	private static boolean getSafeBooleanValue(Cell cell) {
-		try {
-			return cell.getBooleanCellValue();
-		} catch (IllegalStateException e) {
-			if (cell.getCellType() == CellType.NUMERIC) {
-				String strValue = formatter.formatCellValue(cell);
-				return strValue.equalsIgnoreCase("true");
-			} else {
-				logger.error("cannot extract string from cell {}", cell.getAddress());
-				throw new IllegalStateException("cannot extract boolean from cell " + cell.getAddress());
-			}
-		}
 	}
 
 	private static void loadAgeGroupStream(EnumSet<ChampionshipType> forcedInsertion, String localizedName,
@@ -292,30 +317,6 @@ public class AgeGroupDefinitionReader {
 			mainLogger.error("could not process RobiCategories configuration. See logs for details");
 		}
 		return templates;
-	}
-
-	private static void reportError(int iRow, int iColumn, String cellValue, Exception e) {
-		String msg = MessageFormat.format(
-		        "cannot process cell {0} (content = \"{1}\") {2}",
-		        cellName(iColumn, iRow), cellValue, e);
-		logger.error(msg);
-		if (UI.getCurrent() != null) {
-			NotificationUtils.errorNotification(msg);
-		}
-	}
-
-	private static String safeGetTextValue(Cell cell) {
-		try {
-			return cell.getStringCellValue();
-		} catch (IllegalStateException e) {
-			if (cell.getCellType() == CellType.NUMERIC) {
-				String strValue = formatter.formatCellValue(cell);
-				return strValue;
-			} else {
-				logger.error("cannot extract string from cell {}", cell.getAddress());
-				throw new IllegalStateException("cannot extract string from cell " + cell.getAddress());
-			}
-		}
 	}
 
 }

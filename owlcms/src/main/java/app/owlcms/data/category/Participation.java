@@ -30,7 +30,8 @@ import ch.qos.logback.classic.Logger;
 /**
  * Association class between Athlete and Category. Holds rankings and points of athlete and category.
  *
- * An athlete participates in one or more category (when eligible according to age, gender and qualifying total). A category contains zero or more athletes.
+ * An athlete participates in one or more category (when eligible according to age, gender and qualifying total). A
+ * category contains zero or more athletes.
  *
  * @author Jean-François Lamy
  */
@@ -68,8 +69,8 @@ public class Participation implements IRankHolder {
 	@Column(columnDefinition = "integer default 0")
 	private int teamCombinedRank;
 	/**
-	 * Athlete is member of team for the age group. Points will be scored according to ranks. An athlete can be qualified for JR and SR, but only on the JR team
-	 * for example.
+	 * Athlete is member of team for the age group. Points will be scored according to ranks. An athlete can be
+	 * qualified for JR and SR, but only on the JR team for example.
 	 */
 	@Column(columnDefinition = "boolean default true")
 	private boolean teamMember = true;
@@ -81,6 +82,7 @@ public class Participation implements IRankHolder {
 	private int teamSnatchRank;
 	@Column(columnDefinition = "integer default 0")
 	private int teamTotalRank;
+
 
 	public Participation(Athlete athlete, Category category) {
 		this();
@@ -131,10 +133,6 @@ public class Participation implements IRankHolder {
 	@JsonIdentityReference(alwaysAsId = true)
 	public Category getCategory() {
 		return this.category;
-	}
-
-	public int getCategoryScoreRank() {
-		return this.categoryScoreRank;
 	}
 
 	@Transient
@@ -243,10 +241,6 @@ public class Participation implements IRankHolder {
 		this.category = category;
 	}
 
-	public void setCategoryScoreRank(int scoreRank) {
-		this.categoryScoreRank = scoreRank;
-	}
-
 	public void setCleanJerkRank(int cleanJerkRank) {
 		this.cleanJerkRank = cleanJerkRank;
 		// logger.trace("cleanJerkRank {}", long_dump());
@@ -313,5 +307,13 @@ public class Participation implements IRankHolder {
 
 	private boolean isTeamMember() {
 		return this.teamMember;
+	}
+
+	public int getCategoryScoreRank() {
+		return categoryScoreRank;
+	}
+
+	public void setCategoryScoreRank(int scoreRank) {
+		this.categoryScoreRank = scoreRank;
 	}
 }

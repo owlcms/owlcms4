@@ -34,35 +34,6 @@ public class DownloadButtonFactory {
 	@SuppressWarnings("unused")
 	final private static Logger logger = (Logger) LoggerFactory.getLogger(DownloadButtonFactory.class);
 
-	public static Div createDynamicDownloadButton(String prefix, String label, InputStreamFactory supplier, Supplier<String> extensionSupplier) {
-		final LazyDownloadButton downloadButton = new LazyDownloadButton(
-		        label,
-		        new Icon(VaadinIcon.DOWNLOAD_ALT),
-		        () -> {
-			        LocalDateTime now = LocalDateTime.now().withNano(0);
-			        return prefix
-			                + "_" + now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH'h'mm"))
-			                + extensionSupplier.get();
-		        },
-		        supplier);
-		return new Div(downloadButton);
-	}
-
-	public static Div createDynamicDownloadButton(Supplier<String> prefixSupplier, String label, InputStreamFactory supplier,
-	        Supplier<String> extensionSupplier) {
-		final LazyDownloadButton downloadButton = new LazyDownloadButton(
-		        label,
-		        new Icon(VaadinIcon.DOWNLOAD_ALT),
-		        () -> {
-			        LocalDateTime now = LocalDateTime.now().withNano(0);
-			        return prefixSupplier.get()
-			                + "_" + now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH'h'mm"))
-			                + extensionSupplier.get();
-		        },
-		        supplier);
-		return new Div(downloadButton);
-	}
-
 	public static Div createDynamicJsonDownloadButton(String prefix, String label, Notification notification) {
 		UI ui = UI.getCurrent();
 		final LazyDownloadButton downloadButton = new LazyDownloadButton(
@@ -78,24 +49,6 @@ public class DownloadButtonFactory {
 			        return new CompetitionData().exportData(ui, notification);
 		        });
 		downloadButton.setNotification(notification);
-		return new Div(downloadButton);
-	}
-
-	public static Div createDynamicJXLSDownloadButton(String fileNamePrefix, String buttonLabel, JXLSWorkbookStreamSource xlsSource,
-	        Notification notification) {
-		final LazyDownloadButton downloadButton = new LazyDownloadButton(
-		        buttonLabel,
-		        new Icon(VaadinIcon.DOWNLOAD_ALT),
-		        () -> {
-			        LocalDateTime now = LocalDateTime.now().withNano(0);
-			        String value = ".xlsx";
-			        return fileNamePrefix
-			                + "_" + now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH'h'mm';'ss"))
-			                + value;
-		        },
-		        xlsSource);
-		downloadButton.setNotification(notification);
-		downloadButton.setWidthFull();
 		return new Div(downloadButton);
 	}
 
@@ -122,6 +75,51 @@ public class DownloadButtonFactory {
 
 		return new Div(downloadButton);
 	}
+	
+	public static Div createDynamicJXLSDownloadButton(String fileNamePrefix, String buttonLabel, JXLSWorkbookStreamSource xlsSource, Notification notification) {
+		final LazyDownloadButton downloadButton = new LazyDownloadButton(
+		        buttonLabel,
+		        new Icon(VaadinIcon.DOWNLOAD_ALT),
+		        () -> {
+			        LocalDateTime now = LocalDateTime.now().withNano(0);
+			        String value = ".xlsx";
+			        return fileNamePrefix
+			                + "_" + now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH'h'mm';'ss"))
+			                + value;
+		        },
+		        xlsSource);
+		downloadButton.setNotification(notification);
+		downloadButton.setWidthFull();
+		return new Div(downloadButton);
+	}
+
+	public static Div createDynamicDownloadButton(String prefix, String label, InputStreamFactory supplier, Supplier<String> extensionSupplier) {
+		final LazyDownloadButton downloadButton = new LazyDownloadButton(
+		        label,
+		        new Icon(VaadinIcon.DOWNLOAD_ALT),
+		        () -> {
+			        LocalDateTime now = LocalDateTime.now().withNano(0);
+			        return prefix
+			                + "_" + now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH'h'mm"))
+			                + extensionSupplier.get();
+		        },
+		        supplier);
+		return new Div(downloadButton);
+	}
+
+	public static Div createDynamicDownloadButton(Supplier<String> prefixSupplier, String label, InputStreamFactory supplier, Supplier<String> extensionSupplier) {
+		final LazyDownloadButton downloadButton = new LazyDownloadButton(
+		        label,
+		        new Icon(VaadinIcon.DOWNLOAD_ALT),
+		        () -> {
+			        LocalDateTime now = LocalDateTime.now().withNano(0);
+			        return prefixSupplier.get()
+			                + "_" + now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH'h'mm"))
+			                + extensionSupplier.get();
+		        },
+		        supplier);
+		return new Div(downloadButton);
+	}
 
 	public static Div createDynamicZipDownloadButton(String prefix, String label, byte[] content) {
 		final LazyDownloadButton downloadButton = new LazyDownloadButton(
@@ -139,7 +137,7 @@ public class DownloadButtonFactory {
 
 		return new Div(downloadButton);
 	}
-
+	
 	public static Div createDynamicZipDownloadButton(String prefix, String label, byte[] content, Icon icon) {
 		final LazyDownloadButton downloadButton = new LazyDownloadButton(
 		        label,
@@ -171,7 +169,7 @@ public class DownloadButtonFactory {
 
 		return new Div(downloadButton);
 	}
-
+	
 	public static Div createDynamicZipDownloadButton(String prefix, String label, InputStreamFactory supplier, Icon icon) {
 		final LazyDownloadButton downloadButton = new LazyDownloadButton(
 		        label,
@@ -186,5 +184,6 @@ public class DownloadButtonFactory {
 
 		return new Div(downloadButton);
 	}
+
 
 }

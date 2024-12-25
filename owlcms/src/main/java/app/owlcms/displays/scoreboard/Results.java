@@ -586,58 +586,6 @@ public class Results extends LitTemplate
 		});
 	}
 
-	protected String computedScore(Athlete a) {
-		AgeGroup ageGroup = a.getAgeGroup();
-		Ranking ageGroupScoringSystem = ageGroup != null ? ageGroup.getComputedScoringSystem() : null;
-		// logger.debug("a {} agegroup {} scoring {}", a.getLastName(), a.getAgeGroup(), a.getAgeGroup().getScoringSystem());
-
-		Competition current = Competition.getCurrent();
-		boolean sinclair = current.isSinclair();
-		Competition current2 = Competition.getCurrent();
-		boolean displayGlobal = current2.isDisplayScores();
-		Competition current3 = Competition.getCurrent();
-		Ranking scoringSystem = current3.getScoringSystem();
-
-		if (ageGroupScoringSystem != null && !sinclair && !displayGlobal) {
-			double value = Ranking.getRankingValue(a, Ranking.CATEGORY_SCORE);
-			String score;
-			if (ageGroupScoringSystem == Ranking.TOTAL) {
-				score = value > 0.001 ? String.format("%.0f", value) : "-";
-			} else {
-				score = value > 0.001 ? String.format("%.3f", value) : "-";
-			}
-			return score;
-		} else {
-			double value = Ranking.getRankingValue(a, scoringSystem);
-			String score = value > 0.001 ? String.format("%.3f", value) : "-";
-			return score;
-		}
-	}
-
-	protected String computedScoreRank(Athlete a) {
-		Ranking ageGroupScoringSystem = a.getAgeGroup().getComputedScoringSystem();
-
-		Competition current = Competition.getCurrent();
-		boolean sinclair = current.isSinclair();
-		Competition current2 = Competition.getCurrent();
-		boolean displayGlobal = current2.isDisplayScoreRanks();
-		Competition current3 = Competition.getCurrent();
-		Ranking bestLifterScoringSystem = current3.getScoringSystem();
-
-		if (a.isEligibleForIndividualRanking()) {
-			if (ageGroupScoringSystem != null && !sinclair && !displayGlobal) {
-				Integer value = Ranking.getRanking(a, Ranking.CATEGORY_SCORE);
-				return value != null && value > 0 ? "" + value : "-";
-			} else {
-				Integer value = Ranking.getRanking(a, bestLifterScoringSystem);
-				return value != null && value > 0 ? "" + value : "-";
-			}
-		} else {
-			return Translator.translate("Results.Extra/Invited");
-		}
-
-	}
-
 	protected void computeLeaders(boolean done) {
 		OwlcmsSession.withFop(fop -> {
 			Athlete curAthlete = fop.getCurAthlete();
@@ -1044,6 +992,14 @@ public class Results extends LitTemplate
 		return separator;
 	}
 
+	private boolean isAllBWCategory(Athlete cur) {
+		// score-based all-bodyweight categories need to be identified
+		var cat = cur.getCategory();
+		var min = cat.getMinimumWeight();
+		var max = cat.getMaximumWeight();
+		return (min < 10 && max > 900);
+	}
+
 	/**
 	 * @see com.vaadin.flow.component.Component#onAttach(com.vaadin.flow.component.AttachEvent)
 	 */
@@ -1168,6 +1124,58 @@ public class Results extends LitTemplate
 		computeRecords(done);
 	}
 
+	protected String computedScore(Athlete a) {
+		AgeGroup ageGroup = a.getAgeGroup();
+		Ranking ageGroupScoringSystem = ageGroup != null ? ageGroup.getComputedScoringSystem() : null;
+		// logger.debug("a {} agegroup {} scoring {}", a.getLastName(), a.getAgeGroup(), a.getAgeGroup().getScoringSystem());
+
+		Competition current = Competition.getCurrent();
+		boolean sinclair = current.isSinclair();
+		Competition current2 = Competition.getCurrent();
+		boolean displayGlobal = current2.isDisplayScores();
+		Competition current3 = Competition.getCurrent();
+		Ranking scoringSystem = current3.getScoringSystem();
+
+		if (ageGroupScoringSystem != null && !sinclair && !displayGlobal) {
+			double value = Ranking.getRankingValue(a, Ranking.CATEGORY_SCORE);
+			String score;
+			if (ageGroupScoringSystem == Ranking.TOTAL) {
+				score = value > 0.001 ? String.format("%.0f", value) : "-";
+			} else {
+				score = value > 0.001 ? String.format("%.3f", value) : "-";
+			}
+			return score;
+		} else {
+			double value = Ranking.getRankingValue(a, scoringSystem);
+			String score = value > 0.001 ? String.format("%.3f", value) : "-";
+			return score;
+		}
+	}
+
+	protected String computedScoreRank(Athlete a) {
+		Ranking ageGroupScoringSystem = a.getAgeGroup().getComputedScoringSystem();
+
+		Competition current = Competition.getCurrent();
+		boolean sinclair = current.isSinclair();
+		Competition current2 = Competition.getCurrent();
+		boolean displayGlobal = current2.isDisplayScoreRanks();
+		Competition current3 = Competition.getCurrent();
+		Ranking bestLifterScoringSystem = current3.getScoringSystem();
+
+		if (a.isEligibleForIndividualRanking()) {
+			if (ageGroupScoringSystem != null && !sinclair && !displayGlobal) {
+				Integer value = Ranking.getRanking(a, Ranking.CATEGORY_SCORE);
+				return value != null && value > 0 ? "" + value : "-";
+			} else {
+				Integer value = Ranking.getRanking(a, bestLifterScoringSystem);
+				return value != null && value > 0 ? "" + value : "-";
+			}
+		} else {
+			return Translator.translate("Results.Extra/Invited");
+		}
+
+	}
+
 	private String computeLiftType(Athlete a) {
 		if (a == null || a.getAttemptsDone() > 6) {
 			return null;
@@ -1205,14 +1213,6 @@ public class Results extends LitTemplate
 	private String formatKg(String total) {
 		return (total == null || total.trim().isEmpty()) ? "-"
 		        : (total.startsWith("-") ? "(" + total.substring(1) + ")" : total);
-	}
-
-	private boolean isAllBWCategory(Athlete cur) {
-		// score-based all-bodyweight categories need to be identified
-		var cat = cur.getCategory();
-		var min = cat.getMinimumWeight();
-		var max = cat.getMaximumWeight();
-		return (min < 10 && max > 900);
 	}
 
 	private void setDisplay() {

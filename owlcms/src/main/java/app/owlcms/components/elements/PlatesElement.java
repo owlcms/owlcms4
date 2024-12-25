@@ -46,9 +46,9 @@ public class PlatesElement extends FlexLayout {
 		final int barWeight = fop.getBarWeight();
 		this.setWeight(currentAthlete.getNextAttemptRequestedWeight());
 		final String caption = Translator.translate("Kg", this.getWeight());
-		// logger.debug("caption {}",caption);
+		//logger.debug("caption {}",caption);
 
-		// logger.debug("before createImageArea save, platform identity={} 5kg={}",System.identityHashCode(fop.getPlatform()), fop.getPlatform().getNbB_5());
+		//logger.debug("before createImageArea save, platform identity={} 5kg={}",System.identityHashCode(fop.getPlatform()), fop.getPlatform().getNbB_5());
 		createImageArea(fop, barWeight, (showCaption ? caption : ""));
 	}
 
@@ -63,7 +63,7 @@ public class PlatesElement extends FlexLayout {
 	private int addPlates(Integer availablePlates, String style, double plateWeight, FieldOfPlay fop, boolean outline) {
 		int subtractedWeight = 0;
 
-		// logger.debug("adding plates {} {} {} {} -- {}", availablePlates, style, getWeight(), plateWeight, LoggerUtils.whereFrom());
+		//logger.debug("adding plates {} {} {} {} -- {}", availablePlates, style, getWeight(), plateWeight, LoggerUtils.whereFrom());
 		while (availablePlates > 0 && this.getWeight() >= plateWeight) {
 			NativeLabel plate = new NativeLabel();
 			plate.setSizeUndefined();
@@ -104,13 +104,14 @@ public class PlatesElement extends FlexLayout {
 		return subtractedWeight;
 	}
 
+
 	/**
 	 * @param platform
 	 * @param barWeight
 	 * @param caption
 	 */
 	private void createImageArea(FieldOfPlay fop, final Integer barWeight, final String caption) {
-		this.ui.access(() -> {
+		ui.access(() -> {
 			this.removeAll();
 			Platform platform = fop.getPlatform();
 			boolean outline = caption != null && !caption.isBlank();
@@ -120,7 +121,7 @@ public class PlatesElement extends FlexLayout {
 				// compute the bar and collar first.
 			}
 
-			// logger.debug("barWeight {}",barWeight);
+			//logger.debug("barWeight {}",barWeight);
 			int nonBarWeight = this.getWeight() - barWeight;
 
 			addPlates(1, "bar", barWeight, fop, outline);
@@ -131,12 +132,12 @@ public class PlatesElement extends FlexLayout {
 			if (nonBarWeight >= 0) {
 				addPlates(1, "barInner", 0, fop, outline);
 
-				// logger.debug("barWeight = {} nonBarWeight = {}", barWeight, nonBarWeight);
+				//logger.debug("barWeight = {} nonBarWeight = {}", barWeight, nonBarWeight);
 				// make sure that large 5 and large 2.5 are only used when warranted
 				// (must not require manual intervention if they are available)
-				// if (platform.getNbL_2_5() > 0 && nonBarWeight < 10 || platform.getNbL_5() > 0 && nonBarWeight < 15) {
-				// useCollar = false;
-				// }
+//				if (platform.getNbL_2_5() > 0 && nonBarWeight < 10 || platform.getNbL_5() > 0 && nonBarWeight < 15) {
+//					useCollar = false;
+//				}
 				if (useCollar) {
 					// we take off the collar weight because we need to
 					// wait before showing the collar.
@@ -151,24 +152,24 @@ public class PlatesElement extends FlexLayout {
 				subtractedWeight += addPlates(platform.getNbL_15(), "L_15", 2 * 15, fop, outline);
 				subtractedWeight += addPlates(platform.getNbL_10(), "L_10", 2 * 10, fop, outline);
 
-				// logger.debug("1 subtractedWeight {} nonBarWeight {}", subtractedWeight, nonBarWeight);
+				//logger.debug("1 subtractedWeight {} nonBarWeight {}", subtractedWeight, nonBarWeight);
 				if (subtractedWeight == 0 && nonBarWeight >= 10) {
 					// we have not used a large plate
 					subtractedWeight += addPlates(platform.getNbL_5(), "L_5", 2 * 5, fop, outline);
 				}
 
-				// logger.debug("2 subtractedWeight {} nonBarWeight {}", subtractedWeight, nonBarWeight);
+				//logger.debug("2 subtractedWeight {} nonBarWeight {}", subtractedWeight, nonBarWeight);
 				if (subtractedWeight == 0 && nonBarWeight >= 5) {
 					// we have not used a large plate
 					subtractedWeight += addPlates(platform.getNbL_2_5(), "L_2_5", 2 * 2.5, fop, outline);
 				}
-
-				// logger.debug("3 subtractedWeight {} nonBarWeight {}", subtractedWeight, nonBarWeight);
-
+				
+				//logger.debug("3 subtractedWeight {} nonBarWeight {}", subtractedWeight, nonBarWeight);
+			
 				// add the small plates
 				addPlates(platform.getNbS_5(), "S_5", 2 * 5, fop, outline);
 				addPlates(platform.getNbS_2_5(), "S_2_5", 2 * 2.5, fop, outline);
-
+				
 				// collar is depicted here
 				if (useCollar) {
 					this.setWeight(this.getWeight() + 5);
@@ -185,11 +186,11 @@ public class PlatesElement extends FlexLayout {
 	}
 
 	private int getWeight() {
-		return this.weight;
+		return weight;
 	}
 
 	private void setWeight(int weight) {
-		// logger.debug("weight = {} -- {}", weight, LoggerUtils.whereFrom());
+		//logger.debug("weight = {} -- {}", weight, LoggerUtils.whereFrom());
 		this.weight = weight;
 	}
 

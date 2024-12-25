@@ -40,16 +40,16 @@ public class JXLSWeighInSheet extends JXLSWorkbookStreamSource {
 	@Override
 	public List<Athlete> getSortedAthletes() {
 		final Group currentGroup = getGroup();
-		List<Athlete> collect = AthleteSorter
-		        .registrationOrderCopy(AthleteRepository.findAllByGroupAndWeighIn(currentGroup, null)).stream()
-		        .map(a -> {
-			        if (a.getTeam() == null) {
-				        a.setTeam("");
-			        }
-			        return a;
-		        }).collect(Collectors.toList());
-		// logger.debug("sorted by category {}", collect);
-		return collect;
+			List<Athlete> collect = AthleteSorter
+			        .registrationOrderCopy(AthleteRepository.findAllByGroupAndWeighIn(currentGroup, null)).stream()
+			        .map(a -> {
+				        if (a.getTeam() == null) {
+					        a.setTeam("");
+				        }
+				        return a;
+			        }).collect(Collectors.toList());
+			// logger.debug("sorted by category {}", collect);
+			return collect;
 	}
 
 }

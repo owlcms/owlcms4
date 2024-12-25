@@ -11,35 +11,35 @@ import app.owlcms.utils.LoggerUtils;
 import ch.qos.logback.classic.Logger;
 
 public class HikariDataSourcePoolDetail {
-	private final static Logger logger = (Logger) LoggerFactory.getLogger(HikariDataSourcePoolDetail.class);
-	private final HikariDataSource dataSource;
+    private final HikariDataSource dataSource;
+    private final static Logger logger = (Logger) LoggerFactory.getLogger(HikariDataSourcePoolDetail.class);
 
-	public HikariDataSourcePoolDetail(HikariDataSource dataSource) {
-		this.dataSource = dataSource;
-	}
+    public HikariDataSourcePoolDetail(HikariDataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
-	public int getActive() {
+    public HikariPool getHikariPool() {
+    	Field field;
 		try {
-			return getHikariPool().getActiveConnections();
-		} catch (Exception ex) {
-			return -1;
-		}
-	}
-
-	public HikariPool getHikariPool() {
-		Field field;
-		try {
-			field = this.dataSource.getClass().getDeclaredField("pool");
+			field = dataSource.getClass().getDeclaredField("pool");
 			field.setAccessible(true);
-			HikariPool hikariPool = (HikariPool) field.get(this.dataSource);
+	        HikariPool hikariPool = (HikariPool) field.get(dataSource);
 			return hikariPool;
 		} catch (Exception e) {
-			LoggerUtils.logError(logger, e);
+			LoggerUtils.logError(logger,e);
 		}
 		return null;
-	}
+    }
 
-	public int getMax() {
-		return this.dataSource.getMaximumPoolSize();
-	}
+    public int getActive() {
+        try {
+            return getHikariPool().getActiveConnections();
+        } catch (Exception ex) {
+            return -1;
+        }
+    }
+
+    public int getMax() {
+        return dataSource.getMaximumPoolSize();
+    }
 }

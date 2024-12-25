@@ -110,6 +110,8 @@ import ch.qos.logback.classic.Logger;
 @JsonPropertyOrder({ "id", "participations", "category" })
 public class Athlete {
 	@Transient
+	protected final Logger logger = (Logger) LoggerFactory.getLogger(Athlete.class);
+	@Transient
 	@JsonIgnore
 	private static QPoints qPoints = new QPoints(2023);
 	@Transient
@@ -277,8 +279,6 @@ public class Athlete {
 		}
 	}
 
-	@Transient
-	protected final Logger logger = (Logger) LoggerFactory.getLogger(Athlete.class);
 	/**
 	 * We cannot always rely on the session to be present and give us a valid Fop. LoadGroup should set the Fop.
 	 */
@@ -546,27 +546,6 @@ public class Athlete {
 		}
 	}
 
-	/**
-	 * Gets the custom score.
-	 *
-	 * @return the custom score
-	 */
-	@Transient
-	@JsonIgnore
-	public Double computedCategoryScore() {
-		AgeGroup ageGroup = getAgeGroup();
-		if (ageGroup == null) {
-			return 0.0;
-		}
-		Ranking scoringSystem = ageGroup.getComputedScoringSystem();
-		// logger.debug("{} {} {}", this.getLastName(), scoringSystem, Ranking.getRankingValue(this, scoringSystem));
-		if (scoringSystem != null) {
-			return Ranking.getRankingValue(this, scoringSystem);
-		} else {
-			return 0.0;
-		}
-	}
-
 	public void computeMainAndEligibleCategories() {
 		Double weight = this.getBodyWeight();
 		Integer age = this.getAge();
@@ -591,31 +570,6 @@ public class Athlete {
 			setEligibles(this, categories);
 			this.setCategory(bestMatch(categories));
 		}
-	}
-
-	/**
-	 * for an Athlete, this will be the participation to the registration category
-	 *
-	 * for a PAthlete, this will be the participation to the PAthlete's category. A PAthlete only has one registration.
-	 */
-	public void computeMainRankings() {
-		// needs to be called in setParticipations and setCategory.
-		Participation curRankings = null;
-		List<Participation> participations2 = getParticipations();
-		// logger.trace("athlete {} category {} participations {}", this, category,
-		// participations2);
-		for (Participation eligible : participations2) {
-			Category eligibleCat = eligible.getCategory();
-			if (this.category != null && eligibleCat != null) {
-				String eligibleCode = eligibleCat.getComputedCode();
-				String catCode = this.category.getComputedCode();
-				if (StringUtils.equals(eligibleCode, catCode)) {
-					curRankings = eligible;
-					break;
-				}
-			}
-		}
-		setMainRankings(curRankings);
 	}
 
 	/**
@@ -679,7 +633,7 @@ public class Athlete {
 				}
 			}
 			setCategory(matchingEligible);
-			this.logger.trace("category {} {} matching eligible {} {}", this.category,
+			logger.trace("category {} {} matching eligible {} {}", this.category,
 			        System.identityHashCode(this.category),
 			        matchingEligible, System.identityHashCode(matchingEligible));
 		}
@@ -743,7 +697,7 @@ public class Athlete {
 			String value = getActualLiftStringOrElseNull(liftNo);
 			return value == null ? 0 : Integer.valueOf(value);
 		} catch (NumberFormatException e) {
-			LoggerUtils.logError(this.logger, e);
+			LoggerUtils.logError(logger, e);
 			return 0;
 		}
 	}
@@ -755,7 +709,7 @@ public class Athlete {
 			String value = getActualLiftStringOrElseNull(liftNo);
 			return value == null ? null : Integer.valueOf(value);
 		} catch (NumberFormatException e) {
-			LoggerUtils.logError(this.logger, e);
+			LoggerUtils.logError(logger, e);
 			return null;
 		}
 	}
@@ -913,6 +867,24 @@ public class Athlete {
 		} else {
 			return mainCategory + "|" + eligiblesAsString;
 		}
+	}
+
+	@Transient
+	@JsonIgnore
+	public String getSortedCategoriesAsString() {
+		String eligiblesAsString = this.getParticipations().stream()
+		        .sorted((a, b) -> a.getCategory().getMedalingSortCode().compareTo(b.getCategory().getMedalingSortCode()))
+		        .map(p -> {
+			        String catName = p.getCategory().getDisplayName();
+			        return catName + (!p.getTeamMember() ? RAthlete.NoTeamMarker : "");
+		        })
+		        .collect(Collectors.joining(";"));
+		return eligiblesAsString;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setSortedCategoriesAsString() {
 	}
 
 	/**
@@ -1179,6 +1151,20 @@ public class Athlete {
 
 	@Transient
 	@JsonIgnore
+	public String getCategorySortCode() {
+		// TODO: something that reflects age boundaries then weight, considering no-age and no-weight score based.
+		// maybe championship age-low age-high body-low body-high
+		Category sortCategory = getMainRankings().getCategory();
+		String sortCode = sortCategory != null ? sortCategory.getSortCode() : "-";
+		// logger.debug("a {} category {} sortCode {}", getAbbreviatedName(), getCategory(), sortCategory.getSortCode());
+		return sortCode;
+	}
+
+	public void setCategoryScoreCode(String unused) {
+	}
+
+	@Transient
+	@JsonIgnore
 	public Boolean getCategoryFinished() {
 		var allUnfinished = AthleteRepository.getAllUnfinishedCategories();
 		String code = this.getCategory() != null ? this.getCategory().getCode() : null;
@@ -1187,14 +1173,8 @@ public class Athlete {
 
 	@Transient
 	@JsonIgnore
-	public Double getCategoryScore() {
-		Double computedScore = computedCategoryScore();
-		// logger.debug("{} getCategoryScore {}", this.getClass().getSimpleName(), this.getCategoryCode(), computedScore);
-		return computedScore;
-	}
-
-	public int getCategoryScoreRank() {
-		return (getMainRankings() != null ? getMainRankings().getCategoryScoreRank() : -1);
+	public Boolean isCategoryFinished() {
+		return getCategoryFinished();
 	}
 
 	/**
@@ -1231,17 +1211,6 @@ public class Athlete {
 			return 0.0D;
 		}
 		return getSinclair(categoryWeight);
-	}
-
-	@Transient
-	@JsonIgnore
-	public String getCategorySortCode() {
-		// TODO: something that reflects age boundaries then weight, considering no-age and no-weight score based.
-		// maybe championship age-low age-high body-low body-high
-		Category sortCategory = getMainRankings().getCategory();
-		String sortCode = sortCategory != null ? sortCategory.getSortCode() : "-";
-		// logger.debug("a {} category {} sortCode {}", getAbbreviatedName(), getCategory(), sortCategory.getSortCode());
-		return sortCode;
 	}
 
 	/**
@@ -1558,22 +1527,6 @@ public class Athlete {
 		return this.combinedRank;
 	}
 
-	public Ranking getComputedScoringSystem() {
-		var category2 = this.getCategory();
-		if (category2 == null) {
-			return Ranking.TOTAL;
-		}
-		var group2 = category2.getAgeGroup();
-		if (group2 == null) {
-			return Ranking.TOTAL;
-		}
-		var css = group2.getComputedScoringSystem();
-		if (css == null) {
-			return Ranking.TOTAL;
-		}
-		return css;
-	}
-
 	@Transient
 	@JsonIgnore
 	public int getCumulativeAttemptProgression(int attempt) {
@@ -1704,6 +1657,35 @@ public class Athlete {
 		return this.customScore;
 	}
 
+	@Transient
+	@JsonIgnore
+	public Double getCategoryScore() {
+		Double computedScore = computedCategoryScore();
+		// logger.debug("{} getCategoryScore {}", this.getClass().getSimpleName(), this.getCategoryCode(), computedScore);
+		return computedScore;
+	}
+
+	/**
+	 * Gets the custom score.
+	 *
+	 * @return the custom score
+	 */
+	@Transient
+	@JsonIgnore
+	public Double computedCategoryScore() {
+		AgeGroup ageGroup = getAgeGroup();
+		if (ageGroup == null) {
+			return 0.0;
+		}
+		Ranking scoringSystem = ageGroup.getComputedScoringSystem();
+		// logger.debug("{} {} {}", this.getLastName(), scoringSystem, Ranking.getRankingValue(this, scoringSystem));
+		if (scoringSystem != null) {
+			return Ranking.getRankingValue(this, scoringSystem);
+		} else {
+			return 0.0;
+		}
+	}
+
 	/**
 	 * Gets the display category.
 	 *
@@ -1736,7 +1718,7 @@ public class Athlete {
 		List<Category> cats = getParticipations().stream()
 		        .map(p -> p.getCategory())
 		        .sorted(Category.medalingComparator())
-		        // .peek(c -> logger.debug("{} {}", c, c.getMedalingSortCode()))
+		        //.peek(c -> logger.debug("{} {}", c, c.getMedalingSortCode()))
 		        .toList();
 		s.addAll(cats);
 		return s;
@@ -2015,7 +1997,7 @@ public class Athlete {
 	@Transient
 	@JsonIgnore
 	public Logger getLogger() {
-		return this.logger;
+		return logger;
 	}
 
 	/**
@@ -2043,6 +2025,31 @@ public class Athlete {
 	@JsonIgnore
 	public Participation getMainRankings() {
 		return this.mainRankings;
+	}
+
+	/**
+	 * for an Athlete, this will be the participation to the registration category
+	 * 
+	 * for a PAthlete, this will be the participation to the PAthlete's category. A PAthlete only has one registration.
+	 */
+	public void computeMainRankings() {
+		// needs to be called in setParticipations and setCategory.
+		Participation curRankings = null;
+		List<Participation> participations2 = getParticipations();
+		// logger.trace("athlete {} category {} participations {}", this, category,
+		// participations2);
+		for (Participation eligible : participations2) {
+			Category eligibleCat = eligible.getCategory();
+			if (this.category != null && eligibleCat != null) {
+				String eligibleCode = eligibleCat.getComputedCode();
+				String catCode = this.category.getComputedCode();
+				if (StringUtils.equals(eligibleCode, catCode)) {
+					curRankings = eligible;
+					break;
+				}
+			}
+		}
+		setMainRankings(curRankings);
 	}
 
 	/**
@@ -2289,16 +2296,6 @@ public class Athlete {
 
 	@Transient
 	@JsonIgnore
-	public Float getQMastersFactor() {
-		final Integer birthDate1 = getYearOfBirth();
-		if (birthDate1 == null) {
-			return 0.0F;
-		}
-		return qPoints.getAgeGenderCoefficient(YEAR - birthDate1, getGender());
-	}
-
-	@Transient
-	@JsonIgnore
 	public Double getqPoints() {
 		Integer bestCleanJerk = getBestCleanJerk();
 		Integer bestSnatch = getBestSnatch();
@@ -2407,10 +2404,6 @@ public class Athlete {
 				        zeroIfInvalid(this.cleanJerk3Change1), zeroIfInvalid(this.cleanJerk3Change2));
 		}
 		return 0;
-	}
-
-	public String getRequiredInitialAttempts() {
-		return Integer.toString(Math.round(this.getEntryTotal() - getStartingTotalMargin(this.getCategory(), this.getEntryTotal())));
 	}
 
 	/**
@@ -2594,6 +2587,16 @@ public class Athlete {
 			return 0.0F;
 		}
 		return sinclairProperties2020.getAgeGenderCoefficient(YEAR - birthDate1, getGender());
+	}
+	
+	@Transient
+	@JsonIgnore
+	public Float getQMastersFactor() {
+		final Integer birthDate1 = getYearOfBirth();
+		if (birthDate1 == null) {
+			return 0.0F;
+		}
+		return qPoints.getAgeGenderCoefficient(YEAR - birthDate1, getGender());
 	}
 
 	/**
@@ -2888,19 +2891,6 @@ public class Athlete {
 		return snatchTotal;
 	}
 
-	@Transient
-	@JsonIgnore
-	public String getSortedCategoriesAsString() {
-		String eligiblesAsString = this.getParticipations().stream()
-		        .sorted((a, b) -> a.getCategory().getMedalingSortCode().compareTo(b.getCategory().getMedalingSortCode()))
-		        .map(p -> {
-			        String catName = p.getCategory().getDisplayName();
-			        return catName + (!p.getTeamMember() ? RAthlete.NoTeamMarker : "");
-		        })
-		        .collect(Collectors.joining(";"));
-		return eligiblesAsString;
-	}
-
 	/**
 	 * Gets the start number.
 	 *
@@ -3047,6 +3037,10 @@ public class Athlete {
 		return (getMainRankings() != null ? getMainRankings().getTotalRank() : -1);
 	}
 
+	public int getCategoryScoreRank() {
+		return (getMainRankings() != null ? getMainRankings().getCategoryScoreRank() : -1);
+	}
+
 	/**
 	 * Gets the year of birth.
 	 *
@@ -3078,12 +3072,6 @@ public class Athlete {
 	@JsonIgnore
 	public boolean isATeamMember() {
 		return isEligibleForTeamRanking();
-	}
-
-	@Transient
-	@JsonIgnore
-	public Boolean isCategoryFinished() {
-		return getCategoryFinished();
 	}
 
 	public boolean isCheckTiming() {
@@ -3294,7 +3282,7 @@ public class Athlete {
 			Category category2 = participation.getCategory();
 			boolean categoryEqual = sameCategory(category, category2);
 			if (athleteEqual && categoryEqual) {
-				this.logger.trace("removeCategory removing {} {}", category, participation);
+				logger.trace("removeCategory removing {} {}", category, participation);
 				iterator.remove();
 				if (category2 != null) {
 					category2.getParticipations().remove(participation);
@@ -3302,7 +3290,7 @@ public class Athlete {
 				participation.setAthlete(null);
 				participation.setCategory(null);
 			} else {
-				this.logger.trace("removeCategory skipping {} {} {} {} {}", this, athleteEqual, participation, category,
+				logger.trace("removeCategory skipping {} {} {} {} {}", this, athleteEqual, participation, category,
 				        categoryEqual);
 			}
 		}
@@ -3399,15 +3387,6 @@ public class Athlete {
 	@JsonIgnore
 	public void setCategoryFinished(Boolean done) {
 		// no-op, computed.
-	}
-
-	public void setCategoryScoreCode(String unused) {
-	}
-
-	@Transient
-	@JsonIgnore
-	public void setCategoryScoreRank(int ignored) {
-		// ignored. computed property. setter needed for beans introspection.
 	}
 
 	public void setCatSinclairRank(int i) {
@@ -3625,11 +3604,6 @@ public class Athlete {
 		        cleanJerk3ActualLift);
 	}
 
-	/*
-	 * General event framework: we implement the com.vaadin.event.MethodEventSource interface which defines how a notifier can call a method on a listener to
-	 * signal that an event has occurred, and how the listener can register/unregister itself.
-	 */
-
 	/**
 	 * Sets the clean jerk 3 automatic progression.
 	 *
@@ -3658,6 +3632,11 @@ public class Athlete {
 		getLogger().info("{}{} cleanJerk3Change1={}", OwlcmsSession.getFopLoggingName(), this.getShortName(),
 		        cleanJerk3Change1);
 	}
+
+	/*
+	 * General event framework: we implement the com.vaadin.event.MethodEventSource interface which defines how a notifier can call a method on a listener to
+	 * signal that an event has occurred, and how the listener can register/unregister itself.
+	 */
 
 	/**
 	 * Sets the clean jerk 3 change 2.
@@ -3887,13 +3866,6 @@ public class Athlete {
 	}
 
 	/**
-	 * @param id the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	/**
 	 * Sets the last name.
 	 *
 	 * @param lastName the lastName to set
@@ -3922,10 +3894,6 @@ public class Athlete {
 	 */
 	public void setLotNumber(Integer lotNumber) {
 		this.lotNumber = lotNumber;
-	}
-
-	public void setMainRankings(Participation mainRankings) {
-		this.mainRankings = mainRankings;
 	}
 
 	/**
@@ -4333,11 +4301,6 @@ public class Athlete {
 		// ignored. computed property. setter needed for beans introspection.
 	}
 
-	@Transient
-	@JsonIgnore
-	public void setSortedCategoriesAsString() {
-	}
-
 	public void setStartingTotalViolation(boolean startingTotalViolation) {
 		this.startingTotalViolation = startingTotalViolation;
 	}
@@ -4459,6 +4422,12 @@ public class Athlete {
 		// ignored. computed property. setter needed for beans introspection.
 	}
 
+	@Transient
+	@JsonIgnore
+	public void setCategoryScoreRank(int ignored) {
+		// ignored. computed property. setter needed for beans introspection.
+	}
+
 	public void setValidation(boolean validation) {
 		this.validation = validation;
 	}
@@ -4569,27 +4538,6 @@ public class Athlete {
 		}
 	}
 
-	// @SuppressWarnings("unused")
-	// private Long getCopyId() {
-	// return copyId;
-	// }
-
-	// @SuppressWarnings("unused")
-	// private Integer getDeclaredAndActuallyAttempted(Integer... items) {
-	// int lastIndex = items.length - 1;
-	// if (items.length == 0) {
-	// return 0;
-	// }
-	// while (lastIndex >= 0) {
-	// if (items[lastIndex] > 0) {
-	// // if went down from declared weight, then return lower weight
-	// return (items[lastIndex] < items[0] ? items[lastIndex] : items[0]);
-	// }
-	// lastIndex--;
-	// }
-	// return 0;
-	// }
-
 	public boolean validateCleanJerk1ActualLift(String cleanJerk1ActualLift) throws RuleViolationException {
 		validateActualLift(3, getCleanJerk1AutomaticProgression(), this.cleanJerk1Declaration, this.cleanJerk1Change1,
 		        this.cleanJerk1Change2, cleanJerk1ActualLift);
@@ -4617,23 +4565,33 @@ public class Athlete {
 		return true;
 	}
 
-	// /**
-	// * Null-safe comparison for longs.
-	// *
-	// * @param o1
-	// * @param o2
-	// * @return
-	// */
-	// private boolean LongEquals(Long o1, Long o2) {
-	// return o1 == o2 || o1 != null && o2 != null && o1.longValue() == (o2.longValue());
-	// }
-
 	public boolean validateCleanJerk1Declaration(String cleanJerk1Declaration) throws RuleViolationException {
 		// not always true. Can violate moving down rules
 		validateDeclaration(3, "0", cleanJerk1Declaration, this.cleanJerk1Change1,
 		        this.cleanJerk1Change1, this.cleanJerk2ActualLift);
 		return true;
 	}
+
+	// @SuppressWarnings("unused")
+	// private Long getCopyId() {
+	// return copyId;
+	// }
+
+	// @SuppressWarnings("unused")
+	// private Integer getDeclaredAndActuallyAttempted(Integer... items) {
+	// int lastIndex = items.length - 1;
+	// if (items.length == 0) {
+	// return 0;
+	// }
+	// while (lastIndex >= 0) {
+	// if (items[lastIndex] > 0) {
+	// // if went down from declared weight, then return lower weight
+	// return (items[lastIndex] < items[0] ? items[lastIndex] : items[0]);
+	// }
+	// lastIndex--;
+	// }
+	// return 0;
+	// }
 
 	public boolean validateCleanJerk2ActualLift(String cleanJerk2ActualLift) throws RuleViolationException {
 		validateActualLift(4, getCleanJerk2AutomaticProgression(), this.cleanJerk2Declaration, this.cleanJerk2Change1,
@@ -4652,6 +4610,17 @@ public class Athlete {
 		        cleanJerk2Change2, this.cleanJerk2ActualLift, false);
 		return true;
 	}
+
+	// /**
+	// * Null-safe comparison for longs.
+	// *
+	// * @param o1
+	// * @param o2
+	// * @return
+	// */
+	// private boolean LongEquals(Long o1, Long o2) {
+	// return o1 == o2 || o1 != null && o2 != null && o1.longValue() == (o2.longValue());
+	// }
 
 	public boolean validateCleanJerk2Declaration(String cleanJerk2Declaration) throws RuleViolationException {
 		validateDeclaration(4, getCleanJerk2AutomaticProgression(), cleanJerk2Declaration, this.cleanJerk2Change1,
@@ -4929,13 +4898,13 @@ public class Athlete {
 		if (checkedLift_1 < currentLiftNo_1) {
 			// we are checking an earlier attempt of the athlete (e.g. when loading the
 			// athlete card)
-			this.logger.debug("ignoring lift {} {}", checkedLift_1, currentLiftNo_1);
+			logger.debug("ignoring lift {} {}", checkedLift_1, currentLiftNo_1);
 			return;
 		} else {
-			this.logger.debug("checking lift {} {}", checkedLift_1, currentLiftNo_1);
+			logger.debug("checking lift {} {}", checkedLift_1, currentLiftNo_1);
 		}
 
-		this.logger.debug("referenceAttempt {} reference weight {} curLift {} currentLiftNo {}", referenceAttemptNo_1,
+		logger.debug("referenceAttempt {} reference weight {} curLift {} currentLiftNo {}", referenceAttemptNo_1,
 		        referenceWeight, curLift, currentLiftNo_1);
 		// Careful: do not mix one-based numbers with zero-based numbers.
 		if (referenceAttemptNo_1 <= 3 && currentLiftNo_1 == 4) {
@@ -5023,10 +4992,10 @@ public class Athlete {
 		int clock = getFop().getAthleteTimer().liveTimeRemaining();
 		if (!this.isSameAthleteAs(owner)) {
 			// clock is not running for us
-			this.logger.debug("NOT owning clock");
+			logger.debug("NOT owning clock");
 			doCheckChangeNotOwningTimer(declaration, change1, change2, getFop(), clock, initialTime);
 		} else {
-			this.logger.debug("OWNING clock");
+			logger.debug("OWNING clock");
 			doCheckChangeOwningTimer(declaration, change1, change2, getFop(), clock, initialTime);
 		}
 
@@ -5040,7 +5009,7 @@ public class Athlete {
 		int clock = getFop().getAthleteTimer().liveTimeRemaining();
 		if (declaration == null || declaration.isBlank()) {
 			// there was no declaration made in time
-			this.logger./**/warn("{}{} change without declaration (not owning clock)", OwlcmsSession.getFopLoggingName(),
+			logger./**/warn("{}{} change without declaration (not owning clock)", OwlcmsSession.getFopLoggingName(),
 			        this.getShortName());
 			throw new RuleViolationException.MustDeclareFirst(this, clock);
 		}
@@ -5161,10 +5130,10 @@ public class Athlete {
 	        int clock, int initialTime) {
 		if ((declaration != null && !declaration.isBlank()) && (change1 == null || change1.isBlank())
 		        && (change2 == null || change2.isBlank())) {
-			this.logger.trace("{}{} declaration accepted (not owning clock)", OwlcmsSession.getFopLoggingName(),
+			logger.trace("{}{} declaration accepted (not owning clock)", OwlcmsSession.getFopLoggingName(),
 			        this.getShortName());
 		} else {
-			this.logger.trace("{}{} change accepted (not owning clock)", OwlcmsSession.getFopLoggingName(),
+			logger.trace("{}{} change accepted (not owning clock)", OwlcmsSession.getFopLoggingName(),
 			        this.getShortName());
 		}
 	}
@@ -5177,20 +5146,20 @@ public class Athlete {
 		if ((change1 == null || change1.isBlank()) && (change2 == null || change2.isBlank())) {
 			// validate declaration
 			if (clock < initialTime - 30000) {
-				this.logger./**/warn("{}{} late declaration denied ({})", OwlcmsSession.getFopLoggingName(),
+				logger./**/warn("{}{} late declaration denied ({})", OwlcmsSession.getFopLoggingName(),
 				        this.getShortName(),
 				        clock / 1000.0);
 				throw new RuleViolationException.LateDeclaration(this, clock);
 			}
-			this.logger.debug("{}{}valid declaration", OwlcmsSession.getFopLoggingName(), this.getShortName(),
+			logger.debug("{}{}valid declaration", OwlcmsSession.getFopLoggingName(), this.getShortName(),
 			        clock / 1000.0);
 		} else {
 			if (clock < 30000) {
-				this.logger./**/warn("{}{} late change denied after final warning ({})", OwlcmsSession.getFopLoggingName(),
+				logger./**/warn("{}{} late change denied after final warning ({})", OwlcmsSession.getFopLoggingName(),
 				        this.getShortName(), clock / 1000.0);
 				throw new RuleViolationException.MustChangeBeforeFinalWarning(this, clock);
 			}
-			this.logger.debug("{}change before final warning", OwlcmsSession.getFopLoggingName(), clock);
+			logger.debug("{}change before final warning", OwlcmsSession.getFopLoggingName(), clock);
 		}
 	}
 
@@ -5505,7 +5474,7 @@ public class Athlete {
 		        && Integer.compare(this.getLotNumber(), other.getLotNumber()) == 0;
 		boolean strong = Long.compare(this.getId(), other.getId()) == 0;
 		if (weak && !strong) {
-			this.logger.error("same athlete, different ids {} ", this);
+			logger.error("same athlete, different ids {} ", this);
 		}
 		return weak;
 
@@ -5604,6 +5573,13 @@ public class Athlete {
 	}
 
 	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	/**
 	 * Compute the Sinclair formula given its parameters.
 	 *
 	 * @param coefficient
@@ -5638,6 +5614,10 @@ public class Athlete {
 		}
 		int missing = delta - _20kgRuleValue;
 		return missing;
+	}
+
+	public String getRequiredInitialAttempts() {
+		return Integer.toString(Math.round(this.getEntryTotal() - getStartingTotalMargin(this.getCategory(), this.getEntryTotal())));
 	}
 
 	/**
@@ -5704,7 +5684,7 @@ public class Athlete {
 		} catch (RuleViolationException e) {
 			rethrow(e);
 		} catch (Exception e) {
-			this.logger.error("{}", LoggerUtils.exceptionMessage(e));
+			logger.error("{}", LoggerUtils.exceptionMessage(e));
 			throw new RuntimeException(e);
 		}
 		this.timingLogger.info("validateChange2 {}ms {} {}", System.currentTimeMillis() - start, curLift,
@@ -5742,5 +5722,22 @@ public class Athlete {
 		}
 		this.timingLogger.info("validateDeclaration {}ms {} {}", System.currentTimeMillis() - start, curLift,
 		        LoggerUtils.whereFrom());
+	}
+
+	public void setMainRankings(Participation mainRankings) {
+		this.mainRankings = mainRankings;
+	}
+
+	public Ranking getComputedScoringSystem() {
+		var category2 = this.getCategory();
+		if (category2 == null)
+			return Ranking.TOTAL;
+		var group2 = category2.getAgeGroup();
+		if (group2 == null)
+			return Ranking.TOTAL;
+		var css = group2.getComputedScoringSystem();
+		if (css == null)
+			return Ranking.TOTAL;
+		return css;
 	}
 }

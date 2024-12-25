@@ -94,6 +94,11 @@ public class TopTeamsSinclairPage extends AbstractResultsDisplayPage implements 
 	}
 
 	@Override
+	public final Championship getChampionship() {
+		return this.ageDivision;
+	}
+
+	@Override
 	public final AgeGroup getAgeGroup() {
 		return this.ageGroup;
 	}
@@ -108,11 +113,6 @@ public class TopTeamsSinclairPage extends AbstractResultsDisplayPage implements 
 		return this.category;
 	}
 
-	@Override
-	public final Championship getChampionship() {
-		return this.ageDivision;
-	}
-
 	/**
 	 * @see com.vaadin.flow.router.HasDynamicTitle#getPageTitle()
 	 */
@@ -124,7 +124,8 @@ public class TopTeamsSinclairPage extends AbstractResultsDisplayPage implements 
 	}
 
 	/**
-	 * @see app.owlcms.apputils.queryparameters.DisplayParameters#readParams(com.vaadin.flow.router.Location, java.util.Map)
+	 * @see app.owlcms.apputils.queryparameters.DisplayParameters#readParams(com.vaadin.flow.router.Location,
+	 *      java.util.Map)
 	 */
 	@Override
 	public HashMap<String, List<String>> readParams(Location location, Map<String, List<String>> parametersMap) {
@@ -177,6 +178,13 @@ public class TopTeamsSinclairPage extends AbstractResultsDisplayPage implements 
 	}
 
 	@Override
+	public void setChampionship(Championship ageDivision) {
+		this.ageDivision = ageDivision;
+		((TopTeamsSinclair) this.getBoard()).setChampionship(ageDivision);
+		((TopTeamsSinclair) this.getBoard()).doUpdate(Competition.getCurrent());
+	}
+
+	@Override
 	public final void setAgeGroup(AgeGroup ag) {
 		this.ageGroup = ag;
 		((TopTeamsSinclair) this.getBoard()).setAgeGroup(ag);
@@ -194,13 +202,6 @@ public class TopTeamsSinclairPage extends AbstractResultsDisplayPage implements 
 	public final void setCategory(Category cat) {
 		this.category = cat;
 		((TopTeamsSinclair) this.getBoard()).setCategory(cat);
-		((TopTeamsSinclair) this.getBoard()).doUpdate(Competition.getCurrent());
-	}
-
-	@Override
-	public void setChampionship(Championship ageDivision) {
-		this.ageDivision = ageDivision;
-		((TopTeamsSinclair) this.getBoard()).setChampionship(ageDivision);
 		((TopTeamsSinclair) this.getBoard()).doUpdate(Competition.getCurrent());
 	}
 

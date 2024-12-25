@@ -154,16 +154,17 @@ public class Platform implements Serializable, Comparable<Platform> {
 	 */
 	private Boolean showTimer = false;
 	private String soundMixerName;
-
+	
 	// nonStandardBar needed for backward compatibility (old column is present in imports)
 	@SuppressWarnings("unused")
 	@JsonIgnore
 	private Boolean nonStandardBar = false;
-
+	
 	// unfortunate choice of name in old code base, needed for imports to work.
-	@Column(name = "nonStandardBarAvailable")
+	@Column(name="nonStandardBarAvailable")
 	@JsonProperty("nonStandardBarAvailable")
 	private Boolean useNonStandardBar = false;
+	
 	@Column(columnDefinition = "integer default 40")
 	private Integer collarThreshold = 40;
 
@@ -172,7 +173,7 @@ public class Platform implements Serializable, Comparable<Platform> {
 	 */
 	public Platform() {
 		setId(IdUtils.getTimeBasedId());
-		// logger.debug"new Platform 1 {} {}",this.getNbB_5(), LoggerUtils.whereFrom());
+		//logger.debug"new Platform 1 {} {}",this.getNbB_5(), LoggerUtils.whereFrom());
 	}
 
 	/**
@@ -183,8 +184,8 @@ public class Platform implements Serializable, Comparable<Platform> {
 	public Platform(String name) {
 		setId(IdUtils.getTimeBasedId());
 		this.setName(name);
-		// logger.debug"new Platform 2",this.getNbB_5());
-		// this.defaultPlates();
+		//logger.debug"new Platform 2",this.getNbB_5());
+		//this.defaultPlates();
 	}
 
 	@Override
@@ -237,12 +238,6 @@ public class Platform implements Serializable, Comparable<Platform> {
 		Platform other = (Platform) obj;
 		return getId() != null && getId().equals(other.getId());
 
-	}
-
-	@Transient
-	@JsonIgnore
-	public Integer getCollarThreshold() {
-		return this.collarThreshold;
 	}
 
 	/**
@@ -442,18 +437,6 @@ public class Platform implements Serializable, Comparable<Platform> {
 		return this.nbS_5;
 	}
 
-	// /**
-	// * Gets the official bar.
-	// *
-	// * @return the official bar
-	// */
-	// public Integer getOfficialBar() {
-	// if (this.isNonStandardBar()) {
-	// return 0;
-	// }
-	// return this.officialBar;
-	// }
-
 	/**
 	 * Gets the light bar.
 	 *
@@ -465,6 +448,18 @@ public class Platform implements Serializable, Comparable<Platform> {
 		}
 		return this.nonStandardBarWeight;
 	}
+
+//	/**
+//	 * Gets the official bar.
+//	 *
+//	 * @return the official bar
+//	 */
+//	public Integer getOfficialBar() {
+//		if (this.isNonStandardBar()) {
+//			return 0;
+//		}
+//		return this.officialBar;
+//	}
 
 	/**
 	 * Gets the show decision lights.
@@ -496,10 +491,6 @@ public class Platform implements Serializable, Comparable<Platform> {
 		return this.soundMixerName;
 	}
 
-	public Boolean getUseNonStandardBar() {
-		return Boolean.TRUE.equals(this.useNonStandardBar);
-	}
-
 	@Override
 	public int hashCode() {
 		// https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
@@ -509,9 +500,9 @@ public class Platform implements Serializable, Comparable<Platform> {
 	public Boolean isUseNonStandardBar() {
 		return getUseNonStandardBar();
 	}
-
-	public void setCollarThreshold(Integer collarThreshold) {
-		this.collarThreshold = collarThreshold;
+	
+	public Boolean getUseNonStandardBar() {
+		return Boolean.TRUE.equals(useNonStandardBar);
 	}
 
 	/**
@@ -539,12 +530,12 @@ public class Platform implements Serializable, Comparable<Platform> {
 	}
 
 	public void setNbB_20(Integer nbB_20) {
-		// logger.debug("nbB_20 = {} {}",nbB_20, LoggerUtils.whereFrom());
+		//logger.debug("nbB_20 = {} {}",nbB_20, LoggerUtils.whereFrom());
 		this.nbB_20 = nbB_20;
 	}
 
 	public void setNbB_5(Integer nbB_5) {
-		// logger.debug"setting 5kg bumper {}",nbB_5);
+		//logger.debug"setting 5kg bumper {}",nbB_5);
 		this.nbB_5 = nbB_5;
 	}
 
@@ -665,14 +656,10 @@ public class Platform implements Serializable, Comparable<Platform> {
 		this.nbS_5 = nbS_5;
 	}
 
-	// /**
-	// * Sets the official bar.
-	// *
-	// * @param officialBar the new official bar
-	// */
-	// public void setOfficialBar(Integer officialBar) {
-	// this.officialBar = officialBar;
-	// }
+	public void setUseNonStandardBar(Boolean nonStandardBarAvailable) {
+		logger.debug("nsba {} ({})",true, System.identityHashCode(this));
+		this.useNonStandardBar = nonStandardBarAvailable;
+	}
 
 	/**
 	 * Sets the light bar.
@@ -682,6 +669,15 @@ public class Platform implements Serializable, Comparable<Platform> {
 	public void setNonStandardBarWeight(Integer lightBar) {
 		this.nonStandardBarWeight = lightBar;
 	}
+
+//	/**
+//	 * Sets the official bar.
+//	 *
+//	 * @param officialBar the new official bar
+//	 */
+//	public void setOfficialBar(Integer officialBar) {
+//		this.officialBar = officialBar;
+//	}
 
 	/**
 	 * Sets the show decision lights.
@@ -730,11 +726,6 @@ public class Platform implements Serializable, Comparable<Platform> {
 		this.mixerChecked = true;
 	}
 
-	public void setUseNonStandardBar(Boolean nonStandardBarAvailable) {
-		logger.debug("nsba {} ({})", true, System.identityHashCode(this));
-		this.useNonStandardBar = nonStandardBarAvailable;
-	}
-
 	@Override
 	public String toString() {
 		return this.name; // $NON-NLS-1$
@@ -744,6 +735,16 @@ public class Platform implements Serializable, Comparable<Platform> {
 		logger.debug("SETTING platform {}: soundMixer={}", System.identityHashCode(this),
 		        soundMixer == null ? null : soundMixer.getLineInfo());
 		this.mixer = soundMixer;
+	}
+
+	@Transient
+	@JsonIgnore
+	public Integer getCollarThreshold() {
+		return collarThreshold;
+	}
+
+	public void setCollarThreshold(Integer collarThreshold) {
+		this.collarThreshold = collarThreshold;
 	}
 
 }

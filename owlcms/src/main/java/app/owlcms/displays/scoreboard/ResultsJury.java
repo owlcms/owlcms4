@@ -4,7 +4,7 @@ import app.owlcms.nui.displays.scoreboards.WarmupNoLeadersPage;
 
 @SuppressWarnings("serial")
 public class ResultsJury extends ResultsNoLeaders {
-
+	
 	public ResultsJury(WarmupNoLeadersPage page) {
 		super(page);
 	}

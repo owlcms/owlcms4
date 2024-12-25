@@ -19,6 +19,7 @@ import ch.qos.logback.classic.Logger;
 public class BaseContent extends VerticalLayout implements FOPParametersReader, SoundParameters {
 
 	final static Logger logger = (Logger) LoggerFactory.getLogger(BaseContent.class);
+	
 	protected FieldOfPlay fop;
 	private Group group;
 	private Location location;
@@ -28,7 +29,7 @@ public class BaseContent extends VerticalLayout implements FOPParametersReader, 
 	private String routeParameter;
 	private boolean silenced;
 	private boolean downSilenced;
-
+	
 	public BaseContent() {
 		OwlcmsFactory.waitDBInitialized();
 	}

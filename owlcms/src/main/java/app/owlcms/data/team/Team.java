@@ -24,31 +24,16 @@ import app.owlcms.utils.URLUtils;
 public class Team {
 
 	public static String[] flagExtensions = {
-	        ".svg",
-	        ".png",
-	        ".jpg",
-	        ".jpeg",
-	        ".webp"
+		".svg",
+		".png",
+		".jpg",
+		".jpeg",
+		".webp"
 	};
 	public static Comparator<Team> pointsComparator = ((a,
 	        b) -> -ObjectUtils.compare(a.getPoints(), b.getPoints(), true));
 	public static Comparator<Team> scoreComparator = ((a,
 	        b) -> -ObjectUtils.compare(a.getScore(), b.getScore(), true));
-
-	public static String[] getFlagExtensions() {
-		return flagExtensions;
-	}
-
-	public static String getImgTag(String teamName, String style) {
-		String teamFileName = URLUtils.sanitizeFilename(teamName);
-
-		return Arrays.stream(getFlagExtensions())
-		        .map(ext -> URLUtils.getImgTag("flags/", teamFileName, ext, style))
-		        .filter(img -> img != null)
-		        .findFirst()
-		        .orElse(null);
-	}
-
 	private int counted;
 	private Gender gender;
 	private String name;
@@ -61,6 +46,20 @@ public class Team {
 	private double gamx;
 	private double qPoints = 0.0D;
 	private Ranking scoringSystem;
+
+	public static String[] getFlagExtensions() {
+		return flagExtensions;
+	}
+
+	public static String getImgTag(String teamName, String style) {
+		String teamFileName = URLUtils.sanitizeFilename(teamName);
+
+		return Arrays.stream(getFlagExtensions())
+			.map(ext -> URLUtils.getImgTag("flags/", teamFileName, ext, style))
+			.filter(img -> img != null)
+			.findFirst()
+			.orElse(null);
+	}
 
 	public Team(String curTeamName, Gender gender) {
 		this.name = curTeamName;

@@ -66,20 +66,129 @@ import ch.qos.logback.classic.Logger;
 @JsonIgnoreProperties(ignoreUnknown = true, value = { "hibernateLazyInitializer", "logger", "athletes" })
 public class Group implements Comparable<Group> {
 
-	public record Range(Integer min, Integer max) {
+	public record Range (Integer min, Integer max) {
 		public String getFormattedRange() {
-			if (this.min == Integer.MAX_VALUE && this.max == 0) {
+			if (min == Integer.MAX_VALUE && max == 0) {
 				return "";
-			} else if (this.min == this.max) {
-				return this.min.toString();
+			} else if (min == max) {
+				return min.toString();
 			} else {
-				return this.min.toString() + " - " + this.max.toString();
+				return min.toString()+" - "+max.toString();
 			}
 		}
+	};
+
+	@Transient
+	@JsonIgnore
+	public Range getStartingRange() {
+		int min = Integer.MAX_VALUE;
+		int max = 0;
+		for (Athlete a : getAthletes()) {
+			Integer q = a.getQualifyingTotal();
+			if (q == null) {
+				continue;
+			}
+			min = q < min ? q : min;
+			max = q > max ? q : max;
+		}
+		return new Range(min, max);
 	}
 
-	private enum USAFlagOrder {
-		RED, WHITE, BLUE, STARS, STRIPES, GOLD, ROGUE
+	public void setFormattedRange(String unused) {
+
+	}
+
+	public String getFormattedRange() {
+		List<Athlete> athletes = getAthletes();
+		Boolean unanimous = true;
+		Double smallestWeightClass = null;
+		Double largestWeightClass = null;
+		String largestWeightClassLimitString = null;
+		String weightClassRange = null;
+		String bestSubCategory = null;
+		TreeMap<String, BWCatInfo> subCats = new TreeMap<>();
+
+		for (Athlete a : athletes) {
+			AgeGroup ageGroup = a.getAgeGroup();
+			if (ageGroup == null) {
+				continue;
+			}
+
+			String subCategory = a.getSubCategory();
+			if (subCategory.isBlank()) {
+				subCategory = null;
+			}
+
+			if (weightClassRange == null) {
+				smallestWeightClass = a.getCategory().getMaximumWeight();
+				largestWeightClass = a.getCategory().getMaximumWeight();
+				largestWeightClassLimitString = a.getCategory().getLimitString();
+				weightClassRange = a.getCategory().getLimitString();
+				bestSubCategory = subCategory;
+
+				BWCatInfo bwi = new BWCatInfo(a.getCategory().getMaximumWeight().intValue(), a.getCategory().getLimitString(), a.getSubCategory());
+				subCats.put(bwi.getKey(), bwi);
+			} else {
+				if (smallestWeightClass == null
+				        || a.getCategory().getMaximumWeight() < smallestWeightClass) {
+					smallestWeightClass = a.getCategory().getMaximumWeight();
+				}
+
+				if (largestWeightClass == null
+				        || a.getCategory().getMaximumWeight() > largestWeightClass) {
+					largestWeightClass = a.getCategory().getMaximumWeight();
+					largestWeightClassLimitString = a.getCategory().getLimitString();
+				}
+
+				if (subCategory != null) {
+					if (bestSubCategory != null) {
+						int compare = subCategory.compareToIgnoreCase(bestSubCategory);
+
+						if (compare < 0) {
+							// A is better than B
+							bestSubCategory = subCategory;
+						}
+
+						unanimous = unanimous && (compare == 0);
+					} else {
+						// largest was null, if we are "A", still unanimous
+						int compare = "A".compareToIgnoreCase(subCategory);
+						bestSubCategory = subCategory;
+						unanimous = unanimous && (compare == 0);
+					}
+				} else {
+					if (bestSubCategory != null) {
+						// a null subcategory is considered to be the same as "A".
+						int compare = "A".compareToIgnoreCase(bestSubCategory);
+						unanimous = unanimous && (compare == 0);
+					} else {
+						// all null subCategories so far.
+						unanimous = true;
+					}
+				}
+
+				BWCatInfo bwi = new BWCatInfo(a.getCategory().getMaximumWeight().intValue(), a.getCategory().getLimitString(), a.getSubCategory());
+				subCats.put(bwi.getKey(), bwi);
+
+				if (Math.abs(largestWeightClass - smallestWeightClass) < 0.1) {
+					// same
+					weightClassRange = a.getCategory().getLimitString();
+				} else {
+					weightClassRange = (int) Math.round(smallestWeightClass) + "-"
+					        + largestWeightClassLimitString;
+				}
+			}
+		}
+
+		if (unanimous) {
+			if (bestSubCategory == null) {
+				return weightClassRange;
+			} else {
+				return weightClassRange + " " + bestSubCategory;
+			}
+		} else {
+			return subCats.values().stream().map(v -> v.getFormattedString()).collect(Collectors.joining(", "));
+		}
 	}
 
 	private final static Logger logger = (Logger) LoggerFactory.getLogger(Group.class);
@@ -87,6 +196,7 @@ public class Group implements Comparable<Group> {
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 	private final static DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder().parseLenient()
 	        .appendPattern(DATE_FORMAT).toFormatter();
+
 	public static Comparator<Athlete> weighinTimeComparator = (lifter1, lifter2) -> {
 		Group lifter1Group = lifter1.getGroup();
 		Group lifter2Group = lifter2.getGroup();
@@ -136,6 +246,11 @@ public class Group implements Comparable<Group> {
 
 		return 0;
 	};
+
+	private enum USAFlagOrder {
+		RED, WHITE, BLUE, STARS, STRIPES, GOLD, ROGUE
+	}
+
 	public static Comparator<Group> groupWeighinTimeComparator = (lifter1Group, lifter2Group) -> {
 
 		int compare;
@@ -303,9 +418,6 @@ public class Group implements Comparable<Group> {
 	private String weighIn1;
 	private String weighIn2;
 	private LocalDateTime weighInTime;
-	@Transient
-	@JsonIgnore
-	Pattern pattern = Pattern.compile("(\\d+)\\s+(\\w+)");
 
 	/**
 	 * Instantiates a new group.
@@ -343,6 +455,43 @@ public class Group implements Comparable<Group> {
 		this.name = groupName;
 		this.setWeighInTime(weighin);
 		this.setCompetitionTime(competition);
+	}
+
+	@Transient
+	@JsonIgnore
+	Pattern pattern = Pattern.compile("(\\d+)\\s+(\\w+)");
+
+	@Transient
+	@JsonIgnore
+	public Integer getSessionBlock() {
+		if (Config.getCurrent().featureSwitch("usawSessionBlocks")) {
+			Matcher matcher = pattern.matcher(this.getName());
+			if (matcher.find()) {
+				String number = matcher.group(1);
+				// String word = matcher.group(2);
+				try {
+					return Integer.parseInt(number);
+				} catch (NumberFormatException e) {
+					return 999;
+				}
+			}
+			return 999;
+		}
+		return 1;
+	}
+
+	@Transient
+	@JsonIgnore
+	public List<AgeGroupInfo> getAgeGroupInfo() {
+		List<AgeGroupInfo> ageGroupInfos = new AgeGroupInfoFactory().getAgeGroupInfos(this);
+		return ageGroupInfos;
+	}
+	
+	@Transient
+	@JsonIgnore
+	public List<AgeGroupInfo> getAgeGroupInfoByAge() {
+		List<AgeGroupInfo> ageGroupInfos = new AgeGroupInfoFactory().getAgeGroupInfos(this);
+		return ageGroupInfos.stream().sorted().toList();
 	}
 
 	/*
@@ -405,17 +554,19 @@ public class Group implements Comparable<Group> {
 		this.setId(myId);
 	}
 
+	// @Override
+
 	public void doDone() {
 		boolean previousDone = this.isDone();
 		boolean groupDone = true;
-		for (Athlete a : this.getAthletes()) {
+		for (Athlete a: this.getAthletes()) {
 			boolean weighedIn = a.getBodyWeight() != null && a.getBodyWeight() > 0.1;
 			if (weighedIn && !a.isDone()) {
 				groupDone = false;
 				break;
 			}
 		}
-		// logger.debug("done? {} before={} after={} {}", getName(), this.done, groupDone, LoggerUtils.whereFrom());
+		//logger.debug("done? {} before={} after={} {}", getName(), this.done, groupDone, LoggerUtils.whereFrom());
 		this.setDone(groupDone);
 		if (this.isDone() != previousDone) {
 			GroupRepository.save(this);
@@ -454,27 +605,11 @@ public class Group implements Comparable<Group> {
 
 	@Transient
 	@JsonIgnore
-	public List<AgeGroupInfo> getAgeGroupInfo() {
-		List<AgeGroupInfo> ageGroupInfos = new AgeGroupInfoFactory().getAgeGroupInfos(this);
-		return ageGroupInfos;
-	}
-
-	@Transient
-	@JsonIgnore
-	public List<AgeGroupInfo> getAgeGroupInfoByAge() {
-		List<AgeGroupInfo> ageGroupInfos = new AgeGroupInfoFactory().getAgeGroupInfos(this);
-		return ageGroupInfos.stream().sorted().toList();
-	}
-
-	@Transient
-	@JsonIgnore
 	public List<Athlete> getAlphaAthletes() {
 		List<Athlete> athletes = AthleteRepository.findAllByGroupAndWeighIn(this, null);
 		athletes.sort((a, b) -> ObjectUtils.compare(a.getFullName(), b.getFullName()));
 		return athletes;
 	}
-
-	// @Override
 
 	/**
 	 * Gets the announcer.
@@ -533,99 +668,6 @@ public class Group implements Comparable<Group> {
 
 	public String getDescription() {
 		return this.description;
-	}
-
-	public String getFormattedRange() {
-		List<Athlete> athletes = getAthletes();
-		boolean unanimous = true;
-		Double smallestWeightClass = null;
-		Double largestWeightClass = null;
-		String largestWeightClassLimitString = null;
-		String weightClassRange = null;
-		String bestSubCategory = null;
-		TreeMap<String, BWCatInfo> subCats = new TreeMap<>();
-
-		for (Athlete a : athletes) {
-			AgeGroup ageGroup = a.getAgeGroup();
-			if (ageGroup == null) {
-				continue;
-			}
-
-			String subCategory = a.getSubCategory();
-			if (subCategory.isBlank()) {
-				subCategory = null;
-			}
-
-			if (weightClassRange == null) {
-				smallestWeightClass = a.getCategory().getMaximumWeight();
-				largestWeightClass = a.getCategory().getMaximumWeight();
-				largestWeightClassLimitString = a.getCategory().getLimitString();
-				weightClassRange = a.getCategory().getLimitString();
-				bestSubCategory = subCategory;
-
-				BWCatInfo bwi = new BWCatInfo(a.getCategory().getMaximumWeight().intValue(), a.getCategory().getLimitString(), a.getSubCategory());
-				subCats.put(bwi.getKey(), bwi);
-			} else {
-				if (smallestWeightClass == null
-				        || a.getCategory().getMaximumWeight() < smallestWeightClass) {
-					smallestWeightClass = a.getCategory().getMaximumWeight();
-				}
-
-				if (largestWeightClass == null
-				        || a.getCategory().getMaximumWeight() > largestWeightClass) {
-					largestWeightClass = a.getCategory().getMaximumWeight();
-					largestWeightClassLimitString = a.getCategory().getLimitString();
-				}
-
-				if (subCategory != null) {
-					if (bestSubCategory != null) {
-						int compare = subCategory.compareToIgnoreCase(bestSubCategory);
-
-						if (compare < 0) {
-							// A is better than B
-							bestSubCategory = subCategory;
-						}
-
-						unanimous = unanimous && (compare == 0);
-					} else {
-						// largest was null, if we are "A", still unanimous
-						int compare = "A".compareToIgnoreCase(subCategory);
-						bestSubCategory = subCategory;
-						unanimous = unanimous && (compare == 0);
-					}
-				} else {
-					if (bestSubCategory != null) {
-						// a null subcategory is considered to be the same as "A".
-						int compare = "A".compareToIgnoreCase(bestSubCategory);
-						unanimous = unanimous && (compare == 0);
-					} else {
-						// all null subCategories so far.
-						unanimous = true;
-					}
-				}
-
-				BWCatInfo bwi = new BWCatInfo(a.getCategory().getMaximumWeight().intValue(), a.getCategory().getLimitString(), a.getSubCategory());
-				subCats.put(bwi.getKey(), bwi);
-
-				if (Math.abs(largestWeightClass - smallestWeightClass) < 0.1) {
-					// same
-					weightClassRange = a.getCategory().getLimitString();
-				} else {
-					weightClassRange = (int) Math.round(smallestWeightClass) + "-"
-					        + largestWeightClassLimitString;
-				}
-			}
-		}
-
-		if (unanimous) {
-			if (bestSubCategory == null) {
-				return weightClassRange;
-			} else {
-				return weightClassRange + " " + bestSubCategory;
-			}
-		} else {
-			return subCats.values().stream().map(v -> v.getFormattedString()).collect(Collectors.joining(", "));
-		}
 	}
 
 	/**
@@ -910,41 +952,6 @@ public class Group implements Comparable<Group> {
 		return this.reserve;
 	}
 
-	@Transient
-	@JsonIgnore
-	public Integer getSessionBlock() {
-		if (Config.getCurrent().featureSwitch("usawSessionBlocks")) {
-			Matcher matcher = this.pattern.matcher(this.getName());
-			if (matcher.find()) {
-				String number = matcher.group(1);
-				// String word = matcher.group(2);
-				try {
-					return Integer.parseInt(number);
-				} catch (NumberFormatException e) {
-					return 999;
-				}
-			}
-			return 999;
-		}
-		return 1;
-	}
-
-	@Transient
-	@JsonIgnore
-	public Range getStartingRange() {
-		int min = Integer.MAX_VALUE;
-		int max = 0;
-		for (Athlete a : getAthletes()) {
-			Integer q = a.getQualifyingTotal();
-			if (q == null) {
-				continue;
-			}
-			min = q < min ? q : min;
-			max = q > max ? q : max;
-		}
-		return new Range(min, max);
-	}
-
 	/**
 	 * Gets the technical controller.
 	 *
@@ -1044,10 +1051,6 @@ public class Group implements Comparable<Group> {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public void setFormattedRange(String unused) {
-
 	}
 
 	/**

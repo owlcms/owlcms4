@@ -30,6 +30,7 @@ public class PublicNoLeadersPage extends PublicScoreboardPage {
 		return Translator.translate("Scoreboard") + OwlcmsSession.getFopNameIfMultiple();
 	}
 
+
 	@Override
 	protected void setDefaultParameters() {
 		// when navigating to the page, Vaadin will call setParameter+readParameters

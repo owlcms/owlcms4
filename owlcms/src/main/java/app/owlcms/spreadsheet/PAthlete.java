@@ -32,8 +32,8 @@ import ch.qos.logback.classic.Logger;
 /**
  * Fake athlete that belongs to a single category.
  *
- * Used to produce results and team rankings for a given eligibility category. Use athlete as a basis, and a copy of the participation to the eligible category
- * to recover ranks and points.
+ * Used to produce results and team rankings for a given eligibility category. Use athlete as a basis, and a copy of the
+ * participation to the eligible category to recover ranks and points.
  *
  * @author Jean-François Lamy
  *
@@ -49,18 +49,36 @@ public class PAthlete extends Athlete implements IRankHolder {
 	private Participation originalParticipation;
 	private Participation p;
 
-	public PAthlete(Athlete a2) {
-		this.a = a2;
-		this.c = a2.getCategory();
-		this.p = a2.getMainRankings();
-		this.originalParticipation = this.p;
-	}
-
 	public PAthlete(Participation p) {
 		this.a = p.getAthlete();
 		this.c = p.getCategory();
 		this.p = new Participation(p, this.a, this.c);
 		this.originalParticipation = p;
+	}
+
+	public PAthlete(Athlete a2) {
+		this.a = a2;
+		this.c = a2.getCategory();
+		this.p = a2.getMainRankings();
+		this.originalParticipation = p;
+	}
+
+	@Override
+	public Boolean getCategoryFinished() {
+		var allUnfinished = AthleteRepository.getAllUnfinishedCategories();
+		String code = c.getCode();
+		boolean contains = allUnfinished.contains(code);
+		return !contains;
+	}
+
+	@Override
+	public Boolean isCategoryFinished() {
+		return getCategoryFinished();
+	}
+
+	@Override
+	public void setCategoryFinished(Boolean done) {
+		a.setCategoryFinished(done);
 	}
 
 	/**
@@ -156,16 +174,6 @@ public class PAthlete extends Athlete implements IRankHolder {
 	}
 
 	@Override
-	public int getBestLifterRank() {
-		return this.a.getBestLifterRank();
-	}
-
-	@Override
-	public Double getBestLifterScore() {
-		return this.a.getBestLifterScore();
-	}
-
-	@Override
 	public int getBestResultAttemptNumber() {
 		return this.a.getBestResultAttemptNumber();
 	}
@@ -209,19 +217,6 @@ public class PAthlete extends Athlete implements IRankHolder {
 	public String getCategoryCode() {
 		Category category = getCategory();
 		return category != null ? category.getCode() : null;
-	}
-
-	@Override
-	public Boolean getCategoryFinished() {
-		var allUnfinished = AthleteRepository.getAllUnfinishedCategories();
-		String code = this.c.getCode();
-		boolean contains = allUnfinished.contains(code);
-		return !contains;
-	}
-
-	@Override
-	public int getCategoryScoreRank() {
-		return this.p.getCategoryScoreRank();
 	}
 
 	@Override
@@ -598,16 +593,6 @@ public class PAthlete extends Athlete implements IRankHolder {
 	}
 
 	@Override
-	public Double getQAge() {
-		return this.a.getQAge();
-	}
-
-	@Override
-	public int getqAgeRank() {
-		return this.a.getqAgeRank();
-	}
-
-	@Override
 	public Integer getQualifyingTotal() {
 		return this.a.getQualifyingTotal();
 	}
@@ -645,6 +630,16 @@ public class PAthlete extends Athlete implements IRankHolder {
 	@Override
 	public String getRoundedBodyWeight() {
 		return this.a.getRoundedBodyWeight();
+	}
+
+	@Override
+	public Double getBestLifterScore() {
+		return this.a.getBestLifterScore();
+	}
+
+	@Override
+	public int getBestLifterRank() {
+		return this.a.getBestLifterRank();
 	}
 
 	@Override
@@ -688,18 +683,28 @@ public class PAthlete extends Athlete implements IRankHolder {
 	}
 
 	@Override
-	public Double getSmhf() {
-		return this.a.getSmhf();
-	}
-
-	@Override
 	public Double getSmhfForDelta() {
 		return this.a.getSmhfForDelta();
 	}
 
 	@Override
+	public Double getSmhf() {
+		return this.a.getSmhf();
+	}
+
+	@Override
+	public Double getQAge() {
+		return this.a.getQAge();
+	}
+
+	@Override
 	public int getSmhfRank() {
 		return this.a.getSmhfRank();
+	}
+
+	@Override
+	public int getqAgeRank() {
+		return this.a.getqAgeRank();
 	}
 
 	@Override
@@ -899,6 +904,11 @@ public class PAthlete extends Athlete implements IRankHolder {
 	}
 
 	@Override
+	public int getCategoryScoreRank() {
+		return this.p.getCategoryScoreRank();
+	}
+
+	@Override
 	public Integer getYearOfBirth() {
 		return this.a.getYearOfBirth();
 	}
@@ -914,11 +924,6 @@ public class PAthlete extends Athlete implements IRankHolder {
 	@Override
 	public boolean isATeamMember() {
 		return this.a.isATeamMember();
-	}
-
-	@Override
-	public Boolean isCategoryFinished() {
-		return getCategoryFinished();
 	}
 
 	@Override
@@ -962,11 +967,6 @@ public class PAthlete extends Athlete implements IRankHolder {
 	}
 
 	@Override
-	public void setCategoryFinished(Boolean done) {
-		this.a.setCategoryFinished(done);
-	}
-
-	@Override
 	public void setCatSinclairRank(int i) {
 		this.a.setCatSinclairRank(i);
 	}
@@ -1002,11 +1002,6 @@ public class PAthlete extends Athlete implements IRankHolder {
 	}
 
 	@Override
-	public void setqAgeRank(int i) {
-		this.a.setqAgeRank(i);
-	}
-
-	@Override
 	public void setRobiRank(Integer robiRank) {
 		this.a.setRobiRank(robiRank);
 	}
@@ -1024,6 +1019,11 @@ public class PAthlete extends Athlete implements IRankHolder {
 	@Override
 	public void setSmhfRank(int i) {
 		this.a.setSmhfRank(i);
+	}
+
+	@Override
+	public void setqAgeRank(int i) {
+		this.a.setqAgeRank(i);
 	}
 
 	@Override

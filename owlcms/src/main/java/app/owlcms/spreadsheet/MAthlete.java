@@ -57,24 +57,8 @@ public class MAthlete extends PAthlete {
 		return this.liftRank;
 	}
 
-	public String getLiftResult() {
-		switch (this.ranking) {
-			case CLEANJERK:
-			case SNATCH:
-			case TOTAL:
-				int roundedValue = (int) Math.round(this.liftValue);
-				return String.valueOf(roundedValue);
-			default:
-				return String.format("%.3f", this.liftValue);
-		}
-	}
-
 	public double getLiftValue() {
 		return this.liftValue;
-	}
-
-	public String getMedalingSortCode() {
-		return getCategory().getMedalingSortCode();
 	}
 
 	public Ranking getRanking() {
@@ -94,15 +78,8 @@ public class MAthlete extends PAthlete {
 		}
 	}
 
-	public void setLiftResult() {
-		// unused
-	}
-
 	public void setLiftResult(double d) {
 		this.liftValue = d;
-	}
-
-	public void setMedalingSortCode(String unused) {
 	}
 
 	public void setRanking(Ranking ranking) {
@@ -114,6 +91,29 @@ public class MAthlete extends PAthlete {
 
 	private void setLiftRank(int catMedalRank) {
 		this.liftRank = catMedalRank;
+	}
+	
+	public String getLiftResult() {
+		switch (this.ranking) {
+			case CLEANJERK:
+			case SNATCH:
+			case TOTAL:
+				 int roundedValue = (int) Math.round(this.liftValue); 
+				 return String.valueOf(roundedValue);
+			default:
+				return String.format("%.3f", this.liftValue);
+		}
+	}
+	
+	public void setLiftResult() {
+		// unused
+	}
+	
+	public String getMedalingSortCode() {
+		return getCategory().getMedalingSortCode();
+	}
+	
+	public void setMedalingSortCode(String unused) {
 	}
 
 }

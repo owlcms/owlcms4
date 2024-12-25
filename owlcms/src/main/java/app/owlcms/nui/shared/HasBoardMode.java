@@ -54,7 +54,7 @@ public interface HasBoardMode {
 		} else if (fopState == FOPState.INACTIVE) {
 			bm = BoardMode.WAIT;
 		}
-		// logger.debug("computeBoardMode {} {} {} = {} -- {}", fopState, breakType, ceremonyType, bm, LoggerUtils.stackTrace());
+		//logger.debug("computeBoardMode {} {} {} = {} -- {}", fopState, breakType, ceremonyType, bm, LoggerUtils.stackTrace());
 		return bm;
 	}
 

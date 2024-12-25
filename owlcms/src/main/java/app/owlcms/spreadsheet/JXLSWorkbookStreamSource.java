@@ -544,7 +544,7 @@ public abstract class JXLSWorkbookStreamSource implements StreamResourceWriter, 
 		List<Athlete> athletes = getSortedAthletes();
 		if (athletes != null) {
 			getReportingBeans().put("athletes", athletes);
-			// logger.debug("*** Athletes : {}",athletes.stream().map(a-> a.getCategory()).toList());
+			//logger.debug("*** Athletes : {}",athletes.stream().map(a-> a.getCategory()).toList());
 			getReportingBeans().put("lifters", athletes); // legacy
 		}
 		Competition competition = Competition.getCurrent();
@@ -570,13 +570,13 @@ public abstract class JXLSWorkbookStreamSource implements StreamResourceWriter, 
 
 		List<Group> sessions = GroupRepository.findAll().stream().sorted(Group.groupWeighinTimeComparator)
 		        .collect(Collectors.toList());
-
+		
 		Ranking overallScoringSystem = this.getBestLifterScoringSystem();
 		overallScoringSystem = overallScoringSystem != null ? overallScoringSystem : Competition.getCurrent().getScoringSystem();
-
+		
 		// make available to the Athlete class in this Thread (and subThreads).
-		JXLSWorkbookStreamSource.setBestLifterRankingThreadLocal(overallScoringSystem);
-		this.reportingBeans.put("bestRankingTitle", Ranking.getScoringTitle(overallScoringSystem));
+		JXLSWorkbookStreamSource.setBestLifterRankingThreadLocal(overallScoringSystem);	
+		reportingBeans.put("bestRankingTitle",Ranking.getScoringTitle(overallScoringSystem));
 
 		getReportingBeans().put("groups", sessions);
 		getReportingBeans().put("sessions", sessions);

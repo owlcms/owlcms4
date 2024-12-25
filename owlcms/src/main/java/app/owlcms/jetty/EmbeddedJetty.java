@@ -15,29 +15,10 @@ public class EmbeddedJetty extends com.github.mvysny.vaadinboot.VaadinBoot {
 
 	private static Logger startLogger = (Logger) LoggerFactory.getLogger(EmbeddedJetty.class);
 	private static EmbeddedJetty server;
-
-	public static void restart() {
-		if (server != null) {
-			server.stop("stopping for restart");
-		}
-		try {
-			LogbackConfigReloader.reloadLogbackConfiguration();
-			startLogger.info("restarting.");
-			server.run();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void stop(boolean restart) {
-		if (server != null) {
-			server.stop(restart ? "stopping prior to restart." : "intentional stop.");
-		}
-	}
-
 	private Runnable initConfig;
 	private Runnable initData;
 	private CountDownLatch latch;
+	
 	Logger logger = (Logger) LoggerFactory.getLogger(EmbeddedJetty.class);
 
 	public EmbeddedJetty(CountDownLatch countDownLatch, String appName) {
@@ -46,42 +27,14 @@ public class EmbeddedJetty extends com.github.mvysny.vaadinboot.VaadinBoot {
 	}
 
 	public CountDownLatch getLatch() {
-		return this.latch;
-	}
-
-	@Override
-	public void onStarted(WebAppContext c) {
-		startLogger.info("started on port {}", this.getPort());
-	}
-
-	@Override
-	public void run() throws Exception {
-		server = this;
-		start();
-
-		// this gets called both when CTRL+C is pressed, and when main() terminates.
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> stop("Shutdown hook called, shutting down")));
-		startLogger.info("Press CTRL+C to shutdown");
-
-		// Open.open(getServerURL());
-
-		new Thread(() -> {
-			this.logger.info("Starting browser");
-			Options openOptions = new Options();
-			openOptions.setNewInstance(true);
-			openOptions.setBackground(true);
-			openOptions.setWait(false);
-			Open.open(getServerURL(), openOptions);
-			this.logger.info("Browser started");
-		}).start();
-
+		return latch;
 	}
 
 	public void run(Integer serverPort, String string) throws Exception {
 		this.setPort(serverPort);
 		this.run();
-		this.initConfig.run();
-		this.initData.run();
+		initConfig.run();
+		initData.run();
 	}
 
 	public EmbeddedJetty setInitConfig(Runnable initConfig) {
@@ -102,5 +55,52 @@ public class EmbeddedJetty extends com.github.mvysny.vaadinboot.VaadinBoot {
 		EmbeddedJetty.startLogger = startLogger;
 		return this;
 	}
+
+	@Override
+	public void onStarted(WebAppContext c) {
+		startLogger.info("started on port {}", this.getPort());
+	}
+
+    @Override
+	public void run() throws Exception {
+    	server = this;
+        start();        
+
+        // this gets called both when CTRL+C is pressed, and when main() terminates.
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> stop("Shutdown hook called, shutting down")));
+        startLogger.info("Press CTRL+C to shutdown");
+
+        //Open.open(getServerURL());
+        
+		new Thread(() -> {
+			logger.info("Starting browser");
+			Options openOptions = new Options();
+			openOptions.setNewInstance(true);
+			openOptions.setBackground(true);
+			openOptions.setWait(false);
+			Open.open(getServerURL(), openOptions);
+			logger.info("Browser started");
+		}).start();
+
+    }
+    
+    public static void stop(boolean restart) {
+    	if (server != null) {
+    		server.stop(restart ? "stopping prior to restart." : "intentional stop.");
+    	}
+    }
+    
+    public static void restart() {
+    	if (server != null) {
+    		server.stop("stopping for restart");
+    	}
+    	try {
+    		LogbackConfigReloader.reloadLogbackConfiguration();
+    		startLogger.info("restarting.");
+    		server.run();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
 
 }

@@ -42,7 +42,8 @@ public class FlexibleGridLayout extends Composite<GridLayout>
 	}
 
 	/**
-	 * Convenience method, for users which don't want to dive into the css-grid to set the number of row an item should span over
+	 * Convenience method, for users which don't want to dive into the css-grid to set the number of row an item should
+	 * span over
 	 *
 	 * @param component the component which column width should be set
 	 * @param width     the number of columns the item should span over
@@ -52,8 +53,9 @@ public class FlexibleGridLayout extends Composite<GridLayout>
 	}
 
 	/**
-	 * Sets how the grid should behave weather keeping the order or filling up unused space with smaller elements using this makes sense when adding differently
-	 * sized elements <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-flow">grid-auto-flow</a>.
+	 * Sets how the grid should behave weather keeping the order or filling up unused space with smaller elements using
+	 * this makes sense when adding differently sized elements
+	 * <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-flow">grid-auto-flow</a>.
 	 *
 	 * @param flow
 	 * @return
@@ -64,7 +66,8 @@ public class FlexibleGridLayout extends Composite<GridLayout>
 	}
 
 	/**
-	 * Sets the height of the rows with the height {@link com.github.appreciated.css.grid.sizes.Auto}. By default all rows receive that height.
+	 * Sets the height of the rows with the height {@link com.github.appreciated.css.grid.sizes.Auto}. By default all
+	 * rows receive that height.
 	 *
 	 * @param length the size that will be set
 	 * @return this
@@ -75,8 +78,10 @@ public class FlexibleGridLayout extends Composite<GridLayout>
 	}
 
 	/**
-	 * Shorthand to set the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns">grid-template-columns</a> with flexible columns by
-	 * using the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/repeat">repeat</a> function with an auto-repeat mode.
+	 * Shorthand to set the
+	 * <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns">grid-template-columns</a> with
+	 * flexible columns by using the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/repeat">repeat</a>
+	 * function with an auto-repeat mode.
 	 *
 	 * @param mode  the auto-repeat mode. (See under auto-fill and auto-repeat of the
 	 *              <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/repeat">repeat</a> function)
@@ -138,7 +143,8 @@ public class FlexibleGridLayout extends Composite<GridLayout>
 	}
 
 	/**
-	 * Convenience method, for users which don't want to dive into the css-grid to set the number of row an item should span over
+	 * Convenience method, for users which don't want to dive into the css-grid to set the number of row an item should
+	 * span over
 	 *
 	 * @param component the component which column width should be set
 	 * @param width     the number of columns the item should span over

@@ -45,6 +45,61 @@ public class TemplateSelectionFormFactory extends VerticalLayout {
 	TemplateSelectionFormFactory() {
 	}
 
+	private FormLayout createLayout() {
+		FormLayout layout = new FormLayout();
+		// layout.setWidth("1024px");
+		layout.setResponsiveSteps(new ResponsiveStep("0", 1, LabelsPosition.TOP),
+		        new ResponsiveStep("800px", 2, LabelsPosition.TOP));
+		return layout;
+	}
+
+	private Component createTitle(String string) {
+		H4 title = new H4(Translator.translate(string));
+		title.getStyle().set("margin-top", "0");
+		title.getStyle().set("margin-bottom", "0");
+		return title;
+	}
+
+	public FormLayout preWeighInTemplateSelectionForm(Dialog dialog) {
+		FormLayout layout = createSetLayoutHeader(PreCompetitionTemplates.PRE_WEIGHIN);
+		addTemplateSelection(layout, PreCompetitionTemplates.CARDS);
+		addTemplateSelection(layout, PreCompetitionTemplates.WEIGHIN);
+		return layout;
+	}
+
+	private FormLayout createLayoutHeader(PreCompetitionTemplates templateDefinition) {
+		FormLayout layout = createLayout();
+		Component title = createTitle(templateDefinition.name());
+		layout.add(title);
+		layout.setColspan(title, 2);
+		return layout;
+	}
+	
+	private FormLayout createSetLayoutHeader(PreCompetitionTemplates templateDefinition) {
+		FormLayout layout = createLayout();
+		Component title = createTitle(templateDefinition.name());
+		layout.add(title);
+		layout.setColspan(title, 2);
+		Div div = new Div(Translator.translate(DOCUMENTS_IGNORE_NO_TEMPLATE));
+		layout.add(div);
+		layout.setColspan(div, 2);
+		return layout;
+	}
+	
+	public FormLayout singleTemplateSelection(PreCompetitionTemplates templateDefinition) {
+		FormLayout layout = createLayoutHeader(templateDefinition);
+		addTemplateSelection(layout, templateDefinition);
+		return layout;
+	}
+
+	public FormLayout postWeighInTemplateSelectionForm(Dialog dialog) {
+		FormLayout layout = createSetLayoutHeader(PreCompetitionTemplates.POST_WEIGHIN);
+		addTemplateSelection(layout, PreCompetitionTemplates.INTRODUCTION);
+		addTemplateSelection(layout, PreCompetitionTemplates.EMPTY_PROTOCOL);
+		addTemplateSelection(layout, PreCompetitionTemplates.JURY);
+		return layout;
+	}
+
 	public FormLayout competitionTemplateSelectionForm() {
 		FormLayout layout = createLayout();
 		Component title = createTitle(DOCUMENTS_TEMPLATE_SELECTION);
@@ -58,22 +113,7 @@ public class TemplateSelectionFormFactory extends VerticalLayout {
 
 		return layout;
 	}
-
-	public FormLayout postWeighInTemplateSelectionForm(Dialog dialog) {
-		FormLayout layout = createSetLayoutHeader(PreCompetitionTemplates.POST_WEIGHIN);
-		addTemplateSelection(layout, PreCompetitionTemplates.INTRODUCTION);
-		addTemplateSelection(layout, PreCompetitionTemplates.EMPTY_PROTOCOL);
-		addTemplateSelection(layout, PreCompetitionTemplates.JURY);
-		return layout;
-	}
-
-	public FormLayout preWeighInTemplateSelectionForm(Dialog dialog) {
-		FormLayout layout = createSetLayoutHeader(PreCompetitionTemplates.PRE_WEIGHIN);
-		addTemplateSelection(layout, PreCompetitionTemplates.CARDS);
-		addTemplateSelection(layout, PreCompetitionTemplates.WEIGHIN);
-		return layout;
-	}
-
+	
 	public FormLayout registrationTemplateSelectionForm() {
 		FormLayout layout = createLayout();
 		Component title = createTitle(DOCUMENTS_TEMPLATE_SELECTION);
@@ -84,12 +124,6 @@ public class TemplateSelectionFormFactory extends VerticalLayout {
 		addTemplateSelection(layout, PreCompetitionTemplates.BY_BODYWEIGHT);
 		addTemplateSelection(layout, PreCompetitionTemplates.BY_TEAM);
 
-		return layout;
-	}
-
-	public FormLayout singleTemplateSelection(PreCompetitionTemplates templateDefinition) {
-		FormLayout layout = createLayoutHeader(templateDefinition);
-		addTemplateSelection(layout, templateDefinition);
 		return layout;
 	}
 
@@ -114,7 +148,7 @@ public class TemplateSelectionFormFactory extends VerticalLayout {
 				CompetitionRepository.save(current);
 				current = Competition.getCurrent();
 			} catch (Throwable e1) {
-				LoggerUtils.logError(this.logger, e1);
+				LoggerUtils.logError(logger, e1);
 			}
 		});
 	}
@@ -130,33 +164,6 @@ public class TemplateSelectionFormFactory extends VerticalLayout {
 		return prioritizedList;
 	}
 
-	private FormLayout createLayout() {
-		FormLayout layout = new FormLayout();
-		// layout.setWidth("1024px");
-		layout.setResponsiveSteps(new ResponsiveStep("0", 1, LabelsPosition.TOP),
-		        new ResponsiveStep("800px", 2, LabelsPosition.TOP));
-		return layout;
-	}
-
-	private FormLayout createLayoutHeader(PreCompetitionTemplates templateDefinition) {
-		FormLayout layout = createLayout();
-		Component title = createTitle(templateDefinition.name());
-		layout.add(title);
-		layout.setColspan(title, 2);
-		return layout;
-	}
-
-	private FormLayout createSetLayoutHeader(PreCompetitionTemplates templateDefinition) {
-		FormLayout layout = createLayout();
-		Component title = createTitle(templateDefinition.name());
-		layout.add(title);
-		layout.setColspan(title, 2);
-		Div div = new Div(Translator.translate(DOCUMENTS_IGNORE_NO_TEMPLATE));
-		layout.add(div);
-		layout.setColspan(div, 2);
-		return layout;
-	}
-
 	private ComboBox<Resource> createTemplateSelect(FormLayout layout, String labelKey, List<Resource> prioritizedList, String string) {
 		ComboBox<Resource> templateSelect = new ComboBox<>();
 		templateSelect.setPlaceholder(Translator.translate("AvailableTemplates"));
@@ -170,13 +177,6 @@ public class TemplateSelectionFormFactory extends VerticalLayout {
 		layout.addFormItem(templateSelect, Translator.translate(labelKey));
 		templateSelect.setValue(searchMatch(prioritizedList, string));
 		return templateSelect;
-	}
-
-	private Component createTitle(String string) {
-		H4 title = new H4(Translator.translate(string));
-		title.getStyle().set("margin-top", "0");
-		title.getStyle().set("margin-bottom", "0");
-		return title;
 	}
 
 	private Resource searchMatch(List<Resource> resourceList, String curTemplateName) {

@@ -83,11 +83,11 @@ public class PublicScoreboardPage extends AbstractResultsDisplayPage {
 			getResultsBoard().getStyle().set("display", "none");
 		});
 	}
-
+	
 	@Subscribe
 	public void slaveVideoRefresh(UIEvent.VideoRefresh e) {
 		// this should never have isVideo() in actual practice.
-
+		
 		// logger.debug("videorefresh {}",e.getFop());
 		if (!isVideo()) {
 			return;
@@ -110,29 +110,48 @@ public class PublicScoreboardPage extends AbstractResultsDisplayPage {
 		});
 	}
 
-	@Override
-	protected void init() {
-		this.logger = (Logger) LoggerFactory.getLogger(this.getClass());
-		this.uiEventLogger = (Logger) LoggerFactory.getLogger("UI" + this.logger.getName());
-		createComponents();
-		setDefaultParameters();
-	}
+	private void createComponents() {
+		var board = new Results();
+		setMedalsBoard(new ResultsMedals());
+		this.setBoard(board);
 
+		getMedalsBoard().setDownSilenced(true);
+		getMedalsBoard().setDarkMode(board.isDarkMode());
+		getMedalsBoard().setVideo(board.isVideo());
+		getMedalsBoard().setPublicDisplay(board.isPublicDisplay());
+		getMedalsBoard().setSingleReferee(board.isSingleReferee());
+		getMedalsBoard().setAbbreviatedName(board.isAbbreviatedName());
+		getMedalsBoard().setTeamWidth(board.getTeamWidth());
+		getMedalsBoard().setEmFontSize(board.getEmFontSize());
+		checkVideo(getMedalsBoard());
+
+		getMedalsBoard().getStyle().set("display", "none");
+		this.ui = UI.getCurrent();
+	}
+	
 	@Override
 	protected void onAttach(AttachEvent attachEvent) {
 		uiEventBusRegister(this, getFop());
 		DisplayParameters board = (DisplayParameters) this.getBoard();
 		board.setFop(getFop());
 		getMedalsBoard().setFop(getFop());
-
+		
 		this.setResultsBoard((Results) board);
 		this.setMedalsBoard(getMedalsBoard());
-
+		
 		this.addComponent((Component) board);
 		this.addComponent(getMedalsBoard());
-
+		
 		((Component) board).setVisible(true);
 		getMedalsBoard().setVisible(false);
+	}
+
+	@Override
+	protected void init() {
+		this.logger = (Logger) LoggerFactory.getLogger(this.getClass());
+		this.uiEventLogger = (Logger) LoggerFactory.getLogger("UI" + this.logger.getName());
+		createComponents();
+		setDefaultParameters();
 	}
 
 	protected void setDefaultParameters() {
@@ -159,35 +178,16 @@ public class PublicScoreboardPage extends AbstractResultsDisplayPage {
 		setDefaultParameters(QueryParameters.simple(fullMap));
 	}
 
+	private void setMedalsBoard(ResultsMedals medalsBoard) {
+		this.medalsBoard = medalsBoard;
+	}
+
 	protected void setResultsBoard(Results board) {
 		this.resultsBoard = board;
 	}
 
-	private void createComponents() {
-		var board = new Results();
-		setMedalsBoard(new ResultsMedals());
-		this.setBoard(board);
-
-		getMedalsBoard().setDownSilenced(true);
-		getMedalsBoard().setDarkMode(board.isDarkMode());
-		getMedalsBoard().setVideo(board.isVideo());
-		getMedalsBoard().setPublicDisplay(board.isPublicDisplay());
-		getMedalsBoard().setSingleReferee(board.isSingleReferee());
-		getMedalsBoard().setAbbreviatedName(board.isAbbreviatedName());
-		getMedalsBoard().setTeamWidth(board.getTeamWidth());
-		getMedalsBoard().setEmFontSize(board.getEmFontSize());
-		checkVideo(getMedalsBoard());
-
-		getMedalsBoard().getStyle().set("display", "none");
-		this.ui = UI.getCurrent();
-	}
-
 	private ResultsMedals getMedalsBoard() {
-		return this.medalsBoard;
-	}
-
-	private void setMedalsBoard(ResultsMedals medalsBoard) {
-		this.medalsBoard = medalsBoard;
+		return medalsBoard;
 	}
 
 }
