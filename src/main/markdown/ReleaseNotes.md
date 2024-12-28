@@ -7,6 +7,8 @@
 
   - 54.2.1 The information show to the jury about the previous attempt erroneously showed the weight on the attempt before that.
   
+  - 54.2.1: Translations Armenian, Spanish (es_SV)
+  
 - QMasters
   - The QMasters score now uses the updated age factors for 2025
 
