@@ -206,7 +206,7 @@ public class JuryContent extends AthleteGridContent implements HasDynamicTitle {
 			this.decisionNotification.setDuration(5000);
 			this.decisionNotification.open();
 
-			swapRefereeLabel(e.getAthlete());
+			swapRefereeLabel(getAthleteUnderReview());
 		});
 	}
 
@@ -500,9 +500,9 @@ public class JuryContent extends AthleteGridContent implements HasDynamicTitle {
 		        Translator.translate("RefereeDecisions")
 		        + (athlete != null
 		                ? "&nbsp;&nbsp;&nbsp;" + athleteFullId(athlete) + "&nbsp;&nbsp;&nbsp;"
-		                        + (formatAttempt(athlete.getAttemptsDone() - 1))
+		                        + (formatAttempt(athlete.getAttemptsDone()-1))
 		                        + "&nbsp;&nbsp;&nbsp;" +
-		                        athlete.getRequestedWeightForAttempt(athlete.getAttemptsDone() - 1)
+		                        athlete.getRequestedWeightForAttempt(athlete.getAttemptsDone())
 		                        + Translator.translate("KgSymbol")
 		                : "")
 		        + "</span>");
