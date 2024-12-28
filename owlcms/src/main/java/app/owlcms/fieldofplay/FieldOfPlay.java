@@ -2219,6 +2219,20 @@ public class FieldOfPlay implements IUnregister {
 		} else {
 			setLeaders(null);
 		}
+		List<Athlete> nLeaders = new ArrayList<Athlete>(getLeaders().size());
+		for (Athlete a : getLeaders()) {
+			// the leaders come from the medals computation.  This does not reflect the last requested weight changes
+			// fetch the most up-to-date info for athletes in the current group.
+			Athlete found = null;
+			for (Athlete curGroupAthlete: getLiftingOrder()) {
+				if (curGroupAthlete.getId().equals(a.getId())) {
+					found = curGroupAthlete;
+					break;
+				}
+			}
+			nLeaders.add(found != null ? found : a);
+		}
+		setLeaders(nLeaders);
 	}
 
 	private void recomputeLeadersAndRecords(List<Athlete> athletes) {
@@ -2899,7 +2913,7 @@ public class FieldOfPlay implements IUnregister {
 			// if the snatch was lowered.
 			warnMissingKg();
 		}
-		recomputeLeadersAndRecords(this.displayOrder);
+		recomputeLeadersAndRecords(this.liftingOrder);
 
 		changePlatformEquipment(curAthlete2, this.curWeight);
 
