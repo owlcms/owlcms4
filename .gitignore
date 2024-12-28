@@ -34,3 +34,4 @@ database/owlcms.mv.db
 /.moquette_uuid
 /fly.toml
 /mqttData/
+/nohup.out
