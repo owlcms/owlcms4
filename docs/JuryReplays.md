@@ -1,4 +1,4 @@
-# Jury Replays Using OBS
+# Replays Using OBS
 
 If you are streaming to Facebook or YouTube using OBS, you can replays for the Jury at the same time without additional equipment (and you can also play the replays to your stream)
 

@@ -1,5 +1,3 @@
-# Broadcasting a Competition using OBS
-
 This page explains how to broadcast a Meet using OBS (Open Broadcast Software).  The process is the same for a live meet or for a virtual meet.  For a live meet, you will use a "video capture source".  For a Zoom meet, you will use a window running zoom, or a monitor showing zoom as a source.
 
 Requirements:
@@ -12,123 +10,125 @@ Requirements:
 
 Download [OBS Studio](https://obsproject.com/) and install it.   
 
-- If possible, get an image with a competition setup that you can use as a fake background for setting things up.
 - Plug in your camera
 
 In OBS Studio, you combine individual elements called ***sources*** to create ***scenes***.  In our example, we will create two scenes
 
 - The first scene will just show the scoreboard.  OBS has a built-in browser, and it can use any URL as a *browser source*.
-- The second scene will take three sources: the fake background, the camera input, and the current athlete information from owlcms as a browser source.  We will hide the fake background when we are done setting up
-- You can have as many scenes as you want, you could have others using slide shows or videos from your sponsors as sources, etc
+- The second scene will take the camera input and the current athlete information from owlcms as a browser source. 
 
-## 2. Setup owlcms with some data
+You can have as many scenes as you want, you could have others using slide shows or videos from your sponsors as sources, etc
 
-In order to define the views, we need enough information to have meaningful displays. If you are not using the same setup as your competition site you will need to adjust the URLs once your actual competition site once it is up.
+## 2. Setup owlcms
 
-1. Start owlcms and enter enough information to get a group going.  Start the group as the announcer.
-2. Go to "Video Streaming" and start a Scoreboard and start a Current Athlete view.
-   ![01_startScoreboard](img/OBSVideo/01_startScoreboard.png)
+You should load owlcms with some competition data.  Importing a previous competition is useful. 
+
+In order to show scoreboards. there are two options
+
+1. Use a transparent mode, where the scoreboard "floats" over the camera.  This gives a professional look.
+2. Use the normal scoreboards from the application
+
+To select which mode you want, go to the system settings page, and then select "Customization"
+
+![010](nimg/4000OBS/010.png)
+
+On the customization page, select `transparent` to get the "floating scoreboard" look, or "nogrid" to have the same black background as with the scoreboards used on-site.
+
+![020](nimg/4000OBS/020.png)
+
+## 3. Prepare the scoreboard view
+
+1. Start owlcms and enter enough information to get a session going.  Start the session as the announcer.
+
+2. Go to the Video Streaming section and start a simple scoreboard.
+
+   ![030](nimg/4000OBS/030.png)
+
+3. When the scoreboard starts, open it full screen, or make the window as close as possible to 1920x1080 as possible (the easiest way is to temporarily set your screen resolution to 1920x1080 if you can).  Click on the window to bring up the menu and adjust the font size and team size to what you prefer
+
+   In the following example, the team width is set to 14 and the font size to 1.3![035](nimg/4000OBS/035a.png)
+
+4. Copy the URL
+   ![036](nimg/4000OBS/036.png)
 
 ## 3. Define a Scene to Show the Scoreboard
 
-Let's create a Scoreboard scene to be used during introductions, breaks, and medals. Switching to that scene in the scene list will send the scoreboard to the live stream.
+1. Let's create a scene that we will use when no athlete is lifting.  In the "Scenes" panel, use the +
 
-**Create a Scene.** Click on the + below the Scenes pane and give the Scene a name.  You can rename it afterwards.
+   ![040](nimg/4000OBS/040.png)
 
-![02_createScene](img/OBSVideo/02_createScene.png)
+2. Add a browser source named "Scoreboard" -- OBS has a built-in version of the Chrome engine, so it just talks to owlcms like any other display device.
+   ![042](nimg/4000OBS/042.png)
 
-**Create a Source:** Next we can add as many video and sound sources as we want.  For our first scene we just need a "Browser" view for the owlcms scoreboard.  OBS Studio has a built-in web browser just for that purpose.
+   ![044](nimg/4000OBS/044.png)
 
-Click on the + below the Sources pane and select Browser.  
+3. Paste the URL, and set the resolution to 1920x1080.  You should then see the scoreboard.  The information displayed comes from the session description - if there is none, the session code is displayed.
 
-![03_createSource](img/OBSVideo/03_createSource.png)
+   ![046](nimg/4000OBS/046.png)
 
-Select "Create New" and give your source a unique name (this is because you can reuse the same source in several scenes).
+   ![048](nimg/4000OBS/048.png)
 
-Then paste the URL for the scoreboard.  Use 1920 and 1080 for the size (full HD).
+4. Now we go back to the Scene panel. We use the + button to define a new "Video Capture Device" for our camera.![50](nimg/4000OBS/50.png)
 
-![04_sourceDetails](img/OBSVideo/04_sourceDetails.png)
+   We name our source "Camera"![52](nimg/4000OBS/52.png)
 
-Close the dialog, and resize the source so it fills the screen.
+   Normally the default parameters are ok
 
-![05_resizeSource](img/OBSVideo/05_resizeSource.png)
+   ![54](nimg/4000OBS/54.png)
 
-Whenever you click on the scene in the list of scenes, the output will switch.  You can right-click in the scenes list to change from a grid list to a linear list.
+5. We now extend the Camera source to the full size of the screen.  Use the corner handles, or use the Control-F shortcut on Windows.
+   ![56](nimg/4000OBS/56.png)
 
-### 5. Define a Scene combining Live Video and Current Athlete Info
+6. We reorder our sources by using the arrows at the bottom so the Camera is behind our floating scoreboard
+   ![56](nimg/4000OBS/58.png)
 
-The second scene will be built with three elements. 
+## 4. Prepare a Current Athlete view
 
-1. a fake image to get our layout approximately correct (which we will hide when the setup is done)
-2. a video source for the live video
-3. the owlcms current athlete view
+The process used to create a scene for the athlete lifting with information at the bottom of the screen is similar.
 
-**Create the scene**: Same as before, create a new scene with a meaningful name -- say "Current Athlete"
+1. Back to the Video Streaming page, open the Current Athlete view
+   ![60](nimg/4000OBS/60.png)
 
-**Add a background image** Create an "Image" source and pick a meaningful image from your competition site.
+2. Copy the URL.  The background of the display is transparent so we will be able to put the view anywhere we want and resize it![62](nimg/4000OBS/62.png)
 
-**Add the video source** Create a video source and select your camera.  Turn off the camera source by clicking on the "eye" icon.  We will turn the camera on once our layout is done.
+3. Then we add, like earlier, our browser source with the URL we copied.  We define the resolution as 1920x1080
 
-**Create the Current Athlete Source:** We now redo the same process as before for the scoreboard, but this time we use the Attempt Board as our URL.  So we create a source using the + at the bottom, select "Browser" as our type, give it a meaningful name like "Attempt Board".
+   ![66](../../../OneDrive/Documents/ShareX/Screenshots/2024-12/66.png)
 
-**Define the properties:** Same as before, but we use the URL for the current attempt. We make it full-size (1920 x 1080).  We use the handles to move the top of the source where we want it, and make it slightly narrower than the screen area.
+4. The view appears and we drag it to the bottom.
+   ![68](nimg/4000OBS/68.png)
 
-**Crop the view** We only need the top part.  To crop, we add a filter to the current athlete browser source.  We select the source and right-click to select "Filter"
+5. The we add the Camera source -- we reuse the same one that we already defined.
+   ![72](nimg/4000OBS/72.png)
 
-![06_addFilter](img/OBSVideo/06_addFilter.png)
+6. And we move the camera behind, as before.
+   ![74](nimg/4000OBS/74.png)
 
-We then change the parameters to crop the bottom.  We use 950 as the bottom crop value and then we apply
+7. Finally, we resize the bottom view to our liking
+   ![76](nimg/4000OBS/76.png)
 
-![07_applyFilter](img/OBSVideo/07_applyFilter.png)
+   
 
-We can use the handles to fine-tune the position and size.
+## 5. Advanced Options
 
-![08_endResults](img/OBSVideo/08_endResults.png)
+### 5.1 Medals
 
-**Final Steps** You can now go to your scenes and click on the eyes to hide the background image and enable your camera.
+If you also add a scene with the medals as a browser source, then if the announcer switches the medals display to a specific category, the video source will follow.  You can also switch the medals category from the video streaming.
 
-## 6. Advanced Options
+### 5.2 Style Editing, Colors, Logos
 
-### 6.1 Medals and Rankings
+In order to create you own video styles, copy the `nogrid` or `transparent` folder to your own name. 
+The general process for style changes is described on the [Style Customization](Styles) page.  All these steps can be performed by a Web Designer or by a sufficiently motivated person -- the configuration uses standard CSS files for which there are many tutorials on the web.
 
-You can use the medals and the ranking screen to show information during ceremonies.  If you add these scoreboard as sources, you will be able to control which group is shown independently of what is selected by the announcer.  For example, if group F2 has been presented and is warming up, and the medal ceremony for group H1 starts, you can go to the Video Streaming screen in owlcms and select H1.  The rankings and the medals video source will switch to F2 so the commentator can talk about the F2 medals.  The on-site scoreboards are independent, and controlled by the speaker.
-
-### 6.2 Style Editing, Colors, Transparency, Logos
-
-The style sheets for the video streaming can be the same as the main site, or you can define separate ones. The video style sheets are located in`local/css` together with the other owlcms style sheets. By default, the video style sheets are `nogrid` (located in `local/css/nogrid`).   The `local/css/transparent` folder is an example of a style sheet designed specifically for video (you would use it with video software that makes pure green transparent).   
-
-In order to create you own video styles, copy the `nogrid` or `transparent` folder to your own name. Select your new folder on the `Prepare Competition > Language and System Settings > Customization`
-
-Note that if you change the styles, the OBS cache may need to be emptied.  On Windows,the cache is located in `%appdata%\obs-studio\plugin_config\obs-browser\Cache` -- exit OBS and delete everything inside.
-
-- For example, you can change the scoreboard background to be a pure green (#00ff00) and use a color filter to remove the green -- the scoreboard will then be on a transparent background.
 - You can change the color of the video header to create a banner
 - You can edit the style of the video header to include logos
 
+Select your new folder on the `Prepare Competition > Language and System Settings > Customization`
+
+> Note that if you change the styles, the OBS cache may need to be emptied.  On Windows,the cache is located in `%appdata%\obs-studio\plugin_config\obs-browser\Cache` -- exit OBS and delete everything inside.
+>
+
 ![09_transparent](img/OBSVideo/09_transparent.jpg)
 
-The general process for style changes is described on the [Style Customization](Styles) page.
 
-All these steps can be performed by a Web Designer or by a sufficiently motivated person -- the configuration uses standard CSS files for which there are literally hundreds of introductions and tutorials on the Web.  
-
-As a last option, the author of the program can be contacted for an estimate. Since most large events use paid graphic designers and paid video technicians, customization for video is normally a billable consulting service (just as if the organizing committee uses a Web Designer to do the work.)
-
-## 7. Setup Streaming
-
-The steps necessary to set up streaming on Facebook Live are described on [this page](Streaming).  The process for YouTube is similar (grab a Stream Key, apply it to OBS, Start Streaming.)
-
-## 8. Broadcasting a Zoom Virtual meet
-
-When broadcasting a virtual meet to facebook or youtube, the process is essentially the same, except that in practical terms you need to use two monitors.  
-
-Zoom will display the current athlete on one monitor.  You will use the OBS Display Capture to use that as the video source, instead of the Camera.
-
-##### Troubleshooting: Select the Graphics Card for OBS
-
-This step is sometimes needed for laptops that have two video cards (such as "gaming" laptops).  OBS Studio can only capture full-screen video from one card at a time.  The setting is done using the Windows Graphics Settings. 
-
-- Click on the Windows icon at the bottom left and locate the"Graphics Settings" menu
-- Locate the OBS Studio app and set the PowerSaving
-
-![graphicsSettings](img/OBS/graphicsSettings.png)
 

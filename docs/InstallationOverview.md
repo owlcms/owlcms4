@@ -1,9 +1,10 @@
 Several installation options are possible, depending on what is available at the competition site and the size of the competition.
 
-- Stand-alone installation, if you prefer to run things locally ([description below](#stand-alone-laptop-installation))
-  - [Windows Stand-alone Installation](LocalWindowsSetup)
-  - [Linux, Raspberry or Mac Stand-alone Installation](LocalLinuxMacSetup)
-
+- Stand-alone installation, if there is no internet at the competition site or if you prefer to run things locally for best reliability ([description below](#stand-alone-laptop-installation))
+  - [Windows Installation](LocalWindowsSetup)
+  - [Raspberry Pi or Linux Installation](LocalPiLinuxSetup)
+  - [Mac Installation](LocalMacSetup)
+  
 - Cloud-based installation, where all you need are browsers (and a good internet connection). This is a good option for club competitions and virtual competitions. ([description below](#cloud-based-installation))
 
   - [Fly Cloud Installation Instructions](Fly).  
@@ -14,9 +15,9 @@ Several installation options are possible, depending on what is available at the
 
 In a local stand-alone setup, there is no reliance on a trustworthy internet connection, but owlcms needs to be installed on a reasonably recent laptop with adequate performance.
 
-- The owlcms software runs on a laptop (labeled owlcms in the diagram) which acts as a web server to the other screens and displays.
+- The owlcms software runs on a computer (labeled owlcms in the diagram) which acts as a web server to the other screens and displays.
 
-- The primary laptop and all the other screens and official stations are connected to a wi-fi network or physically cabled to a router.
+- The primary computer and all the other screens and official stations are connected to a wi-fi network or physically cabled to a router.
 
 - All the displays are driven by a web browser - all the laptops, phones and tablets have one.
 

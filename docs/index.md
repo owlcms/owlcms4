@@ -16,7 +16,7 @@
 >
 > The program supports multiple age group championships in the same event, on multiple simultaneous platforms.  Medals can be awarded using the traditional methods, or by using scoring formulas.  Best lifter awards and team points can be computed for each championship.  All results and rankings from all championships and all platforms are available live, from a true database.
 
-## Gallery
+### Gallery
 
 <table>
 <tr><td><a href="http://u.osmfr.org/m/1156248/" target="_bkank"><img src='img/Gallery/Map.png'></a></td><td>Current Usage (each pin is a city where the software has reported usage last 6 months)<br/><a href="http://u.osmfr.org/m/1156248/" target="_blank">Click on image for an interactive map</a>.<br/>The owlcms competition management system is currently in use in over 80 federations.  See here for <a href="./#/Countries">a list</a></td></tr>
@@ -31,18 +31,7 @@
 </table>
 
 
-## Downloads and Installation
-
-Most people run the program on a laptop at the competition site ([overview](InstallationOverview#stand-alone-laptop-installation))
-
-- [Windows Stand-alone Installation](LocalWindowsSetup)
-- [Linux, Raspberry or Mac Stand-alone Installation](LocalLinuxMacSetup)
-
-You can also run the program in the cloud, in which case you don't have to install anything and can run your consoles and displays directly from the Internet.
-
-- [Cloud-based installation](InstallationOverview#cloud-based-installation)
-
-## Features
+### Features
 
 The following list is a sampling of the many features available.  <u>*Click on the images if you wish to view them full-sized*</u>.
 
@@ -116,13 +105,13 @@ The following list is a sampling of the many features available.  <u>*Click on t
 
 - [**3 and 5-person jury**](Refereeing#jury).  Jury members see referee decisions as they happen. Jury members see their vote outcome once all jurors have voted. 
 
-    ![070_Jury](img/Refereeing/070_Jury.png  ':size=350')
+    ![070_Jury](img/Refereeing/070_Jury.png)
 
 - **[Athlete Registration](Registration) and [Weigh-in](WeighIn) screens**, 
 
-- Production of **[weigh-in sheets](2400PreCompetitionDocuments#weigh-in-forms)** with starting weights and **[athlete cards](2400PreCompetitionDocuments#athlete-cards)**.
+- **[Athlete cards](2400PreCompetitionDocuments#athlete-cards)** and **[weigh-in sheets](2400PreCompetitionDocuments#weigh-in-forms)** with starting weights
 
-    ![042_AthleteCards](img/WeighIn/043_AthleteCards.png ':size=350')
+    ![042_AthleteCards](img/WeighIn/043_AthleteCards.png)
 
 - [**Upload of registration sheet**](2200Registration#registering-the-athletes) Upload a list of athletes with their team, group, entry totals etc. 
 
@@ -130,7 +119,7 @@ The following list is a sampling of the many features available.  <u>*Click on t
 
 - Multiple **[Simultaneous age divisions](Preparation#defining-age-divisions-and-categories)**: ability to award separate medals according to age division (e.g. youth vs junior vs senior) .  Simultaneous inclusion of Masters and non-masters groups athletes is possible.
 
-     ![020_ageGroupList](img/Categories/020_ageGroupList.png ':size=350')
+     ![020_ageGroupList](img/Categories/020_ageGroupList.png)
 
 - [**Competition Parameters**](Preparation#competition-information) :  screens for defining a competition (general info, location, organizer, etc.) and special rules that apply (for example, enforcing or not the 20kg rule, etc.)
     ![30](nimg/2100PreCompetitionSetup/30.png)
@@ -164,9 +153,3 @@ The following list is a sampling of the many features available.  <u>*Click on t
     ![colors](img/Displays/colors.png ':size=350')
 
 - Etc.  Refer to the side menu for the full list of topics.
-
-## Support
-
-- [Discussion list](https://groups.google.com/forum/#!forum/owlcms)  If you wish to discuss the program or ask questions, please add yourself to this discussion [group](https://groups.google.com/forum/#!forum/owlcms).  You can withdraw at any time.
-- [Issues and Feature Requests](https://github.com/jflamy/owlcms4/issues)  See the Project Board below to see what we are working on.
-- [Project board](https://github.com/users/jflamy/projects/4/views/1) This shows what we are working on, and our work priorities.  Check here first, we may actually already be working on it
