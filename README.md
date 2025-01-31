@@ -2,7 +2,7 @@
 
 > **NOTES:**
 >   - This repository contains the documentation for the **stable releases** and the core files used by the installers
->     - A [separate repository](https://github.com/owlcms/owlcms4-prerelease/releases) contains the documentation and core files for prereleases.
+>     - A [separate repository](https://github.com/owlcms/owlcms4-prerelease) contains the documentation and core files for prereleases.
 >   - The application can be installed locally or in the cloud
 >     - For local installation: See the [Control Panel Installation Instructions](https://owlcms.github.io/owlcms4/#/LocalDownloads.md) and the user guide for the [owlcms Control Panel](https://owlcms.github.io/owlcms4-prerelease/#/LocalControlPanel.md)
 >     -  For cloud installation: See [Fly.io Installation Instructions](https://owlcms.github.io/owlcms4/#/Fly)
