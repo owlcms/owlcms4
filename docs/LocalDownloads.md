@@ -1,5 +1,3 @@
-## Local Installation
-
 ### Installation Instructions
 
 The installation details vary slightly by platform.  See the links just below. Additional details and diagrams are available in the [Equipment Setup](EquipmentSetup) pages. 
@@ -7,7 +5,9 @@ The installation details vary slightly by platform.  See the links just below. A
 - [Windows Installation Instructions](LocalWindowsSetup)
 - [Raspberry Pi/Linux Installation Instructions](LocalPiLinuxSetup)
 - [Mac Installation Instructions](LocalMacSetup)
+- [Other - Manual Installation](LocalManual)
 
 ### Release Notes
 
 Release Notes for the current release : [Release Notes](https://github.com/owlcms/owlcms4/releases)
+
