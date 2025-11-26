@@ -16,7 +16,5 @@ This location contains the release notes and the software modules that the insta
 This is free, as-is, no warranty *whatsoever* software.
 (see the [License](https://github.com/owlcms/owlcms4/blob/master/LICENSE.txt) for details.)
 
-### Authoring and Software Acknowledgments
-
 The software is written and maintained by Jean-François Lamy, IWF International Technical Official Category 1 (Canada)
 
