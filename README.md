@@ -1,40 +1,22 @@
-# OWLCMS - Olympic Weightlifting Competition Management System 
+# OWLCMS - Olympic Weightlifting Competition Management System
 
-> **NOTES:**
->   - This repository contains the documentation for the **stable releases** and the core files used by the installers
->     - A [separate repository](https://github.com/owlcms/owlcms4-prerelease) contains the documentation and core files for prereleases.
->   - The application can be installed locally or in the cloud
->     - For local installation: See the [Control Panel Installation Instructions](https://owlcms.github.io/owlcms4/#/LocalDownloads.md) and the user guide for the [owlcms Control Panel](https://owlcms.github.io/owlcms4/#/LocalControlPanel.md)
->     -  For cloud installation: See [Fly.io Installation Instructions](https://owlcms.github.io/owlcms4/#/Fly)
->   - [Extensive Documentation](https://owlcms.github.io/owlcms4/#) is available.
->   - The source repository is located at [https://github.com/jflamy/owlcms4](https://github.com/jflamy/owlcms4) (report issues there).
-<br />
+# Release Bundles and Documentation
 
-This free application is a fully-compliant weightlifting competition management system. 
+This location contains the release notes and the software modules that the installers use.
 
-It has been used to manage national championships and even continental championships, worldwide.
-
-Yet it is simple enough to setup that you can use it to run a club or regional competition.
-
-### Features, Documentation and Installation
-- See the [Web Site](https://owlcms.github.io/owlcms4/#) for a full overview</u>.  
-- Refer to the [Installation Overview](https://owlcms.github.io/owlcms4/#/InstallationOverview) and
-to the following [Downloads](https://owlcms.github.io/owlcms4/#/Downloads) page for the various setups and releases.
-
-### Help, Issues, Feature Requests
-
-- [Discussion list](https://groups.google.com/forum/#!forum/owlcms)  If you wish to discuss the program or ask questions, please add yourself to this discussion [group](https://groups.google.com/forum/#!forum/owlcms).  You can withdraw at any time.
-- [Issues and Feature Requests](https://github.com/jflamy/owlcms4/issues) To open an issue or make a request, use that link.
-- [Work in Progress and Priorities](https://github.com/users/jflamy/projects/2/views/7) Shows what we are working on and what is currently planned.
+> ⚠️⚠️⚠️
+> To install and run OWLCMS, you need to use the [**OWLCMS Control Panel**](https://github.com/owlcms/owlcms-controlpanel/releases).
+> 
+>  - **The OWLCMS Control Panel can be downloaded at [this location](https://github.com/owlcms/owlcms-controlpanel/releases) and you can refer to the [Installation Instructions](https://owlcms.github.io/owlcms4-prerelease/#/LocalDownloads.md)**
+> - **User Documentation for the Control Panel is located at [this location](https://owlcms.github.io/owlcms4-prerelease/#/LocalControlPanel.md)**
+> - **Documentation for the system itself** is at https://owlcms.jflamy.dev.
 
 ### Licensing and Notes
 
-This is free, as-is, no warranty *whatsoever* software. If you just want to run it as is for your own club or federation, just download from the [Releases](https://github.com/owlcms/owlcms4/releases) repository and go ahead. You should perform your own tests to see if the software is fit for your own purposes and circumstances.
-
-If you host the software, package it, or modify it, the license *requires* you to make the full sources to your modifications and the corresponding building instructions available for free (see the [License](https://github.com/owlcms/owlcms4/blob/master/LICENSE.txt) for details.)  You may charge for your services and expertise, but everyone is entitled to the original software and to your modifications for free.
+This is free, as-is, no warranty *whatsoever* software.
+(see the [License](https://github.com/owlcms/owlcms4/blob/master/LICENSE.txt) for details.)
 
 ### Authoring and Software Acknowledgments
 
 The software is written and maintained by Jean-François Lamy, IWF International Technical Official Category 1 (Canada)
 
-See the file [pom.xml](pom.xml) for the list of Open Source software used in the project.  In particular, this project relies heavily on the [Vaadin](https://vaadin.com) application framework.
