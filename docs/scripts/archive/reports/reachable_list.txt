@@ -20,6 +20,7 @@ Announcing.md
 Breaks.md
 CloudOverview.md
 Configuration.md
+Countries.md
 Credentials.md
 DefenderOff.md
 Demo1.md
@@ -41,7 +42,6 @@ LocalMacSetup.md
 LocalManual.md
 LocalPiLinuxSetup.md
 LocalWindowsInstaller.md
-LocalWindowsSetup.md
 MQTT.md
 MQTTMessages.md
 ModifiedRules.md
@@ -51,7 +51,6 @@ PostgreSQL.md
 Preparation.md
 PublicResults.md
 PublicResults_Local.md
-Records.md
 Refereeing.md
 ResultDocuments.md
 ScoreBasedCompetitions.md
