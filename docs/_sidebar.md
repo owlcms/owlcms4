@@ -16,6 +16,7 @@
   * [Pre-Competition Setup](2100PreCompetitionSetup)
   * [Registration](2200Registration)
   * [Edit Athlete Entries](2300EditAthleteEntries)
+  * [Championships](Championships)
   * [Documents](2400PreCompetitionDocuments)
   * [Records Management](2500RecordsManagement)
   * [Score-based Medals](ScoreBasedCompetitions)
