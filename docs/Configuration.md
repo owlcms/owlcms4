@@ -26,6 +26,7 @@ Parameters can be set in several ways:
 | backdoor                  | OWLCMS_BACKDOOR           | If defined, no password will be required to access the owlcms application from the listed addresses. <br />-  Can be used for a cloud-based competition to avoid having to enter passwords at the competition site (use the public address of the competition location).<br />-  Can be used during virtual competitions to allow the video editing station to access the owlcms screens without passwords.  This would be the public IP address of the video producer.<br /><u>Has priority over the backdoor setting in the database.</u> |
 | mqttServer                | OWLCMS_MQTTSERVER         | If defined, owlcms will connect to the MQTT host and listen for referee decisions sent over MQTT, and will enable sending  reminders  or summoning referees.<br />If NOT defined, owlcms starts an MQTT server itself, and connects to the embedded server.<br />Note that if you set this to 127.0.0.1, owlcms will try to connect to a locally running MQTT Server, and will NOT start its own. |
 | mqttPort                  | OWLCMS_MQTTPORT           | default=1883<br />When running the embedded MQTT server, this is the port that clients will use, and only non-TLS connections are accepted.<br />When connecting to an external server, if the port starts with 8 then a TLS connection will be used (mqtts without mutual authentication - no client certificate is used). |
+| mqttWsPort                | OWLCMS_MQTTWSPORT         | default=9090<br />Advanced/internal setting for the embedded Moquette MQTT-over-WebSocket listener used by the owlcms `/mqtt` proxy. Normally leave this unchanged; clients should connect through the normal owlcms HTTP port using the `/mqtt` path and the `mqtt` WebSocket subprotocol. |
 | mqttUserName              | OWLCMS_MQTTUSERNAME       | Login for MQTT server.<br />When running the embedded server, if this is empty any login/password combination will work for the clients. |
 | mqttPassword              | OWLCMS_MQTTPASSWORD       | Password for MQTT server<br />If running the embedded server, this is the password that will be expected from the clients.<br />When using an external server, this is the password to use<br />The file from which this value is fetched should be protected from indiscrete eyes. |
 | H2ServerPort              | OWLCMS_H2SERVERPORT       | Normally absent.<br />If present, the usual value is 9092, and owlcms will tell its embedded H2 server to listen on this port.  This enables the h2.jar file to be run and start an H2 console.  In H2 console, use an URL of the form `jdbc:h2:tcp://localhost:9092/path`<br />where path is something like `c:/.../owlcms/database/owlcms-h2v2` . There is no .db extension at the end, replace `...` with the the actual path. Forward slashes are used even on Windows. |
@@ -34,6 +35,15 @@ Parameters can be set in several ways:
 | cssEdit                   | OWLCMS_CSSEDIT            | default=false<br />If false, a fake timestamp is added to the file names, to force the browser to fetch them again. The fake timestamp changes when the server is restarted.  Restarting the server ensures that the files are fetched again.<br />If true, the css and image files are fetched using the same name they have on the disk.  This makes it easier to use the development mode features of the browser to work. |
 | useCompetitionDate        | OWLCMS_USECOMPETITIONDATE | default=false<br />If present and true, the ages will be computed relative to the stored competition date.  Useful when loading a database from a previous year. |
 | featureSwitches           | OWLCMS_FEATURESWITCHES    | List of feature switches.  Overrides the ones in the database. |
+
+### Athlete Timer Parameters
+
+The athlete timer milestones can be changed by copying `timing/timing.properties` to the `local/` directory, or to the directory set by `OWLCMS_LOCALDIR`, and editing the millisecond values. The following environment variables override the corresponding file values.
+
+| Environment Variable Name          | Description                                      |
+| ---------------------------------- | ------------------------------------------------ |
+| OWLCMS_ATHLETE_TIMER_ONE_MINUTE    | Overrides the `athleteTimerOneMinute` value.     |
+| OWLCMS_ATHLETE_TIMER_TWO_MINUTES   | Overrides the `athleteTimerTwoMinutes` value.    |
 
 ### Remote Public Results and Video parameters
 
